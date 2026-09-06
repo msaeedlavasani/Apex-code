@@ -10,6 +10,8 @@ Use the cheapest/narrowest reliable validation appropriate to affected scope and
 
 `STATIC`, `LINT`, `TYPECHECK`, `UNIT`, `INTEGRATION`, `CONTRACT`, `ADAPTER_CONFORMANCE`, `SECURITY`, `TARGETED_SMOKE`, `E2E`.
 
+Each validation check has one result: `PASS`, `FAIL`, `NOT_RUN`, or `BLOCKED`. These are validation results, not Apex evidence types and not claim states. `NOT_RUN` means no result was produced; `BLOCKED` means a prerequisite prevented the check. Neither is a pass.
+
 ## Proposed matrix
 
 | Scope/risk | Minimum validation | Escalate when |
@@ -26,6 +28,8 @@ Use the cheapest/narrowest reliable validation appropriate to affected scope and
 ## Validation contract
 
 Each development task records selected tiers, commands or check identifiers, expected evidence, failure routing, and whether independent review is required. A passed command may prove only the behavior it exercised. `UNKNOWN` and `NOT_PROVEN` remain visible.
+
+Validation is layered with acceptance: implementation may be complete, machine validation may pass, and human acceptance may still be pending. Operational verification is a separate requirement for applicable runtime/production changes. The controlling contract for each check is identified explicitly; a convenient but non-authoritative test cannot override it.
 
 The existing Apex CI currently supplies lean documentation/static validation. Future lint, typecheck, unit, integration, runtime-adapter conformance, and targeted smoke/E2E layers should be added independently when implementation scope justifies them.
 

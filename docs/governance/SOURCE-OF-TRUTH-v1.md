@@ -18,6 +18,8 @@ When sources conflict, use the highest applicable authority below, surface the c
 
 The authority is topic-specific: implementation can prove `CURRENT` behavior, but it does not silently replace a required `TARGET` contract. An observed implementation that conflicts with a formal contract is recorded as `DEBT` or `UNKNOWN` and escalated according to risk.
 
+Permission to act is a separate dimension from factual authority. A source may establish what exists without granting permission to change it; a reviewer or owner may grant permission without becoming evidence that the change succeeded. Commit, push, merge, and deploy are separate permissions.
+
 ## Two dimensions of truth
 
 The Home Fit labels describe claim state, not evidence type. Apex should keep them separate:
@@ -49,6 +51,8 @@ Evidence remains the existing Apex vocabulary and must not be replaced:
 | Candidate/active work | canonical task registry/backlog |
 | Observation and proof | evidence records and validation outputs |
 | Human-facing result | Completion Report / Handoff |
+
+The active Work Registry is the only source for active work state. A bounded Current State is a resume projection, not a backlog. A Retrieval Manifest, if later introduced, records what context was loaded; it is evidence of retrieval, not authority over the retrieved sources.
 
 ## Contradiction handling
 

@@ -18,12 +18,18 @@ Status: **PROPOSED**. Priorities are recommendations, not implementation authori
 | ADR mechanism | existing architecture status policy, no `docs/adr/` | decision-only ADR process | P0 candidate for architecture changes |
 | Canonical backlog | no task registry | one document-backed projection | P1, after owner design |
 | Repository brain | no root contract | lightweight `AGENTS.md`, selective brains | P0 candidate |
+| Context routing | no Context Map or bounded Current State | substrate-neutral Context Map + bounded resume snapshot | Context Map P0 candidate; Current State P1 |
+| Active work authority | no task registry | one canonical Work Registry, historical reports non-authoritative | P0 design, P1 implementation |
+| Passport readiness | proposed passport fields | `PASSPORT_INCOMPLETE` fail-closed admission with dependency/evidence gates | P0 |
+| Validation results | lean CI outcomes only | PASS/FAIL/NOT_RUN/BLOCKED separate from evidence/claim state | P0 policy |
+| Resource governance | no resource bands | Standard/Elevated/Intensive plus future approval request | P1 |
+| Learning destination | no Apex learning registry | one future findings/lessons destination | P2 |
 | Incident/recovery | no runtime/production system | later runtime-aware recovery/incident controls | P3 |
 
 ## Priority interpretation
 
-- **P0 — before any product implementation:** source precedence, agent contract, Development Task/Passport contract, change/risk classification, acceptance/validation/evidence, handoff/completion, ADR decision process, and minimum repository brain.
-- **P1 — before first Runtime Adapter implementation:** adapter-specific passport requirements, runtime/authority change gates, conformance validation, resource/rollback contract, and exact mapping to Core `ExecutionRequest`.
+- **P0 — before any product implementation:** source precedence, agent contract, Context Map design, Development Task/Passport contract with `PASSPORT_INCOMPLETE`, change/risk classification, acceptance/validation/evidence, handoff/completion, ADR decision process, and minimum repository brain.
+- **P1 — before first Runtime Adapter implementation:** bounded Current State, adapter-specific passport requirements, runtime/authority change gates, conformance validation, resource/rollback contract, and exact mapping to Core `ExecutionRequest`.
 - **P2 — before Orchestration capability:** machine-readable task registry, dependency/readiness projection, handoff scheduling interface, verifier routing, and capability-consumption SPI.
 - **P3 — later maturity:** incident ledger, production release control, learning/failure pools, metrics/data brain, UX brain, and automated debt/lessons promotion.
 

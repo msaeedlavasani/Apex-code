@@ -8,6 +8,10 @@ Change classes are composable flags, not mutually exclusive labels. `DOCS_ONLY` 
 
 `DOCS_ONLY`, `ARCHITECTURE_CHANGE`, `CORE_CHANGE`, `RUNTIME_CHANGE`, `AUTHORITY_CHANGE`, `SECURITY_SENSITIVE`, `DATA_CHANGE`, `UI_CHANGE`, `DEPENDENCY_CHANGE`, `INFRA_CHANGE`, `PRODUCTION_CHANGE`, `TEST_ONLY`, `GOVERNANCE_CHANGE`.
 
+Decision class is a separate axis: `ROUTINE` for bounded reversible work, `MATERIAL` for cross-boundary or meaningful contract/risk decisions, and `CRITICAL` for authority, security, irreversible data, production, or high-blast-radius decisions. Risk remains `LOW`/`MEDIUM`/`HIGH`/`CRITICAL`.
+
+Resource class is also separate: `STANDARD`, `ELEVATED`, and `INTENSIVE`. It measures responsible resource/cost demand, not importance: broad scans, parallel agents, deep review, large runtime matrices, paid research, or long validation may require elevation. Numeric token bands are intentionally not defined.
+
 ## Gate matrix
 
 | Signal | Plan | Review | Validation | Recovery/evidence |
@@ -31,3 +35,5 @@ Change classes are composable flags, not mutually exclusive labels. `DOCS_ONLY` 
 Classify from the intended and affected contract, not only changed filenames. If classification is uncertain, use the stricter plausible class and record `UNKNOWN`/`NOT_PROVEN` evidence rather than silently narrowing scope. A change can be docs-only in files but architecture-impacting in meaning.
 
 The current CI remains unchanged. This matrix is a future control-plane proposal, not a request to add jobs in this delta.
+
+For material or intensive work, a future Resource Approval Request may record requested resources, rationale, owner, time bound, cost, and release condition. It is deferred until such work exists.

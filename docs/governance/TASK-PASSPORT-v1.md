@@ -30,6 +30,7 @@ The passport may influence capability requirements, agent/model/runtime requirem
 | Recovery | rollback expectations | recovery notes | rollback requirement | deployment-specific recovery |
 | Control | executor, reviewer, owner decision needed, escalation conditions | notification hints | required approvers | capability routing |
 | Audit | created/updated timestamps, PR/commit/result/artifact links | external references | current status | capability result links |
+| Readiness | branch/base/worktree, passport completeness, dependency/evidence gates, stopping conditions, receiver, learning destination | retrieval manifest reference | derived admission state (`PASSPORT_INCOMPLETE`, `READY`, `BLOCKED`) | orchestration readiness projections |
 
 `taskId` is a link to a Core Task when one exists; it does not copy runtime identity. `ExecutionManifest` fields such as session identifiers, attempt identity, and immutable execution birth data remain Core-owned.
 
@@ -38,5 +39,7 @@ The passport may influence capability requirements, agent/model/runtime requirem
 - Every revision records why an authority-relevant field changed.
 - A passport narrows, never expands, applicable architecture and authority constraints.
 - Admission must fail closed when scope, acceptance, authority, or required evidence is unknown for the change class.
+- Admission must fail closed as `PASSPORT_INCOMPLETE` when mandatory fields, dependency acceptance, branch/base/worktree context, or required evidence dependencies are missing.
+- Resource class and owner approval requirements are recorded separately from risk and permission authority.
 - A passport is a development input; a manifest is an immutable Attempt contract.
 - DPT and Orchestration may consume the passport through an optional interface, but DCS works without them.

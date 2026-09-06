@@ -30,6 +30,18 @@ UNKNOWNS
 
 Empty fields must say `NONE` or `NOT_APPLICABLE`; they must not be omitted when the field is part of the applicable contract. Secret values and credential contents never belong in a handoff.
 
+The four artifacts have non-overlapping meanings:
+
+| Artifact | Meaning |
+|---|---|
+| Report | immutable evidence snapshot of a result/validation/decision |
+| Handoff | transfer pointer and minimum context for the next actor |
+| Current State | bounded mutable resume snapshot |
+| Work Registry | canonical active work-state authority |
+| Task Passport | bounded work and execution contract |
+
+Historical reports and handoffs cannot become active state merely because they are newer or easier to retrieve.
+
 ## Completion report
 
 A Completion Report separates:

@@ -1,4 +1,4 @@
-# DPT and Home Fit Development-Control Pattern Harvest
+# DPT, Home Fit, and BaziGB Development-Control Pattern Harvest
 
 Status: **PROPOSED**. This is an evidence-backed comparison and recommendation set, not a copy of either project’s governance.
 
@@ -15,6 +15,12 @@ Reference-document claims below use `DOCUMENTATION_EVIDENCE`; observed repositor
 ### Apex-Home-Fitness
 
 `AGENTS.md`; `docs/AI_DEVELOPMENT_SYSTEM.md`; `docs/BRANCHING_POLICY.md`; `docs/CI.md`; `docs/CURRENT_STATE.md`; `docs/HANDOFF.md`; `docs/INDEX.md`; `docs/TASKS.md`; `docs/GOVERNANCE_RUNTIME.md`; `docs/RELEASE_POLICY.md`; `docs/FEATURE_TO_PRODUCTION.md`; `docs/PRODUCTION_CHECKPOINTS.md`; `docs/PRODUCTION_INCIDENT_LEDGER.md`; `docs/TEST-DEBT.md`; `docs/governance/DOCUMENTATION-GOVERNANCE.md`; `docs/governance/DOCUMENTATION-SOURCE-OF-TRUTH-PROPOSAL.md`; `docs/governance/REPORT-DELIVERY-CONTRACT.md`; `docs/governance/UI-CONFORMANCE-GATE.md`; `docs/adr/README.md`; `docs/adr/ADR-TEMPLATE.md`; `docs/adr/0001-canonical-exercise-identity.md`; `docs/adr/0014-privacy-safety-architecture.md`; `docs/PITFALL_GUARDRAILS.md`; `docs/PITFALLS/PRODUCTION-OPERATIONS-SAFETY.md`; `docs/AI_CHANGE_TEMPLATE.md`.
+
+### BaziGB Modular Architecture
+
+`AGENTS.md`; `docs/HANDOFF.md`; `docs/ISSUES.md`; `docs/MODULARIZATION_TASKS.md`; `docs/ARCHITECTURE_AUDIT.md`; `docs/ARCHITECTURE_REFACTOR_REPORT.md`; `docs/CODE_AUDIT.md`; `docs/legacy-audit-and-tech-debt.md`.
+
+`OBSERVED_REPOSITORY_STATE`: the requested `AI_CONTEXT_MAP.md`, `ai/`, and `docs/aipde/` control-plane paths are absent from the inspected BaziGB checkout. No claims about their mechanics are made.
 
 ## Pattern inventory
 
@@ -54,6 +60,34 @@ Reference-document claims below use `DOCUMENTATION_EVIDENCE`; observed repositor
 | Specialized DPT team/roles | DPT Scout, Analyst, Architect, Developer, QA, pools, capability engine | powerful for DPT ecosystem | product-specific and would couple Core to DPT | REJECT from Apex Core; DEFER to optional DPT | DOCUMENTATION_EVIDENCE |
 | Home Fit UI conformance gate | Home Fit UI governance/AGENTS; reuse kit, locale, visual evidence | strong for UI changes | no Apex UI exists and rules are product-specific | DEFER; later adapt generic UI flag | DOCUMENTATION_EVIDENCE |
 | Home Fit production gateway | release/deploy gateway, OTP, Docker, browser acceptance | production-safe in its project | unsafe/irrelevant generic import | REJECT generic DCS; future operations design | DOCUMENTATION_EVIDENCE |
+| AI Context Map / task routing | BaziGB requested path absent; BaziGB `AGENTS.md` instead defines canonical reading and scope rules | reinforces minimum-sufficient context and explicit routing | no implemented map was observed | ADAPT; substrate-neutral Context Map proposal | OBSERVED_REPOSITORY_STATE + DOCUMENTATION_EVIDENCE |
+| Bounded Current State | BaziGB `AGENTS.md` separates current implementation from target/debt/unknown; audit/handoff snapshots are bounded | fast resume without treating history as truth | BaziGB handoff includes project-specific deployment facts | ADAPT; bounded current-state artifact | DOCUMENTATION_EVIDENCE |
+| Retrieval manifest | No BaziGB retrieval manifest was observed | absence prevents claiming a reusable mechanism | requested file path absent | DEFER; design only after context routing exists | OBSERVED_REPOSITORY_STATE |
+| One canonical active Work Registry | BaziGB `docs/MODULARIZATION_TASKS.md` and audit identify task/backlog drift and propose a canonical backlog | exposes active-state ownership problem | the source itself records unresolved documentation drift | ADAPT; one Apex work registry | DOCUMENTATION_EVIDENCE |
+| Historical reports != active state | BaziGB audit distinguishes historical reports from current branch/code truth; Home Fit makes this explicit | prevents stale handoffs becoming backlog authority | requires declared document status | ADOPT conceptually; source-of-truth and handoff contracts | DOCUMENTATION_EVIDENCE |
+| Passport readiness / fail closed | No BaziGB Task Passport file was observed; `AGENTS.md` requires verified facts and approval before risky work | supports explicit incomplete admission state | cannot claim BaziGB implemented `PASSPORT_INCOMPLETE` | ADAPT from DPT with BaziGB evidence; Task Passport | OBSERVED_REPOSITORY_STATE + DOCUMENTATION_EVIDENCE |
+| Evidence dependency gates | BaziGB audits record evidence, affected files, validation plan, and pending approval; Home Fit gates are stronger | ties work readiness to evidence | audit evidence is not an executable gate | ADAPT; validation/acceptance contract | DOCUMENTATION_EVIDENCE |
+| Branch lifecycle / explicit closure | BaziGB historical task says branch was integrated and deleted; `MODULARIZATION_TASKS.md` defines small commits/tests | reinforces ephemeral branches and closure proof | current BaziGB also documents a single-main model, not Apex PR flow | ADAPT existing Apex branch governance | DOCUMENTATION_EVIDENCE |
+| WIP limits | No explicit numeric WIP limit observed in BaziGB control docs; Home Fit has production-bound WIP rules | absence is useful caution against inventing a limit | no direct BaziGB adoption evidence | DEFER numeric limit; use risk/resource admission first | OBSERVED_REPOSITORY_STATE |
+| Implementation != validation | BaziGB audits distinguish code architecture from validation plan/status; `AGENTS.md` requires actual validation | protects completion semantics | audit status can become stale | ADOPT and strengthen in validation contract | DOCUMENTATION_EVIDENCE |
+| Validation != human acceptance | BaziGB `AGENTS.md` requires approval for architectural/risky changes; audits list pending owner approval separately | separates technical proof from decision | no universal BaziGB state machine observed | ADAPT; acceptance/review boundary | DOCUMENTATION_EVIDENCE |
+| Acceptance != operational verification | BaziGB handoff lists deploy/health checks separately from code/tests | preserves operational distinction | deployment details are project-specific | ADAPT later; defer production mechanics | DOCUMENTATION_EVIDENCE |
+| Routine / Material / Critical | No exact BaziGB triad observed; audit priorities and approval sensitivity provide analogous signals | useful decision class axis | do not misattribute triad to BaziGB | ADAPT as Apex decision class | INFERENCE + DOCUMENTATION_EVIDENCE |
+| Standard / Elevated / Intensive resources | No exact BaziGB resource bands observed | gives explicit cost/effort governance option | no source evidence for token percentage bands | ADAPT without numeric bands; resource governance proposal | INFERENCE + OBSERVED_REPOSITORY_STATE |
+| Resource Approval Request | BaziGB audit marks owner approval for material changes but no named request artifact | makes exceptional resource use visible | no reusable BaziGB request contract observed | DEFER/adapt later for broad or paid work | OBSERVED_REPOSITORY_STATE + DOCUMENTATION_EVIDENCE |
+| System-first correction | BaziGB modularization audit turns repeated coupling into boundary/gate tasks; DPT failure intelligence supplies reusable pattern | fixes missing controls instead of symptoms | must avoid automatic refactoring | ADAPT; agent/governance principle | DOCUMENTATION_EVIDENCE |
+| Controlling-contract validation | BaziGB audit identifies canonical architecture and public API boundaries; Home Fit names canonical contract owners | validation checks the authoritative contract | current Apex has no implementation contract yet | ADAPT; validation governance | DOCUMENTATION_EVIDENCE |
+| Validation result vocabulary | No explicit BaziGB `PASS/FAIL/NOT_RUN/BLOCKED` contract observed; audit uses status prose/check marks | explicit result states improve honesty | do not claim source implementation | ADAPT as proposed Apex vocabulary | OBSERVED_REPOSITORY_STATE + INFERENCE |
+| Documentation retrieval/supersession | BaziGB audit identifies stale branch/docs references and recommends update/merge/deprecate; Home Fit governance formalizes canonical homes | makes stale knowledge visible | no BaziGB retrieval manifest | ADAPT; source-of-truth policy | DOCUMENTATION_EVIDENCE |
+| Immutable evidence vs mutable contracts | BaziGB audit/refactor report preserves historical evidence while proposing updates to current docs | separates observation from current policy | requires status metadata | ADAPT; handoff/evidence boundaries | DOCUMENTATION_EVIDENCE |
+| Current State vs historical handoff | BaziGB `HANDOFF.md` is a snapshot with version/branch/operations; audits are historical | clear resume/history split | BaziGB snapshot contains stale facts by design | ADAPT with explicit bounded snapshot status | DOCUMENTATION_EVIDENCE |
+| Permission authority vs factual source | BaziGB `AGENTS.md` separates approval/authority from repository facts; DPT makes this explicit | prevents facts from granting permission | no BaziGB runtime authority model observed | ADAPT; source-of-truth + escalation | DOCUMENTATION_EVIDENCE |
+| Bundled approval | BaziGB handoff says deployment requires explicit approval, but no bundled approval object observed | identifies a useful approval-package concept | avoid claiming implementation | DEFER; owner decision package later | OBSERVED_REPOSITORY_STATE + DOCUMENTATION_EVIDENCE |
+| Separate commit/push/merge/deploy permissions | BaziGB separates deployment approval from branch work; `AGENTS.md` forbids unapproved risky action | least privilege and clear gates | single-main workflow is not Apex workflow | ADAPT; Apex permission actions | DOCUMENTATION_EVIDENCE |
+| Learning destination | BaziGB audits and legacy debt docs record findings/tasks; DPT has Pitfall Pool | converts lessons into durable controls | no single BaziGB learning registry observed | ADAPT one future findings/lessons destination | DOCUMENTATION_EVIDENCE |
+| Capability responsibilities vs job titles | BaziGB modular architecture uses package/module responsibilities rather than DPT role graph | keeps responsibilities generic | app roles still exist outside control plane | ADOPT boundary; reject DPT title import | DOCUMENTATION_EVIDENCE |
+| Portfolio/workstream/task hierarchy | BaziGB modularization tasks use a dependency graph and phases | supports sequencing | not a formal portfolio registry | ADAPT only if work volume requires it | DOCUMENTATION_EVIDENCE |
+| Branch drift/release authority checks | BaziGB audits compare documented branch state with actual Git state and identify stale refs | directly useful to Apex branch governance | current branch policy was single-main and project-specific | ADAPT; pre-task and closure checks | DOCUMENTATION_EVIDENCE |
 
 ## Disposition matrices
 
@@ -66,6 +100,8 @@ Reference-document claims below use `DOCUMENTATION_EVIDENCE`; observed repositor
 | Narrowest reliable validation | Already present in Apex CI policy and supported by both references. |
 | Branch → PR → validation → review → merge | Existing Apex governance already establishes it. |
 | Explicit source ownership and contradiction surfacing | Prevents duplicate architecture/control truth. |
+| Historical evidence separated from active state | BaziGB audit findings and Home Fit governance support this distinction. |
+| Separate permission actions | BaziGB approval/deployment separation strengthens least-privilege control. |
 
 ### ADAPT
 
@@ -79,6 +115,10 @@ Reference-document claims below use `DOCUMENTATION_EVIDENCE`; observed repositor
 | Handoff/report | Repository-native fields; no external report inbox assumption. |
 | ADR/documentation governance | Retain Apex statuses and evidence labels. |
 | Owner escalation | Generic protected-boundary triggers, independent of DPT authority modes. |
+| Context routing and bounded Current State | Use a substrate-neutral map and small resume snapshot; do not claim absent BaziGB files. |
+| Validation result states | Add PASS/FAIL/NOT_RUN/BLOCKED as a result dimension, separate from Apex evidence. |
+| Decision/resource classes | Add routine/material/critical and standard/elevated/intensive as separate proposed axes. |
+| Branch drift/closure checks | Adapt BaziGB audit discipline to existing Apex PR branch lifecycle. |
 
 ### DEFER
 
@@ -90,6 +130,8 @@ Reference-document claims below use `DOCUMENTATION_EVIDENCE`; observed repositor
 | Machine task database/queue and GitHub synchronization | Premature implementation and source duplication. |
 | UI conformance gate | No Apex UI surface exists. |
 | DPT Pools/failure-intelligence machinery | Optional capability and heavier than current phase. |
+| Retrieval Manifest | Useful after a context map and machine registry exist, but absent in BaziGB checkout and premature now. |
+| Numeric WIP/resource/token bands | No direct BaziGB evidence and unnecessary policy precision at this phase. |
 
 ### REJECT
 
@@ -102,4 +144,4 @@ Reference-document claims below use `DOCUMENTATION_EVIDENCE`; observed repositor
 
 ## Confidence limits
 
-The source repositories directly support the documented mechanics, but this harvest does not prove that any proposed Apex DCS pattern works in an Apex runtime. Runtime authority binding remains `NOT_PROVEN` in Apex architecture evidence.
+The source repositories directly support the documented mechanics where labeled. BaziGB-specific requested control-plane paths that were absent are recorded as `OBSERVED_REPOSITORY_STATE`, not inferred. This harvest does not prove that any proposed Apex DCS pattern works in an Apex runtime. Runtime authority binding remains `NOT_PROVEN` in Apex architecture evidence.

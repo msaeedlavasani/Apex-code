@@ -45,6 +45,20 @@ Completion Report ← Verification / AttemptResult / Artifacts
 
 The recommended mapping is explicit: a Development Task is a governance entity that can map to one or more Core Execution Tasks. This preserves external users' Core `Task` semantics while allowing planning, review, and acceptance to span multiple runtime executions.
 
+## Context routing and bounded state
+
+The proposed rehydration path is:
+
+```text
+AGENTS.md → Context Map → Current State → Task / Passport route → canonical sources
+```
+
+`Context Map` is preferred over `AI_CONTEXT_MAP.md` as the future Apex name because it is substrate-neutral; the word AI describes a consumer, not the ownership of the routing contract. A new agent should receive minimum sufficient context, not the whole repository, chat history, or model memory.
+
+`Current State` is a small machine-readable resume snapshot: active milestone, active/next task IDs, blockers, active gates, last meaningful validation, constraints, and links to canonical sources. It must not duplicate the Work Registry, history, architecture, reports, or Task Passports. It is a P1 candidate: useful before the first Runtime Adapter, but not required to begin a docs-only design review.
+
+The Work Registry is the sole active work-state owner. Reports are immutable evidence snapshots; Handoffs transfer context; Current State resumes work; the Task Passport defines bounded work/execution requirements. None of these may become a parallel backlog.
+
 ## Proposed v1 decisions
 
 | Decision | Status | Disposition |
@@ -56,6 +70,9 @@ The recommended mapping is explicit: a Development Task is a governance entity t
 | Require evidence-backed completion | PROPOSED | Adopt Result != Completion discipline |
 | Keep current Apex evidence vocabulary | PROPOSED | Preserve; add separate claim-state labels only if useful |
 | Use one canonical backlog projection | PROPOSED | Start with a document-backed registry; defer a task engine |
+| Add explicit validation result states | PROPOSED | `PASS`/`FAIL`/`NOT_RUN`/`BLOCKED`, separate from evidence type |
+| Separate decision class, risk, and resource class | PROPOSED | Avoid redundant gates while governing expensive work |
+| Treat system-first correction as a development rule | PROPOSED | Repeated symptoms trigger control-gap analysis |
 
 ## Relationship to optional capabilities
 
@@ -68,6 +85,8 @@ Apex Code Development Control System
                  ↓
 Apex Core Public API / Core contracts
 ```
+
+Branch governance remains explicit: every development branch records purpose, base, Task/Passport owner, receiver, and closure condition. Completion selects `MERGE`, `RETAIN WITH REASON`, `ARCHIVE`, or `DELETE`; merged short-lived branches are normally deleted only after remote-main verification. Commit, push, merge, and deploy are separate permission decisions.
 
 ## Non-claims
 
