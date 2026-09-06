@@ -485,7 +485,7 @@ adopt any implementation or depend on any project.
 
 ### TARGETED HARVEST
 
-Goose; Cline; Aider; SWE-agent; CrewAI; MetaGPT; ChatDev; E2B; Daytona;
+OpenWork; Goose; Cline; Aider; SWE-agent; CrewAI; MetaGPT; ChatDev; E2B; Daytona;
 Nimbalyst; Clave; BossConsole; agtx; omux; Mission-Control; and Conductor.
 
 The target should be narrowed by the Owner to a specific subsystem or question
