@@ -10,7 +10,7 @@ Reference-document claims below use `DOCUMENTATION_EVIDENCE`; observed repositor
 
 ### ApexAIPDT
 
-`AGENTS.md`; `README.md`; `ROADMAP.md`; `brains/BRAIN_CONTRACT.md`; `brains/ARCHITECTURE.md`; `brains/DATA.md`; `brains/DESIGN.md`; `brains/ENGINEERING.md`; `brains/OPERATIONS.md`; `brains/PRODUCT.md`; `brains/QA.md`; `brains/SECURITY.md`; `core/HUMAN_AI_BOUNDARY.md`; `core/WORKFLOW_ENGINE.md`; `core/DECISION_SYSTEM.md`; `docs/APEX_AI_DPT_CONSTITUTION.md`; `docs/APEX_AI_DPT_TERMINOLOGY.md`; `docs/DPT_CANONICAL_STATE_PRECEDENCE_GOVERNANCE.md`; `docs/DPT_TASK_SYSTEM.md`; `docs/DPT_EXECUTION_CONTROL_MODEL.md`; `docs/DPT_REPORT_LIFECYCLE_GOVERNANCE.md`; `docs/TASKS.md`; `workflows/VALIDATION_GATES.md`; `templates/DECISION_RECORD.md`; `templates/FEATURE_CONTRACT.md`.
+`AGENTS.md`; `README.md`; `ROADMAP.md`; `brains/BRAIN_CONTRACT.md`; `brains/ARCHITECTURE.md`; `brains/DATA.md`; `brains/DESIGN.md`; `brains/ENGINEERING.md`; `brains/OPERATIONS.md`; `brains/PRODUCT.md`; `brains/QA.md`; `brains/SECURITY.md`; `core/HUMAN_AI_BOUNDARY.md`; `core/WORKFLOW_ENGINE.md`; `core/DECISION_SYSTEM.md`; `docs/APEX_AI_DPT_CONSTITUTION.md`; `docs/APEX_AI_DPT_TERMINOLOGY.md`; `docs/DPT_CANONICAL_STATE_PRECEDENCE_GOVERNANCE.md`; `docs/DPT_TASK_SYSTEM.md`; `docs/DPT_EXECUTION_CONTROL_MODEL.md`; `docs/DPT_REPORT_LIFECYCLE_GOVERNANCE.md`; `docs/FAILURE_INTELLIGENCE.md`; `docs/TASKS.md`; `workflows/VALIDATION_GATES.md`; `templates/DECISION_RECORD.md`; `templates/FEATURE_CONTRACT.md`.
 
 ### Apex-Home-Fitness
 
