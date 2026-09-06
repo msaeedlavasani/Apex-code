@@ -101,4 +101,8 @@ guarantee remains `NOT_PROVEN`.
 
 ## Ownership
 
-Task, Attempt, Authority, and Runtime are Apex Code Core concepts. DPT and orchestration may consume and extend these primitives through their capability boundary, but cannot redefine or replace them.
+Task, Attempt, Authority, and Runtime are Apex Code Core concepts. A Core
+Task is a domain work unit, not a runtime session; `Task != Session` and
+`Task != Attempt`. DPT and orchestration may consume and extend these
+primitives through their capability boundary, but cannot redefine or replace
+them.
