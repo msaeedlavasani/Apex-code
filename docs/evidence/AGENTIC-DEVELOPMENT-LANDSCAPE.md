@@ -64,7 +64,7 @@ contract.
 
 ## 3. Candidate universe
 
-The following 34 candidates cover coding agents, runtimes, orchestration,
+The following 30 candidates cover coding agents, runtimes, orchestration,
 workforce systems, context/planning, sandboxes, product shells, and
 visual/mission-control systems. Dates and SHAs are a point-in-time snapshot,
 not a promise of continued activity.
@@ -81,9 +81,6 @@ not a promise of continued activity.
 | Continue | IDE/CLI coding agent platform | [continuedev/continue](https://github.com/continuedev/continue) | `main` / `5522c6f44ca0ac3528b37244818fbfa39b5af470` | Apache-2.0 / active | pushed 2026-09-06 | LOW | LANDSCAPE ONLY |
 | SWE-agent | autonomous issue-solving agent | [SWE-agent/SWE-agent](https://github.com/SWE-agent/SWE-agent) | `main` / `3ea751c087f32b16e039a2233dd6eefecef325d5` | MIT / active, successor emphasized | pushed 2026-08-31 | MEDIUM | TARGETED HARVEST |
 | Plandex | long-context planning/execution | [plandex-ai/plandex](https://github.com/plandex-ai/plandex) | `main` / `e2d772072efadbe41d2946d97d79be55532dbab5` | MIT / stale activity signal | pushed 2025-10-03 | MEDIUM | LANDSCAPE ONLY |
-| Gemini CLI | coding/general agent, MCP | [google-gemini/gemini-cli](https://github.com/google-gemini/gemini-cli) | `main` / `85aca163f6c73ac6ce380b5447359146b8adcae4` | Apache-2.0 / active | pushed 2026-09-06 | LOW | LANDSCAPE ONLY |
-| Codex CLI | local coding agent/runtime | [openai/codex](https://github.com/openai/codex) | `main` / `3cd6004dc43c96c38946d9697a7cf72af1562563` | Apache-2.0 / active | pushed 2026-09-06 | MEDIUM | TARGETED HARVEST |
-| Roo Code | IDE coding agent | [RooCodeInc/Roo-Code](https://github.com/RooCodeInc/Roo-Code) | `main` / `b867ec9145750d0ae1ff7f02d35406e9bf2a0b16` | Apache-2.0 / archived | pushed 2026-05-15 | LOW | LANDSCAPE ONLY |
 | Vibe Kanban | agent workspaces, kanban, diff/PR review | [BloopAI/vibe-kanban](https://github.com/BloopAI/vibe-kanban) | `main` / `4deb7eca8f381f7cbc1f9d15515a9ab8f8009053` | Apache-2.0 / active | pushed 2026-04-24 | HIGH | DEEP HARVEST |
 | CrewAI | role-based multi-agent and event flows | [crewAIInc/crewAI](https://github.com/crewAIInc/crewAI) | `main` / `143e902178a07d0f13f9db2308f983aaacaaf0f8` | MIT / active | pushed 2026-09-04 | MEDIUM | TARGETED HARVEST |
 | LangGraph | stateful orchestration, durable execution, HITL | [langchain-ai/langgraph](https://github.com/langchain-ai/langgraph) | `main` / `81bf17b23123e4ef8b9d5f49fa09a0122fc2edd1` | MIT / active | pushed 2026-09-06 | HIGH | DEEP HARVEST |
@@ -92,7 +89,6 @@ not a promise of continued activity.
 | E2B | secure code/runtime sandbox | [e2b-dev/E2B](https://github.com/e2b-dev/E2B) | `main` / `473d8bf3e62b68ee731cf18afb2e8258f9ca7a7c` | Apache-2.0 / active | pushed 2026-09-04 | HIGH | TARGETED HARVEST |
 | Daytona | elastic AI-code computers/sandboxes | [daytonaio/daytona](https://github.com/daytonaio/daytona) | `main` / `ec4c21b2d597091ac09ecc278f3bcc172575a987` | GitHub license unrecognized / inspect before reuse | pushed 2026-07-24 | HIGH | TARGETED HARVEST |
 | Browser Use | browser/computer-use agent | [browser-use/browser-use](https://github.com/browser-use/browser-use) | `main` / `e25ab65e699af3031a1f2d348526de2844be0e89` | MIT / active | pushed 2026-09-05 | MEDIUM | LANDSCAPE ONLY |
-| AgentScope | production-oriented agent framework | [agentscope-ai/agentscope](https://github.com/agentscope-ai/agentscope) | `main` / `41ba0216b3291b085d964bbf1c52d05a9b9d4c41` | Apache-2.0 / active | pushed 2026-09-04 | MEDIUM | LANDSCAPE ONLY |
 | ChatDev | multi-agent software lifecycle platform | [OpenBMB/ChatDev](https://github.com/OpenBMB/ChatDev) | `main` / `4fb2db0ea90375ce1059f44fe03ffbd191a7a169` | Apache-2.0 / active | pushed 2026-07-24 | HIGH | TARGETED HARVEST |
 | Nimbalyst | visual local agent workspace | [nimbalyst/nimbalyst](https://github.com/nimbalyst/nimbalyst) | `main` / `34b14f33e48fd639d32c0f5eb7d77561bdccd2a4` | MIT / active | pushed 2026-09-05 | HIGH | TARGETED HARVEST |
 | agtx | terminal blackboard/fleet orchestrator | [fynnfluegge/agtx](https://github.com/fynnfluegge/agtx) | `main` / `d307c4c182dff19a65370a50403185cb826f7f49` | Apache-2.0 / active | pushed 2026-09-06 | HIGH | TARGETED HARVEST |
@@ -101,11 +97,9 @@ not a promise of continued activity.
 | BossConsole | governed operator console/workspace | [risa-labs-inc/BossConsole](https://github.com/risa-labs-inc/BossConsole) | `main` / `154c9c4bca5c38d06a723ad409b85a25cf54eb73` | Apache-2.0 / active | pushed 2026-09-06 | HIGH | TARGETED HARVEST |
 | Vigla | mission control, typed events, isolated workers | [Kilbex/Vigla](https://github.com/Kilbex/Vigla) | `main` / `bbd19ae2d5a77401502756c550b5dcd4ae59bbc9` | Apache-2.0 / early | pushed 2026-09-01 | HIGH | DEEP HARVEST |
 | Conductor | commercial multi-agent cloud workspace | [Conductor](https://www.conductor.build/) | N/A / proprietary service | commercial / closed | current site/changelog observed | HIGH | TARGETED HARVEST |
-| DPlex | multi-repository mission control | [Ron537/DPlex](https://github.com/Ron537/DPlex) | `main` / `ad832206a593b983cfe30772c658aec67b8ce568` | MIT / very early | pushed 2026-09-06 | MEDIUM | LANDSCAPE ONLY |
 | Codeman | self-hosted agent mission control | [Ark0N/Codeman](https://github.com/Ark0N/Codeman) | `master` / `92af855ce4c0483569fd8cdde5069d1c56ec849a` | MIT / early | pushed 2026-09-06 | MEDIUM | LANDSCAPE ONLY |
 | Astro Agent | DAG/worktree agent orchestrator | [astro-anywhere/astro-agent](https://github.com/astro-anywhere/astro-agent) | `dev` / `60b0fd138887600ee77d0f404b9e5e37ea479752` | GitHub `NOASSERTION` / early | pushed 2026-04-27 | HIGH | LANDSCAPE ONLY |
 | Agent Mission Control | pixel-art visual operations dashboard | [glglak/agent-mission-control](https://github.com/glglak/agent-mission-control) | `main` / `39e2e3bd7ffa88e1296360e8833b099435f4c6a8` | GitHub license unrecognized / tiny | pushed 2026-03-28 | HIGH | LANDSCAPE ONLY |
-| Repomon | Rust/tmux agent fleet monitor | [AliHamzaAzam/repomon](https://github.com/AliHamzaAzam/repomon) | `main` / `3b2370e76fb9795582760df975bc18868f5fc77d` | Apache-2.0 / tiny | pushed 2026-09-06 | MEDIUM | LANDSCAPE ONLY |
 | Mission-Control | cost-aware durable orchestration reference | [Mission-Control](https://github.com/ryfranklin/Mission-Control) | `main` / `bf228fc3296b594befc173ec7d199cea8b9b2a68` | GitHub license unrecognized / tiny | pushed 2026-08-23 | HIGH | TARGETED HARVEST |
 
 The Freebuff/OpenWork rows are seed comparators rather than new Apex
@@ -117,8 +111,8 @@ rechecked against the exact source tree and license at any later harvest.
 
 | Category | Candidates with meaningful signal |
 |---|---|
-| Coding agents / agent runtimes | Freebuff, OpenCode, Goose, OpenHands, Aider, Cline, Continue, SWE-agent, Gemini CLI, Codex CLI, Roo Code |
-| Multi-agent coding systems | OpenHands, Cline, CrewAI, MetaGPT, ChatDev, AgentScope, omux, agtx |
+| Coding agents / agent runtimes | Freebuff, OpenCode, Goose, OpenHands, Aider, Cline, Continue, SWE-agent |
+| Multi-agent coding systems | OpenHands, Cline, CrewAI, MetaGPT, ChatDev, omux, agtx |
 | Orchestration harnesses | LangGraph, CrewAI, agtx, omux, Astro Agent, Mission-Control |
 | Supervisor / worker systems | Vigla, LangGraph, CrewAI, MetaGPT, ChatDev, BossConsole, Mission-Control |
 | Autonomous workforce systems | OpenHands, MetaGPT, ChatDev, Conductor, Vigla |
@@ -126,7 +120,7 @@ rechecked against the exact source tree and license at any later harvest.
 | Context / knowledge / planning | Aider, Plandex, OpenHands, LangGraph, Vibe Kanban, agtx, MetaGPT |
 | Runtime / sandbox systems | OpenCode, Goose, E2B, Daytona, OpenHands, Conductor |
 | Verification / recovery systems | OpenHands, SWE-agent, LangGraph, Vigla, Mission-Control, Plandex, Vibe Kanban |
-| Visual / mission-control systems | Nimbalyst, Vibe Kanban, Clave, BossConsole, Vigla, DPlex, Codeman, Astro Agent, Agent Mission Control, Repomon, Mission-Control |
+| Visual / mission-control systems | Nimbalyst, Vibe Kanban, Clave, BossConsole, Vigla, Codeman, Astro Agent, Agent Mission Control, Mission-Control |
 | Spatial / game-like ecosystems | Agent Mission Control; visual/spatial features in Nimbalyst, BossConsole, and Vigla are adjacent rather than equivalent |
 
 ## 5. Candidate profiles
@@ -285,12 +279,12 @@ step as an Apex-equivalent contract.
   Its license is `NOT_PROVEN` from repository metadata; targeted harvest is
   justified because the recovery/cost/approval combination is unusually close
   to Apex concerns.
-- [DPlex](https://github.com/Ron537/DPlex), [Codeman](https://github.com/Ark0N/Codeman),
-  [Astro Agent](https://github.com/astro-anywhere/astro-agent),
-  [Agent Mission Control](https://github.com/glglak/agent-mission-control), and
-  [Repomon](https://github.com/AliHamzaAzam/repomon) are useful visual or
-  multi-repository comparators, but are small or early. They remain landscape
-  only until source depth, health, and reusable contracts justify a harvest.
+- [Codeman](https://github.com/Ark0N/Codeman),
+  [Astro Agent](https://github.com/astro-anywhere/astro-agent), and
+  [Agent Mission Control](https://github.com/glglak/agent-mission-control) are
+  useful visual or multi-repository comparators, but are small or early. They
+  remain landscape only until source depth, health, and reusable contracts
+  justify a harvest.
 
 ### Other seed and context comparators — LANDSCAPE or TARGETED
 
@@ -299,9 +293,8 @@ step as an Apex-equivalent contract.
 - Aider is valuable for repository mapping, model/provider flexibility, and
   human-controlled git flow; it is less valuable for multi-agent supervision.
 - Cline is useful for per-run workspace isolation and parallel agent UX.
-- Codex CLI, Gemini CLI, Continue, and Browser Use broaden the runtime, model,
-  IDE, and computer-use landscape, but mostly duplicate known dimensions for
-  the next deep harvest.
+- Continue and Browser Use broaden the IDE and computer-use landscape, but
+  mostly duplicate known dimensions for the next deep harvest.
 - SWE-agent remains a useful issue-solving/evaluation comparator, while its
   own README emphasizes current development moving to mini-SWE-agent; this
   reduces the value of treating the repository as a primary current target.
@@ -310,8 +303,6 @@ step as an Apex-equivalent contract.
 - AutoGen is historically important but its official repository says it is in
   maintenance mode and directs new users to Microsoft Agent Framework; its
   CC-BY-4.0 metadata also warrants legal review before reuse.
-- Roo Code is relevant to IDE-agent comparison but the official repository is
-  archived, so it is not a healthy next harvest target.
 
 ## 6. Comparative matrix
 
@@ -351,8 +342,8 @@ layer:
   multi-provider threads.
 - Vigla emphasizes mission supervision, typed events, risk/reversibility
   checks, and action after review.
-- DPlex, Codeman, Astro Agent, and Repomon emphasize fleets, repositories,
-  dashboards, or worktree-backed supervision at an early stage.
+- Codeman and Astro Agent emphasize fleets, repositories, dashboards, or
+  worktree-backed supervision at an early stage.
 - Agent Mission Control is a novel pixel-art operational projection, but its
   small repository size and limited activity make it a visual reference rather
   than a near-term architecture source.
@@ -437,11 +428,10 @@ not by itself evidence of Apex `ExecutionManifest`, `Task Passport`, or
 The classifications separate conceptual learning from code reuse. A useful
 concept can remain relevant even when its code is legally unsuitable.
 
-- MIT: OpenCode, OpenHands, Aider’s ecosystem comparator, CrewAI, LangGraph,
-  MetaGPT, Nimbalyst, Clave, DPlex, and Codeman report MIT metadata.
-- Apache-2.0: Freebuff, Goose, Cline, Continue, Gemini CLI, Codex CLI, Vibe
-  Kanban, E2B, agtx, BossConsole, Vigla, ChatDev, and Repomon report
-  Apache-2.0 metadata.
+- MIT: OpenCode, OpenHands, Aider, CrewAI, LangGraph, MetaGPT, Nimbalyst,
+  Clave, and Codeman report MIT metadata.
+- Apache-2.0: Freebuff, Goose, Cline, Continue, Vibe Kanban, E2B, agtx,
+  BossConsole, Vigla, and ChatDev report Apache-2.0 metadata.
 - CC-BY-4.0 / maintenance: AutoGen’s repository metadata is not a default
   assumption for source incorporation; inspect the exact license and content
   boundaries before reuse.
@@ -450,9 +440,9 @@ concept can remain relevant even when its code is legally unsuitable.
   source reuse. The report makes no legal conclusion.
 - Proprietary: Conductor is a product/service reference, not a source-reuse
   candidate.
-- Archived/stale health is separate from license: Roo Code is archived;
-  Plandex and MetaGPT have weaker recent-activity signals than the active
-  systems; SWE-agent’s own README points toward its successor.
+- Archived/stale health is separate from license: Plandex and MetaGPT have
+  weaker recent-activity signals than the active systems; SWE-agent’s own
+  README points toward its successor.
 
 No external source code or dependency was added to Apex Code.
 
@@ -476,9 +466,9 @@ product positioning.
 
 ### Low novelty
 
-Continue, Gemini CLI, Browser Use, and generic coding-agent surfaces in this
-phase. They remain useful context and may become relevant to a focused provider,
-IDE, or computer-use question.
+Continue, Browser Use, and generic coding-agent surfaces in this phase. They
+remain useful context and may become relevant to a focused provider, IDE, or
+computer-use question.
 
 ## 14. Recommended classification
 
@@ -504,9 +494,8 @@ gate,” or “provider/runtime adapter.”
 
 ### LANDSCAPE ONLY
 
-Freebuff; Continue; Plandex; Gemini CLI; Codex CLI; Browser Use; AgentScope;
-AutoGen; Roo Code; DPlex; Codeman; Astro Agent; Agent Mission Control; and
-Repomon.
+Freebuff; Continue; Plandex; Browser Use; AutoGen; Codeman; Astro Agent; and
+Agent Mission Control.
 
 These candidates are useful context, but their next-harvest value is lower due
 to overlap, maintenance status, small/early evidence, or layer mismatch.
