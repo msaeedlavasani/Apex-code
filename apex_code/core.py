@@ -7,7 +7,7 @@ import json
 import os
 import tempfile
 import uuid
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
@@ -22,6 +22,18 @@ class SafetyError(RuntimeError):
 
 class AuthorityDenied(SafetyError):
     """An operation is outside the Core-owned PermissionEnvelope."""
+
+
+class DuplicateStart(SafetyError):
+    """A durable fence already exists for this Attempt."""
+
+
+class IdentityMismatch(SafetyError):
+    """Immutable Attempt/Manifest/Lane identity is inconsistent."""
+
+
+class ResourceConflict(SafetyError):
+    """An exclusive resource is already durably claimed."""
 
 
 class RuntimeFact(str, Enum):
@@ -147,6 +159,8 @@ class ExecutionLedger:
             "authorities": {},
             "lanes": {},
             "barriers": {},
+            "fences": {},
+            "claims": {},
             "events": [],
             "artifacts": {},
             "results": {},
@@ -154,7 +168,7 @@ class ExecutionLedger:
         if path.exists():
             self.data = json.loads(path.read_text(encoding="utf-8"))
 
-    def _save(self) -> None:
+    def _save_unlocked(self) -> None:
         self.path.parent.mkdir(parents=True, exist_ok=True)
         fd, temporary = tempfile.mkstemp(prefix=f".{self.path.name}.", dir=self.path.parent)
         try:
@@ -168,20 +182,134 @@ class ExecutionLedger:
             if os.path.exists(temporary):
                 os.unlink(temporary)
 
+    def _mutate(self, callback: Any) -> Any:
+        """Apply one mutation while holding the single-controller file lock."""
+        import fcntl
+
+        lock_path = self.path.with_name(f".{self.path.name}.lock")
+        lock_path.parent.mkdir(parents=True, exist_ok=True)
+        with lock_path.open("a+", encoding="utf-8") as lock:
+            fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
+            if self.path.exists():
+                self.data = json.loads(self.path.read_text(encoding="utf-8"))
+            result = callback(self.data)
+            self._save_unlocked()
+            fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
+            return result
+
     def put(self, collection: str, key: str, value: dict[str, Any]) -> None:
-        self.data[collection][key] = value
-        self._save()
+        def mutate(data: dict[str, Any]) -> None:
+            data.setdefault(collection, {})[key] = value
+
+        self._mutate(mutate)
 
     def event(self, event_type: str, payload: dict[str, Any]) -> None:
-        self.data["events"].append(
-            {
-                "event_id": new_id("evt"),
-                "event_type": event_type,
-                "occurred_at": now(),
-                "payload": payload,
+        def mutate(data: dict[str, Any]) -> None:
+            data.setdefault("events", []).append(
+                {
+                    "event_id": new_id("evt"),
+                    "event_type": event_type,
+                    "occurred_at": now(),
+                    "payload": payload,
+                }
+            )
+
+        self._mutate(mutate)
+
+    def snapshot(self) -> dict[str, Any]:
+        if self.path.exists():
+            self.data = json.loads(self.path.read_text(encoding="utf-8"))
+        snapshot = json.loads(json.dumps(self.data))
+        snapshot["_ledger_path"] = str(self.path)
+        return snapshot
+
+    def validate_attempt_identity(self, attempt_id: str) -> dict[str, Any]:
+        data = self.snapshot()
+        attempt = data.get("attempts", {}).get(attempt_id)
+        if not attempt:
+            raise IdentityMismatch(f"unknown Attempt: {attempt_id}")
+        manifest = data.get("manifests", {}).get(attempt.get("manifest_id"))
+        lane = data.get("lanes", {}).get(attempt.get("runtime_lane_id"))
+        if not manifest or manifest.get("attempt_id") != attempt_id:
+            raise IdentityMismatch(f"manifest relation mismatch for Attempt: {attempt_id}")
+        if manifest.get("task_id") != attempt.get("task_id"):
+            raise IdentityMismatch(f"task relation mismatch for Attempt: {attempt_id}")
+        if not lane or lane.get("attempt_id") != attempt_id:
+            raise IdentityMismatch(f"RuntimeLane relation mismatch for Attempt: {attempt_id}")
+        if attempt.get("authority_revision_id") != manifest.get("authority_revision_id"):
+            raise IdentityMismatch(f"authority relation mismatch for Attempt: {attempt_id}")
+        fence = data.get("fences", {}).get(attempt_id)
+        if not fence or fence.get("manifest_id") != manifest.get("manifest_id") or fence.get("runtime_lane_id") != lane.get("runtime_lane_id"):
+            raise IdentityMismatch(f"execution fence relation mismatch for Attempt: {attempt_id}")
+        return attempt
+
+    def claim_attempt_start(self, attempt_id: str, manifest_id: str, lane_id: str) -> dict[str, Any]:
+        def mutate(data: dict[str, Any]) -> dict[str, Any]:
+            attempt = data.get("attempts", {}).get(attempt_id)
+            if not attempt or attempt.get("manifest_id") != manifest_id or attempt.get("runtime_lane_id") != lane_id:
+                raise IdentityMismatch(f"start identity mismatch for Attempt: {attempt_id}")
+            if data.setdefault("fences", {}).get(attempt_id):
+                raise DuplicateStart(f"durable start fence already exists for Attempt: {attempt_id}")
+            fence = {
+                "fence_id": new_id("fence"),
+                "attempt_id": attempt_id,
+                "manifest_id": manifest_id,
+                "runtime_lane_id": lane_id,
+                "state": "HELD",
+                "acquired_at": now(),
             }
-        )
-        self._save()
+            data["fences"][attempt_id] = fence
+            data.setdefault("events", []).append(
+                {
+                    "event_id": new_id("evt"),
+                    "event_type": "execution.fence_acquired",
+                    "occurred_at": now(),
+                    "payload": {"attempt_id": attempt_id, "fence_id": fence["fence_id"]},
+                }
+            )
+            return fence
+
+        return self._mutate(mutate)
+
+    def update_fence(self, attempt_id: str, state: str) -> None:
+        def mutate(data: dict[str, Any]) -> None:
+            fence = data.setdefault("fences", {}).get(attempt_id)
+            if not fence:
+                raise IdentityMismatch(f"missing fence for Attempt: {attempt_id}")
+            fence["state"] = state
+            fence["updated_at"] = now()
+
+        self._mutate(mutate)
+
+    def claim_resource(self, attempt_id: str, manifest_id: str, resource: str) -> dict[str, Any]:
+        """Acquire one durable exclusive claim; stale reclaim is fail-closed."""
+        def mutate(data: dict[str, Any]) -> dict[str, Any]:
+            for claim in data.setdefault("claims", {}).values():
+                if claim.get("resource") == resource and claim.get("state") == "HELD":
+                    if claim.get("attempt_id") != attempt_id:
+                        raise ResourceConflict(f"resource already claimed: {resource}")
+                    return claim
+            claim = {
+                "claim_id": new_id("claim"),
+                "attempt_id": attempt_id,
+                "manifest_id": manifest_id,
+                "resource": resource,
+                "exclusive": True,
+                "state": "HELD",
+                "claimed_at": now(),
+            }
+            data["claims"][claim["claim_id"]] = claim
+            data.setdefault("events", []).append(
+                {
+                    "event_id": new_id("evt"),
+                    "event_type": "resource.claimed",
+                    "occurred_at": now(),
+                    "payload": {"claim_id": claim["claim_id"], "attempt_id": attempt_id, "resource": resource},
+                }
+            )
+            return claim
+
+        return self._mutate(mutate)
 
 
 class ExecutionBarrier:
@@ -282,6 +410,7 @@ class ExecutionCoordinator:
         )
         ledger.event("attempt.created", {"attempt_id": attempt_id, "task_id": task.task_id})
         ledger.event("manifest.created", {"manifest_id": manifest.manifest_id, "immutable": True})
+        ledger.claim_attempt_start(attempt_id, manifest.manifest_id, lane.runtime_lane_id)
 
         readme_path = self._safe_path(workspace, "README.md", "read")
         readme = readme_path.read_text(encoding="utf-8")
@@ -369,6 +498,7 @@ class ExecutionCoordinator:
         ledger.put("results", attempt_id, result)
         ledger.put("tasks", task.task_id, {**asdict(task), "semantic_state": task.semantic_state})
         ledger.put("attempts", attempt_id, {**ledger.data["attempts"][attempt_id], "status": attempt.status, "runtime_session_id": runtime.session_id})
+        ledger.update_fence(attempt_id, "RELEASED" if semantic_success else "QUARANTINED")
         if artifact_path:
             ledger.put("artifacts", "REPORT.md", {"path": "REPORT.md", "sha256": sha256_file(artifact_path), "attempt_id": attempt_id})
         ledger.event("verification.completed", {"attempt_id": attempt_id, "result": result["verification"]})
