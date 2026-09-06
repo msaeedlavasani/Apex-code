@@ -9,7 +9,7 @@ Status: **FREEZE_CANDIDATE**.
 | Product Shell | UI, workflows, presentation, and Public API consumption | FREEZE_CANDIDATE |
 | Apex Core | Execution, Task, Attempt, authority, runtime-neutral semantics, evidence, and safety primitives | FROZEN |
 | Capability Layer | DPT, orchestration, and advanced capabilities through Capability SPI | FREEZE_CANDIDATE |
-| Runtime Adapter API | Stable facts/commands boundary to runtime substrates | FROZEN |
+| Runtime Adapter API | Stable facts/commands boundary to runtime substrates | FREEZE_CANDIDATE |
 | Runtime Substrates | OpenCode first; Goose and future runtimes possible | PROPOSED |
 
 ## Rules
@@ -27,3 +27,5 @@ The Core owns semantic state and safety decisions. Adapters expose runtime facts
 - OpenCode/Goose/future runtimes -> Runtime Adapter SPI
 
 No extension may bypass authority verification, barrier release, or Core-owned state transitions.
+
+The Runtime Adapter Contract v1 is not yet designed. The adapter boundary is an accepted direction, while its exact contract remains a `FREEZE_CANDIDATE`.

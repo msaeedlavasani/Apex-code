@@ -12,6 +12,10 @@ The following remain open and are intentionally not resolved by this baseline.
 8. What evidence and conformance tests are required before each FREEZE_CANDIDATE becomes FROZEN?
 9. Which OpenWork-derived shell components are retained, forked, or replaced, and under what license/compliance review?
 10. What additional runtime substrates should be supported after OpenCode, and what is the minimum adapter conformance suite?
+11. What exact Runtime Adapter Contract v1 should be frozen?
+12. What is the exact Attempt/ExecutionEpoch relationship and state machine?
+13. What minimum runtime introspection is required to verify authority activation?
+14. Which resource-leasing semantics belong to Core versus Orchestration?
 
 ## Explicit non-claim
 
