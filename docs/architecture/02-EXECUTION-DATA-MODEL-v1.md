@@ -2,6 +2,9 @@
 
 Status: **FREEZE_CANDIDATE**. Names and ownership below are the baseline; storage representation remains open.
 
+Reconciliation trace: [Architecture Reconciliation 0001](../evidence/ARCHITECTURE-RECONCILIATION-0001.md)
+and the [comparative harvest](../evidence/AGENTIC-DEVELOPMENT-SYSTEMS-COMPARATIVE-HARVEST.md).
+
 ## Core primitives
 
 | Primitive | Meaning | Status |
@@ -44,4 +47,23 @@ Status: **FREEZE_CANDIDATE**. Names and ownership below are the baseline; storag
 
 The model deliberately does not claim guarantees that are not yet proven by implementation evidence.
 
-ExecutionEpoch is a future-safe coordination boundary for distinct execution intervals within one Attempt. It allows an approved mid-attempt AuthorityRevision change without mutating prior authority history and provides a boundary for future pause/resume/recovery semantics. Its exact relationship to Attempt and state machine remains open.
+## Reconciled boundaries
+
+`ExecutionEpoch` is a bounded continuation interval inside one Attempt. It may
+be opened for an approved `AuthorityRevision` change, runtime/session
+reconnect, bounded resume, checkpoint continuation, or recovery continuation.
+It does not replace Attempt identity, and a provider checkpoint is not itself an
+ExecutionEpoch. Its exact state machine and side-effect rules remain
+`FREEZE_CANDIDATE` and require later evidence.
+
+`ResourceClaim` expresses the Core semantic request for shared or exclusive use
+of a workspace, RuntimeLane, or other resource. `ResourceLease` expresses the
+granted bounded use. Core owns claim meaning, conflict semantics, and the
+relationship to Attempt/Epoch; an adapter or control plane may materialize the
+substrate reservation. Stale-lease reclamation and controller-loss behavior
+remain `NOT_PROVEN` until tested.
+
+The [Reconciliation Loop](03-EXECUTION-MODEL-v1.md#reconciliation-loop) uses
+these primitives to compare durable Attempt state, adapter facts, authority
+state, and resource ownership. It must not infer safe ownership from a local
+lock, idle session, or missing runtime.

@@ -3,6 +3,9 @@
 Status: **PROPOSED** security boundary model. It describes required boundaries,
 not a claim that all controls are implemented.
 
+Reconciliation trace: [Architecture Reconciliation 0001](evidence/ARCHITECTURE-RECONCILIATION-0001.md)
+and the [comparative harvest](evidence/AGENTIC-DEVELOPMENT-SYSTEMS-COMPARATIVE-HARVEST.md).
+
 ## Trust and authority boundaries
 
 The Owner/user establishes intent and approval. Apex Core owns semantic
@@ -37,6 +40,25 @@ experiments provide useful isolation/runtime evidence, but the complete
 authority materialization → activation → immutable revision → Attempt binding
 guarantee remains `NOT_PROVEN`. Documentation, an ADR, or a successful adjacent
 test cannot upgrade that evidence state.
+
+## Loss, resource, and projection safety
+
+The Core Reconciliation Loop must compare durable Attempt state, Runtime Adapter
+facts, authority/barrier state, and `RuntimeLane`/`ResourceClaim`/
+`ResourceLease` ownership after startup or controller/process loss. Stale
+`RUNNING` Attempts, missing or orphaned lanes, duplicate-start risk, and
+`UNREACHABLE`/`UNKNOWN`/`LOST` facts must not be interpreted as permission or
+success. Controller-loss recovery, stale-lease reclamation, and duplicate-start
+prevention remain `NOT_PROVEN` until direct tests establish them.
+
+Runtime or sandbox isolation is a substrate safety boundary, not by itself an
+Apex `PermissionEnvelope`. Adapter controls may enforce filesystem, process,
+network, or provider restrictions, while Core owns authority meaning and
+semantic state.
+
+Any visual or spatial projection consumes canonical Core state and Events. It
+cannot own authority, approve execution, close a Task, or become a source of
+truth when its state is stale or incomplete.
 
 ## Evidence vocabulary
 
