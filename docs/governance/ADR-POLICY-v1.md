@@ -19,3 +19,7 @@ Suggested statuses: `PROPOSED`, `ACCEPTED`, `SUPERSEDED`, `REJECTED`.
 Architecture documents describe the contract and `05-ARCHITECTURE-STATUS.md` records whether a major item is `FROZEN`, `FREEZE_CANDIDATE`, `PROPOSED`, `INFERENCE`, `UNKNOWN`, or `NOT_PROVEN`. An ADR records the decision process; it does not silently change the status table. The status owner and ADR decision owner must be named when a major item changes.
 
 Frozen changes require the existing Architecture Change Policy: explicit frozen decision, rationale, affected contracts/modules, status update, evidence discipline, and explicit architecture review. `FREEZE_CANDIDATE` refinement requires rationale but is not automatically frozen. `NOT_PROVEN` cannot become proven through an ADR or documentation alone.
+
+## Accepted owner decision record
+
+AC-ODS-0001 is recorded as one coherent owner decision record rather than one ADR per D01–D20. It accepts the DCS boundaries and documentation direction while leaving detailed schemas, machine enforcement, and runtime guarantees subject to their stated statuses.

@@ -4,7 +4,7 @@ Status: **PROPOSED**.
 
 ## Recommendation
 
-Adopt a lightweight repository-brain interface, but do not mechanically create seven duplicated brain files now. Before product implementation, create an Apex-native `AGENTS.md` as the behavior contract and add a substrate-neutral Context Map plus bounded Current State. Add domain brain documents only when a domain has durable rules, clear ownership, and a validation surface.
+Owner decision D14 defers the full Repository Brain tree. Before product implementation, materialize an Apex-native `AGENTS.md` as the behavior contract and `docs/CONTEXT-MAP.md` as the routing contract; bounded Current State is P1. Do not mechanically create domain brain files until canonical documentation demonstrates a durable, owned, non-duplicative need.
 
 The brain is guidance and routing. Existing architecture documents remain authoritative for Core contracts; ADRs remain authoritative for decisions; governance documents remain authoritative for workflow. A brain must not copy those sources.
 
@@ -12,13 +12,10 @@ The brain is guidance and routing. Existing architecture documents remain author
 
 | Brain/interface | Mandatory now? | Responsibility |
 |---|---|---|
-| `AGENTS.md` | P0 candidate | inspect/plan/execute/verify, scope, source precedence, secret safety, escalation |
-| Context Map | P0 candidate | minimum-sufficient context routing and canonical read paths; prefer this substrate-neutral name over `AI_CONTEXT_MAP.md` |
-| Current State | P1 candidate | bounded resume snapshot; never the backlog or history |
-| Architecture | P0 candidate | route to existing architecture laws; identify contracts and freeze status |
-| Engineering | P0 candidate | implementation/reuse/refactor/test behavior once code exists |
-| Security | P0 candidate | secret, authority, dependency, and security-sensitive routing |
-| QA | P0 candidate | validation tier selection and evidence interpretation |
+| `AGENTS.md` | P0 accepted documentation | how agents behave: entry, scope, plan/execute, validation, evidence, escalation, completion |
+| `docs/CONTEXT-MAP.md` | P0 accepted design | minimum-sufficient context routing and canonical read paths |
+| Current State | P1 accepted design | bounded resume snapshot; never backlog or history |
+| Full domain brain tree | Deferred | reconsider only if retrieval/decision quality improves without duplication |
 | Product | defer until product requirements emerge | intent, outcomes, priorities, acceptance |
 | Data | defer | data contracts, metrics, privacy-sensitive instrumentation |
 | UX | defer unless a UI surface exists | interaction/accessibility/UI conformance |
@@ -32,4 +29,4 @@ If introduced, each brain declares identity/version, responsibilities, non-respo
 
 The repository owner assigns each brain’s maintainer. Updates link the canonical contract they affect. Contradictions follow `SOURCE-OF-TRUTH-v1.md`; a brain cannot override FROZEN architecture or convert `NOT_PROVEN` into proof. Brains are not ADRs, task passports, backlog records, or runtime manifests.
 
-The BaziGB checkout did not contain the requested brain/context-map control-plane files, so this recommendation is based on its observed `AGENTS.md` discipline and audit evidence, not on a claimed BaziGB implementation of those artifacts.
+The BaziGB local checkout lacked the requested files, but fetched `origin/main@3dabbb6c80b1ad2ce7e27da57bdcc25b8aa1e5e3` contains `AI_CONTEXT_MAP.md`, `ai/`, and `docs/aipde/`; those remote files provide direct evidence for routing and bounded-state patterns. Apex adopts the concept with a substrate-neutral name and defers the full brain tree.

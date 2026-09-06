@@ -11,7 +11,7 @@ Two alternatives were evaluated:
 | A. One shared Task primitive with context metadata | Simple mapping, but planning/review/acceptance can leak into Core Task semantics and confuse retries, runtime identity, and external API users. |
 | B. Development Task mapped explicitly to Core Execution Task(s) | Adds a boundary and mapping record, but preserves Core semantics, supports multi-step work and review, and lets DPT/Orchestration consume generic work metadata without owning Core. |
 
-Recommendation: **Option B, PROPOSED**. A Development Task owns development intent, scope, dependencies, acceptance, review, and change/risk metadata. It may map one-to-one or one-to-many to Core `Task` instances. A Core Task remains executor-independent runtime work; an `Attempt` remains one execution try; retries do not create new Development Tasks automatically.
+Recommendation: **Option B, ACCEPTED BOUNDARY / PROPOSED DETAIL**. A Development Task owns development intent, scope, dependencies, acceptance, review, and change/risk metadata. It may map one-to-one or one-to-many to Core `Task` instances. A Core Task remains executor-independent runtime work; an `Attempt` remains one execution try; retries do not create new Development Tasks automatically.
 
 ## Admission and readiness
 
@@ -27,11 +27,10 @@ This recommendation is compatible with DPT because DPT can consume the mapping a
 
 V1 should use one human-readable, machine-projectable `docs/TASKS.md`-style registry only after a separate owner-approved implementation delta. Until then, the DCS design is the canonical proposal and does not create a task engine, database, or second backlog. GitHub Issues may mirror or discuss work, but must not silently become a competing source of execution eligibility.
 
-## Proposed development lifecycle
+## Accepted lightweight development lifecycle
 
 ```text
-DRAFT → READY_FOR_PLAN → PLANNING → PLANNED → READY
-      → IN_PROGRESS → VALIDATING → REVIEW → DONE
+DRAFT → PLANNING → READY → IN_PROGRESS → VALIDATING → REVIEW → DONE
 ```
 
 Side states: `BLOCKED`, `NEEDS_DECISION`, `FAILED`, `CANCELLED`, `SUPERSEDED`.
@@ -39,9 +38,7 @@ Side states: `BLOCKED`, `NEEDS_DECISION`, `FAILED`, `CANCELLED`, `SUPERSEDED`.
 | State | Owner and meaning |
 |---|---|
 | DRAFT | author; incomplete intent |
-| READY_FOR_PLAN | owner/agent; scope is sufficient to plan |
 | PLANNING | planner; dependencies, acceptance, risk, and validation are being defined |
-| PLANNED | reviewer/owner; plan is coherent, not yet admitted |
 | READY | admission check passed; authority and required review gates are available |
 | IN_PROGRESS | bounded mutation is authorized on a task branch |
 | VALIDATING | implementation is stable enough for declared checks |
@@ -53,7 +50,7 @@ Side states: `BLOCKED`, `NEEDS_DECISION`, `FAILED`, `CANCELLED`, `SUPERSEDED`.
 | CANCELLED | explicitly stopped; no new work may start |
 | SUPERSEDED | replaced by a linked task/decision; history retained |
 
-Human authority owns product, commercial, protected architecture, destructive, security-widening, and production decisions. Agents may advance deterministic states within scope. `DONE` requires accepted evidence; an executor or CI result alone is not completion.
+Human authority owns product, commercial, protected architecture, destructive, security-widening, and production decisions. Agents may advance deterministic states within scope. `DONE` requires the applicable Acceptance Contract and accepted evidence; an executor or CI result alone is not completion.
 
 The lifecycle keeps implementation and acceptance distinct. `IMPLEMENTED`, `MACHINE_VALIDATED`, `HUMAN_ACCEPTED`, `OPERATIONALLY_VERIFIED`, and `LEARNING_CAPTURED` are proposed milestone facts attached to the task/report, not automatically additional workflow states. `IMPLEMENTED` never equals `DONE`; operational verification is required only when the change class requires it.
 
