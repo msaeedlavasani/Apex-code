@@ -2,6 +2,9 @@
 
 Status vocabulary: **FROZEN**, **FREEZE_CANDIDATE**, **PROPOSED**, **INFERENCE**, **UNKNOWN**, **NOT_PROVEN**.
 
+Reconciliation trace: [Architecture Reconciliation 0001](../evidence/ARCHITECTURE-RECONCILIATION-0001.md)
+and the [comparative harvest](../evidence/AGENTIC-DEVELOPMENT-SYSTEMS-COMPARATIVE-HARVEST.md).
+
 - **FROZEN**: intentionally fixed as current architecture law.
 - **FREEZE_CANDIDATE**: accepted direction that remains subject to contract refinement.
 - **PROPOSED**: not yet sufficiently designed or validated.
@@ -37,6 +40,11 @@ Status vocabulary: **FROZEN**, **FREEZE_CANDIDATE**, **PROPOSED**, **INFERENCE**
 | Execution API v1 | FREEZE_CANDIDATE | Conceptual surface pending contract refinement. |
 | Runtime Adapter API / SPI | FREEZE_CANDIDATE | Runtime Adapter Contract v1 has not yet been designed. |
 | Runtime lanes/session binding details | PROPOSED | Requires implementation evidence. |
+| Core Reconciliation Loop | FREEZE_CANDIDATE | Core concept for comparing durable Attempt state, adapter facts, authority, and resource ownership; controller-loss behavior is not proven. |
+| Projection Protocol / Layer | FREEZE_CANDIDATE | Non-authoritative consumer of canonical Core state and Events; visual/spatial implementation is not implied. |
+| Authority activation and RuntimeLane/Attempt binding guarantee | NOT_PROVEN | Required sequencing is canonical; complete materialization, activation verification, and exact binding lack direct implementation evidence. |
+| Controller-loss reconciliation guarantee | NOT_PROVEN | Startup recovery, stale/orphaned lane handling, and duplicate-start prevention remain unproven. |
+| Independent semantic verification implementation | NOT_PROVEN | Core Verification is required conceptually, but implementation evidence for independent semantic verification does not exist. |
 
 ## Evidence discipline
 
