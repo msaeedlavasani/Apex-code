@@ -45,7 +45,14 @@ Evidence remains the existing Apex vocabulary and must not be replaced:
 | Product identity/principles | existing architecture vision docs |
 | Core contracts and invariants | existing architecture docs and Public API contracts |
 | Architecture decision status | `docs/architecture/05-ARCHITECTURE-STATUS.md` plus ADRs |
-| Development behavior | `AGENTS.md` when created; otherwise this governance proposal |
+| Development behavior | Root `AGENTS.md` |
+| Context routing | `docs/CONTEXT-MAP.md` |
+| Product definition and evolution | `docs/PRODUCT.md` and root `ROADMAP.md` |
+| System-level composition | `docs/SYSTEM-DESIGN.md` |
+| Canonical vocabulary | `docs/TERMINOLOGY.md` |
+| Development-control overview | `docs/DEVELOPMENT-SYSTEM.md` and linked governance contracts |
+| Testing strategy | `docs/TESTING-STRATEGY.md` and `docs/governance/VALIDATION-GOVERNANCE-v1.md` |
+| Security model | `docs/SECURITY-MODEL.md` and relevant architecture contracts |
 | Workflow/validation/review rules | existing `docs/governance/` files |
 | One development task's scope | Task Passport |
 | Candidate/active work | canonical task registry/backlog |

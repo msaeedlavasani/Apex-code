@@ -1,16 +1,28 @@
 # Apex Code
 
-Apex Code is a standalone competitive product for reliable, observable, and governed agent execution. DPT and orchestration are optional capabilities around the Apex Code Core; neither defines the product.
+Apex Code is a standalone product for safe, observable, governed agent
+execution. Its value is a runtime-neutral execution core with explicit
+authority, artifacts, verification, recovery direction, and replaceable
+runtime and shell boundaries.
 
-This repository is currently architecture-first and pre-implementation. The version-controlled baseline is documented here:
+The Base/Core product continues evolving. DPT, Orchestration, Advanced Routing,
+and other premium capabilities are optional consumers or extensions; they do
+not define Apex Code or become prerequisites for its base experience. OpenCode
+is the first runtime substrate, not product identity. Commercial packaging is
+separate from architecture: capability, entitlement, and commercial offering
+are different concepts.
 
-- [Product vision and principles](docs/architecture/00-PRODUCT-VISION-AND-PRINCIPLES.md)
-- [Modular product architecture](docs/architecture/01-MODULAR-PRODUCT-ARCHITECTURE-v1.md)
-- [Execution data model](docs/architecture/02-EXECUTION-DATA-MODEL-v1.md)
-- [Execution model](docs/architecture/03-EXECUTION-MODEL-v1.md)
-- [Execution API](docs/architecture/04-EXECUTION-API-v1.md)
-- [Architecture status](docs/architecture/05-ARCHITECTURE-STATUS.md)
-- [OpenWork feasibility evidence](docs/evidence/OPENWORK-FEASIBILITY.md)
-- [Open questions](docs/evidence/OPEN-QUESTIONS.md)
+This repository is currently architecture-first and pre-implementation. Start
+with the [canonical documentation index](docs/INDEX.md), or choose a route:
 
-No product implementation is established by this baseline.
+- Human/product orientation: [Product](docs/PRODUCT.md) and [Roadmap](ROADMAP.md)
+- Development agent: [AGENTS.md](AGENTS.md) and [Context Map](docs/CONTEXT-MAP.md)
+- System orientation: [System Design](docs/SYSTEM-DESIGN.md)
+- Formal architecture: [architecture status](docs/architecture/05-ARCHITECTURE-STATUS.md)
+- Development control: [Development System](docs/DEVELOPMENT-SYSTEM.md)
+- Evidence and proof limits: [OpenWork feasibility](docs/evidence/OPENWORK-FEASIBILITY.md) and [open questions](docs/evidence/OPEN-QUESTIONS.md)
+
+The formal baseline preserves `NOT_PROVEN` where implementation evidence is
+missing. In particular, the complete authority materialization, activation,
+and binding chain is not proven by documentation alone. No product
+implementation is established by this baseline.
