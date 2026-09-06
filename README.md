@@ -12,7 +12,8 @@ is the first runtime substrate, not product identity. Commercial packaging is
 separate from architecture: capability, entitlement, and commercial offering
 are different concepts.
 
-This repository is currently architecture-first and pre-implementation. Start
+This repository is architecture-first with a first bounded executable slice;
+the broader product and runtime contracts remain under implementation. Start
 with the [canonical documentation index](docs/INDEX.md), or choose a route:
 
 - Human/product orientation: [Product](docs/PRODUCT.md) and [Roadmap](ROADMAP.md)
@@ -24,5 +25,6 @@ with the [canonical documentation index](docs/INDEX.md), or choose a route:
 
 The formal baseline preserves `NOT_PROVEN` where implementation evidence is
 missing. In particular, the complete authority materialization, activation,
-and binding chain is not proven by documentation alone. No product
-implementation is established by this baseline.
+and binding chain is not proven by documentation alone. The bounded slice uses
+Core-mediated artifact I/O and does not establish the full product/runtime
+implementation.
