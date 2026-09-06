@@ -45,6 +45,59 @@ marked complete until reviewed, merged, and validated.
 
 ## Future — directional evolution
 
+### Agentic Creation Ecosystem
+
+The long-term product direction is an **Agentic Creation Ecosystem**:
+
+> Apex Code is not just where agents write code. It is where ideas take shape, evolve, and come to life.
+
+The product philosophy is **Expansive by ambition. Disciplined by sequence.**
+The ambition is broad creation and software-development support, governed by
+evolution discipline rather than artificial scope limitation: build each thing
+when the system is ready for it.
+
+A possible future lifecycle is:
+
+```text
+Idea → Explore → Research → Shape → Challenge → Design → Plan → Build
+     → Verify → Release → Observe → Learn → Evolve ↺
+```
+
+Possible future coverage includes Research, Product Discovery, Design,
+Architecture, Development, Testing, Security, Deployment, Operations,
+Analytics, Knowledge, Teamwork, and Agent Workforce. These are exploration
+domains, not a committed module list, package structure, entitlement plan, or
+implementation sequence.
+
+### Supervised Autonomous Workforce direction
+
+Apex may eventually evolve toward a supervised autonomous workforce model in
+which persistent supervisory control can understand missions, decompose work,
+coordinate dependencies, delegate to multiple agents, observe progress, verify
+results, recover from failures, reassign work, and escalate genuine human
+gates. Candidate concepts include Foreman/supervisory orchestration, Mission
+Control, Autonomous Workforce, Human Gate visualization, and task/dependency or
+failure/recovery views. These names and concepts are exploratory and are not
+frozen.
+
+Any future workforce capability must remain above and governed by Apex Core,
+authority, execution, and development-control boundaries. DPT remains optional;
+Orchestration remains optional and independent from DPT.
+
+### Spatial and persistent experience direction
+
+A future visual or spatial interface may project canonical Apex state into a
+graphical operational model: work domains, agent assignment or handoff,
+dependencies, active/failed/blocked states, Human Gate prompts, and
+recovery/reassignment visibility. The visual world would be a projection of
+Apex state, never the authoritative owner of that state.
+
+Apex may also reduce context switching by preserving continuity across project
+state, decisions, tasks, evidence, agents, and next actions. The intended
+experience should help answer: “What is happening now? What is next? Where is
+the human needed?” This remains product-experience direction, not an
+implementation requirement.
+
 The following sequence is directional, not frozen phase numbering:
 
 ```text
