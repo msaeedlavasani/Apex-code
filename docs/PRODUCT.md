@@ -9,6 +9,23 @@ It serves people and teams who need agent work to be bounded by explicit
 authority, observable through events/transcripts/artifacts, verifiable beyond a
 runtime completion signal, and portable across runtime substrates.
 
+## Long-term category direction
+
+The Owner’s future category direction is an **Agentic Creation Ecosystem**.
+
+> Apex Code is not just where agents write code. It is where ideas take shape, evolve, and come to life.
+
+This is exploratory product intent, not a current architecture or committed
+feature scope. Apex is not intended to remain only a coding agent or coding
+workspace; over time it may support a broader creation and software-development
+lifecycle. The governing philosophy is: **Expansive by ambition. Disciplined by sequence.** This means building everything worth building when the system is
+ready for it, rather than building everything at once.
+
+Apex should feel like one ecosystem without becoming one monolith. A unified
+experience may grow over time while the underlying system remains modular
+through Apex Core, Capability Modules, Runtime Adapters, Product Shells,
+projections, and integrations.
+
 ## Problems and Jobs To Be Done
 
 Users need to:
