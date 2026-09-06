@@ -72,9 +72,9 @@ not a promise of continued activity.
 | Candidate | Main category / role | Official primary source | Default branch / observed SHA | License / status | Activity signal | Novelty | Recommendation |
 |---|---|---|---|---|---|---|---|
 | Freebuff | coding agent, product shell, hosted/local surfaces | [CodebuffAI/freebuff](https://github.com/CodebuffAI/freebuff) | `main` / `1310581654df57a5c6cff372dd38d34e7c44c0c5` | Apache-2.0 / active | pushed 2026-09-06 | MEDIUM | LANDSCAPE ONLY |
-| OpenCode | coding agent, runtime substrate | [anomalyco/opencode](https://github.com/anomalyco/opencode) | `dev` / `ea2d59d7ca8028951a16d4ebc558104258440bf9 | MIT / active | pushed 2026-09-06 | MEDIUM | DEEP HARVEST |
+| OpenCode | coding agent, runtime substrate | [anomalyco/opencode](https://github.com/anomalyco/opencode) | `dev` / `ea2d59d7ca8028951a16d4ebc558104258440bf9` | MIT / active | pushed 2026-09-06 | MEDIUM | DEEP HARVEST |
 | Goose | coding/general agent, runtime substrate | [aaif-goose/goose](https://github.com/aaif-goose/goose) | `main` / `5e90925962f05acf8e255032de44d16c4a7768a2` | Apache-2.0 / active | pushed 2026-09-06 | MEDIUM | TARGETED HARVEST |
-| OpenWork | desktop/product shell over agent runtime | [ObunagaLabs/openwork](https://github.com/ObunagaLabs/openwork) | `add-admin-reverification-step-up` / `5e406445e811a00ba0d1103b9ab80ffba1c62bdb` | GitHub `NOASSERTION` / active but provenance-sensitive | pushed 2026-07-28 | MEDIUM | TARGETED HARVEST |
+| OpenWork | desktop/product shell, shared workflows, OpenCode integration | [different-ai/openwork](https://github.com/different-ai/openwork) | `dev` / `9a64fe1087aff7f5c552a446595d1325e1d1a91b` | directory-split: MIT outside `ee/`; OpenWork EE License in `ee/`; historical FSL-1.1-MIT | pushed 2026-09-06 | HIGH | TARGETED HARVEST |
 | OpenHands | autonomous coding agent/control center | [OpenHands/OpenHands](https://github.com/OpenHands/OpenHands) | `main` / `f7fb0c4b21f5ed726edbba8a6309634ef434b004` | MIT / active | pushed 2026-09-06 | HIGH | DEEP HARVEST |
 | Aider | CLI coding agent, context/planning | [Aider-AI/aider](https://github.com/Aider-AI/aider) | `main` / `5dc9490bb35f9729ef2c95d00a19ccd30c26339c` | Apache-2.0 / active | pushed 2026-05-22 | MEDIUM | TARGETED HARVEST |
 | Cline | IDE/terminal coding agent, parallel workspace | [cline/cline](https://github.com/cline/cline) | `main` / `dac3b35ba485dbab3b5a73aca239b0d07ce071cf` | Apache-2.0 / active | pushed 2026-09-05 | MEDIUM | TARGETED HARVEST |
@@ -103,9 +103,9 @@ not a promise of continued activity.
 | Mission-Control | cost-aware durable orchestration reference | [Mission-Control](https://github.com/ryfranklin/Mission-Control) | `main` / `bf228fc3296b594befc173ec7d199cea8b9b2a68` | GitHub license unrecognized / tiny | pushed 2026-08-23 | HIGH | TARGETED HARVEST |
 
 The Freebuff/OpenWork rows are seed comparators rather than new Apex
-dependencies. “OpenWork” is not a unique repository identity in the ecosystem;
-the reviewed row names its exact repository and revision. Legal reuse must be
-rechecked against the exact source tree and license at any later harvest.
+dependencies. The OpenWork row intentionally names the Apex-relevant
+`different-ai/openwork` repository and exact `dev` revision. Its directory-split
+license means any later source reuse requires path-level legal review.
 
 ## 4. Category map
 
@@ -145,6 +145,36 @@ step as an Apex-equivalent contract.
   calls → provider/runtime process → file changes/events → session result.
 - Apex relevance: strongest direct comparator for the existing first-substrate
   direction, while preserving adapter replaceability. Novelty: MEDIUM.
+
+### OpenWork (`different-ai/openwork`) — TARGETED HARVEST
+
+- Primary source: [official repository](https://github.com/different-ai/openwork),
+  `dev@9a64fe1087aff7f5c552a446595d1325e1d1a91b`, active as observed on
+  2026-09-07.
+- Product shape: `DOCUMENTATION_EVIDENCE` describes a local desktop workspace
+  for sharing AI workflows, with optional desktop use, an OpenWork MCP, shared
+  skills/plugins/connections, and an organization control plane.
+- OpenCode relationship: the README documents OpenCode as a compatible MCP
+  client and provides an OpenCode configuration path. This is a documented
+  integration relationship, not proof that OpenCode implementation belongs in
+  Apex Core.
+- Parallelism/orchestration: the shallow source shows reusable capabilities,
+  plugins, and workspace surfaces; complete multi-agent scheduling,
+  admission, queue durability, and join semantics are `NOT_PROVEN` here.
+- Authority/permissions: the README documents sign-in, organization access,
+  team/member/provider policy, desktop policy, and capability assignment. It
+  does not prove Apex-grade `PermissionEnvelope`, immutable authority revision,
+  or pre-execution binding.
+- Runtime boundary: the repository separates desktop/app/server/packages from
+  `ee/` control-plane material. A later harvest should inspect the shell,
+  server, and OpenCode/MCP seams separately; it should not treat the shell or
+  Den control plane as Apex Core.
+- Apex relevance: this is the leading existing Product Shell/Foundation
+  comparator for Apex, with direct historical feasibility context already
+  recorded in `OPENWORK-FEASIBILITY.md`. Novelty: HIGH.
+- Classification: `TARGETED HARVEST`, not `DEEP HARVEST`, because the next
+  useful audit should focus on shell/workspace/session seams and reconcile with
+  existing Apex evidence rather than repeat a full product audit.
 
 ### OpenHands — DEEP HARVEST
 
@@ -288,6 +318,18 @@ step as an Apex-equivalent contract.
 
 ### Other seed and context comparators — LANDSCAPE or TARGETED
 
+- Freebuff sanity check: Freebuff remains `LANDSCAPE ONLY`. The official
+  [repository](https://github.com/CodebuffAI/freebuff) documents a multi-surface
+  coding-agent product and the Owner has practical workflow experience with
+  clean completion, specialized delegation, context/file-finding agents,
+  result inspection, and parallel-agent/workspace claims. Those are valuable
+  product and workflow signals, but this shallow pass does not yet establish a
+  distinct source-level seam whose learning value exceeds the targeted
+  candidates. The classification is therefore sufficient for the current
+  landscape; the practical claims are Owner-provided context, not new Apex
+  runtime proof. If the Owner wants to test those claims against
+  implementation, Freebuff is a reasonable targeted-harvest promotion
+  candidate in a later delta.
 - Goose is a strong provider/MCP/runtime comparator, but not the first deep
   target while OpenCode is already Apex’s initial substrate direction.
 - Aider is valuable for repository mapping, model/provider flexibility, and
@@ -432,12 +474,16 @@ concept can remain relevant even when its code is legally unsuitable.
   Clave, and Codeman report MIT metadata.
 - Apache-2.0: Freebuff, Goose, Cline, Continue, Vibe Kanban, E2B, agtx,
   BossConsole, Vigla, and ChatDev report Apache-2.0 metadata.
+- OpenWork uses a directory-split model documented in its README: MIT outside
+  `ee/`, an OpenWork EE License under `ee/`, and historical FSL-1.1-MIT for
+  older releases. This is a source-specific reuse concern, not a reason to
+  discard its conceptual shell value.
 - CC-BY-4.0 / maintenance: AutoGen’s repository metadata is not a default
   assumption for source incorporation; inspect the exact license and content
   boundaries before reuse.
-- `NOASSERTION` or unrecognized: OpenWork, Daytona, omux, Astro Agent, Agent
-  Mission Control, and Mission-Control need exact license inspection before any
-  source reuse. The report makes no legal conclusion.
+- `NOASSERTION` or unrecognized: Daytona, omux, Astro Agent, Agent Mission
+  Control, and Mission-Control need exact license inspection before any source
+  reuse. The report makes no legal conclusion.
 - Proprietary: Conductor is a product/service reference, not a source-reuse
   candidate.
 - Archived/stale health is separate from license: Plandex and MetaGPT have
@@ -500,6 +546,20 @@ Agent Mission Control.
 These candidates are useful context, but their next-harvest value is lower due
 to overlap, maintenance status, small/early evidence, or layer mismatch.
 
+### Disposition accounting
+
+| Primary disposition | Count |
+|---|---:|
+| DEEP HARVEST | 5 |
+| TARGETED HARVEST | 17 |
+| LANDSCAPE ONLY | 8 |
+| REJECT | 0 |
+| **Total retained candidates** | **30** |
+
+The 30 retained candidates appear in exactly one primary disposition group.
+The classification is a recommendation for Owner review, not an execution
+authorization.
+
 ### REJECT
 
 No candidate was rejected solely for being small or unfamiliar: a narrow
@@ -524,8 +584,9 @@ not full audits and do not assert that every arrow exists exactly as drawn.
 
 ## 16. Open questions and `NOT_PROVEN` items
 
-- Which exact OpenWork repository, license, and revision should remain the
-  relevant shell comparator? Multiple repositories use the name.
+- Which later OpenWork revision should be harvested after the current
+  `different-ai/openwork@dev` snapshot, and which path-level license review is
+  required for any reuse?
 - Does any candidate provide an immutable, versioned authority revision bound
   to an exact attempt/lane before execution? `NOT_PROVEN`.
 - Which systems provide durable join/retry/reassignment semantics rather than
@@ -554,9 +615,8 @@ not full audits and do not assert that every arrow exists exactly as drawn.
    product/UX research despite having no reusable source.
 4. Decide whether exact-license review should precede all targeted source
    inspection for `NOASSERTION` candidates.
-5. Decide whether the OpenWork comparison should follow the current
-   `ObunagaLabs/openwork` repository, another named OpenWork repository, or the
-   already-recorded Apex OpenWork feasibility evidence only.
+5. Decide the scope of the OpenWork targeted harvest: shell/workspace/session
+   seams, OpenCode/MCP integration, or license/compliance boundaries first.
 
 ## 18. Non-effects on Apex architecture
 
