@@ -105,6 +105,33 @@ No selected external system proves Apex's required invariant that every retry is
 | Nimbalyst | Git worktrees, workspace/session hierarchy, renderer/main IPC | Project-scoped trust, remembered patterns, path/URL/command controls | Electron main/runtime/provider and persisted session/worktree ids | Diffs/editor lifecycle; independent verification NOT_PROVEN |
 | Agent Mission Control | No execution sandbox; telemetry session/agent projection | No authority model observed | Telemetry events and simulation engine | Event payloads, analytics, replay; no semantic completion authority |
 
+### 6.1 Cross-system matrix across the required comparison dimensions
+
+The matrix below provides a compact normalized index across all 15 requested
+areas. `YES` and `PARTIAL` refer only to the bounded evidence in this report;
+they do not establish Apex-grade guarantees. The per-system profiles contain
+the supporting paths and qualifications.
+
+| System | Execution / Task / Attempt | Delegation / Multi-agent / Parallelism | Scheduling / DAG / Dependencies | Routing / Reassignment / Fallback | Workspace / Isolation / Authority | Runtime / Session / Sandbox | Result / Verification / Completion | Retry / Recovery / Reconciliation | Persistence / Durable State | Human Gates / Intervention | Events / Artifacts / Provenance | Product Shell / UX | Visual / Mission Control | License / Reuse | Apex learning value |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| OpenCode | PARTIAL | PARTIAL | NO | PARTIAL | PARTIAL | YES | PARTIAL | PARTIAL | YES | YES | YES | YES | N/A | MIT | HIGH |
+| OpenHands | PARTIAL | PARTIAL | NOT_PROVEN | NOT_PROVEN | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | YES | YES | PARTIAL | MIT | HIGH |
+| Vibe Kanban | YES | PARTIAL | PARTIAL | PARTIAL | YES | YES | YES | PARTIAL | YES | YES | PARTIAL | YES | N/A | Apache-2.0 | HIGH |
+| Vigla | YES | YES | YES | PARTIAL | YES | YES | PARTIAL | YES | YES | YES | YES | YES | PARTIAL | Apache-2.0 | HIGH |
+| OpenWork | PARTIAL | PARTIAL | NOT_PROVEN | NOT_PROVEN | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | YES | YES | YES | PARTIAL | MIT/EE | HIGH |
+| Freebuff | PARTIAL | YES | NO | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | NO | PARTIAL | YES | N/A | Apache-2.0 | MEDIUM |
+| Goose | PARTIAL | PARTIAL | NO | PARTIAL | PARTIAL | YES | PARTIAL | PARTIAL | YES | PARTIAL | PARTIAL | YES | N/A | Apache-2.0 | MEDIUM |
+| LangGraph | PARTIAL | YES | YES | PARTIAL | N/A | PARTIAL | PARTIAL | YES | YES | YES | YES | PARTIAL | N/A | MIT | HIGH |
+| agtx | YES | PARTIAL | PARTIAL | PARTIAL | YES | PARTIAL | PARTIAL | PARTIAL | YES | PARTIAL | PARTIAL | YES | N/A | Apache-2.0 | MEDIUM |
+| E2B | NO | N/A | N/A | N/A | YES | YES | PARTIAL | YES | YES | N/A | PARTIAL | PARTIAL | N/A | Apache-2.0 | HIGH |
+| Daytona | NOT_PROVEN | NOT_PROVEN | NOT_PROVEN | NOT_PROVEN | PARTIAL | PARTIAL | NOT_PROVEN | PARTIAL | PARTIAL | NOT_PROVEN | PARTIAL | PARTIAL | N/A | source gap | MEDIUM |
+| Nimbalyst | PARTIAL | PARTIAL | NO | NOT_PROVEN | YES | PARTIAL | PARTIAL | PARTIAL | YES | YES | PARTIAL | YES | PARTIAL | MIT | MEDIUM |
+| Agent Mission Control | PARTIAL | NO | NO | NO | NO | NO | NO | NO | YES | NO | YES | YES | YES | no license observed | MEDIUM |
+
+The `License / Reuse` column records the observed boundary, not a legal
+conclusion. `Apex learning value` is a research prioritization signal, not an
+adoption decision.
+
 ## 7. Deep harvest profiles
 
 ### 7.1 OpenCode — `e207624c...`
