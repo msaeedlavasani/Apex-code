@@ -318,18 +318,18 @@ step as an Apex-equivalent contract.
 
 ### Other seed and context comparators — LANDSCAPE or TARGETED
 
-- Freebuff sanity check: Freebuff remains `LANDSCAPE ONLY`. The official
+- Freebuff sanity check: the discovery recommendation remains `LANDSCAPE ONLY`,
+  while the Owner-selected next-stage disposition is `TARGETED HARVEST`. The official
   [repository](https://github.com/CodebuffAI/freebuff) documents a multi-surface
   coding-agent product and the Owner has practical workflow experience with
   clean completion, specialized delegation, context/file-finding agents,
   result inspection, and parallel-agent/workspace claims. Those are valuable
   product and workflow signals, but this shallow pass does not yet establish a
   distinct source-level seam whose learning value exceeds the targeted
-  candidates. The classification is therefore sufficient for the current
-  landscape; the practical claims are Owner-provided context, not new Apex
-  runtime proof. If the Owner wants to test those claims against
-  implementation, Freebuff is a reasonable targeted-harvest promotion
-  candidate in a later delta.
+  candidates. The practical claims are Owner-provided context, not new Apex
+  runtime proof. The focused Owner scope below authorizes inspection of those
+  questions only; it does not assert superior architecture or runtime
+  behavior.
 - Goose is a strong provider/MCP/runtime comparator, but not the first deep
   target while OpenCode is already Apex’s initial substrate direction.
 - Aider is valuable for repository mapping, model/provider flexibility, and
@@ -516,7 +516,7 @@ Continue, Browser Use, and generic coding-agent surfaces in this phase. They
 remain useful context and may become relevant to a focused provider, IDE, or
 computer-use question.
 
-## 14. Recommended classification
+## 14. Discovery recommendation
 
 ### DEEP HARVEST
 
@@ -568,7 +568,66 @@ high-confidence threshold for a hard `REJECT` in this discovery pass. The
 Owner may reject candidates later for legal, health, or architectural reasons
 after the shortlist is chosen.
 
-## 15. Source-level trace for likely top candidates
+## 15. Owner-selected harvest scope
+
+The landscape classification above is a discovery recommendation. It is not the
+same thing as the Owner-authorized next research scope:
+
+`Landscape Recommendation != Owner-Selected Next Harvest`
+
+The Owner-selected next stage is:
+
+### Immediate Deep Harvest — 4 systems
+
+1. OpenCode — runtime adapter/substrate, execution/session/tool/provider and
+   persistence boundaries, plus authority/runtime seams.
+2. OpenHands — autonomous developer/control-center architecture,
+   decomposition, automation, backend boundaries, result lifecycle, and
+   recovery.
+3. Vibe Kanban — task → isolated workspace → agent → diff/review → PR/merge,
+   including parallel workspace UX and human review.
+4. Vigla — supervisor/worker control, typed events, isolated worktrees,
+   verification, revert/recovery, and escalation.
+
+### Immediate Targeted Harvest — 9 systems
+
+OpenWork; Freebuff; Goose; LangGraph; agtx; E2B; Daytona; Nimbalyst; and
+Agent Mission Control.
+
+The targeted questions are bounded as follows:
+
+- OpenWork: Product Shell/Foundation seams, workspace/session ownership,
+  OpenCode/MCP integration, plugin/capability surfaces, and upstream fork
+  boundary. Do not repeat the prior full feasibility/runtime work.
+- Freebuff: delegation workflow, specialized agents, file/context discovery,
+  completion/result aggregation, parallel workspace behavior, and
+  review/verification.
+- Goose: autonomous loop, provider/runtime abstraction, extensions, failure
+  behavior, and alternative Runtime Adapter relevance.
+- LangGraph: durable state, checkpoints, resume/recovery, transitions,
+  human-in-the-loop gates, and retry/join semantics.
+- agtx: blackboard/dependency model, fleet scheduling, assignment,
+  coordination, and result collection.
+- E2B: sandbox/control-plane contract, lifecycle, and filesystem/process/
+  network boundaries.
+- Daytona: AI-code computer lifecycle, workspace abstraction, and
+  isolation/control-plane model; compare with E2B as one track while keeping
+  the candidates distinct.
+- Nimbalyst: persistent visual workspace, operator visibility, state
+  projection, and intervention UX.
+- Agent Mission Control: spatial/game-like representation, visual state,
+  human-gate representation, and projection-versus-source-of-truth discipline.
+
+All other candidates remain landscape evidence and are not authorized for
+immediate harvest. This scope authorizes research only; it does not authorize
+adoption, dependency addition, source reuse, runtime/framework choice, or
+architecture, Orchestration, DPT, or implementation changes.
+
+Immediate harvest references: **13 systems** (4 Deep + 9 Targeted). E2B and
+Daytona remain two distinct candidates even though they may be compared in one
+runtime-isolation track.
+
+## 16. Source-level trace for likely top candidates
 
 These traces identify likely ownership boundaries to inspect later. They are
 not full audits and do not assert that every arrow exists exactly as drawn.
@@ -582,7 +641,7 @@ not full audits and do not assert that every arrow exists exactly as drawn.
 | LangGraph | API/graph entry → stateful node/subgraph → tool/agent work → checkpoint → human gate/restart → final state/trace |
 | E2B / Daytona | SDK/API → control plane → sandbox/composable computer → process/code/tool execution → snapshot/result → lifecycle cleanup/recovery |
 
-## 16. Open questions and `NOT_PROVEN` items
+## 17. Open questions and `NOT_PROVEN` items
 
 - Which later OpenWork revision should be harvested after the current
   `different-ai/openwork@dev` snapshot, and which path-level license review is
@@ -604,21 +663,17 @@ not full audits and do not assert that every arrow exists exactly as drawn.
   product-shell patterns beyond existing Apex evidence? `UNKNOWN` until a
   focused harvest.
 
-## 17. Owner decisions required
+## 18. Owner follow-on decisions
 
-1. Select the final deep-harvest shortlist; the five recommendations above are
-   intentionally a starting point.
-2. Decide whether the next harvest prioritizes Core execution, runtime
-   isolation, development workflow, supervisor/workforce control, or visual
-   mission control.
-3. Decide whether commercial references such as Conductor belong in targeted
+1. Define the comparative acceptance questions and evidence format for the
+   Owner-selected 4-system Deep Harvest.
+2. Decide whether commercial references such as Conductor belong in targeted
    product/UX research despite having no reusable source.
-4. Decide whether exact-license review should precede all targeted source
+3. Decide whether exact-license review should precede all targeted source
    inspection for `NOASSERTION` candidates.
-5. Decide the scope of the OpenWork targeted harvest: shell/workspace/session
-   seams, OpenCode/MCP integration, or license/compliance boundaries first.
+4. Decide the order of the nine Targeted Harvest tracks.
 
-## 18. Non-effects on Apex architecture
+## 19. Non-effects on Apex architecture
 
 This report does not change the Apex architecture, execution data model,
 execution API, authority model, Runtime Adapter design, Capability SPI, DPT,
