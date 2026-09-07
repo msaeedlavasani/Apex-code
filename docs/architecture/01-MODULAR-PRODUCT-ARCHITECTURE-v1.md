@@ -28,4 +28,7 @@ The Core owns semantic state and safety decisions. Adapters expose runtime facts
 
 No extension may bypass authority verification, barrier release, or Core-owned state transitions.
 
-The Runtime Adapter Contract v1 is not yet designed. The adapter boundary is an accepted direction, while its exact contract remains a `FREEZE_CANDIDATE`.
+The bounded Runtime Adapter Contract v1 is implemented in
+[`apex_code/contract.py`](../../apex_code/contract.py) and exercised by the
+safe slice. The stable cross-substrate API/SPI and its broader guarantees
+remain a `FREEZE_CANDIDATE`.
