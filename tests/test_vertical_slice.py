@@ -116,6 +116,8 @@ class VerticalSliceTests(unittest.TestCase):
             self.assertFalse(result["semantic_success"])
             self.assertEqual(result["verification"], "FAIL")
             self.assertFalse((workspace / "REPORT.md").exists())
+            claims = json.loads((workspace / "execution-ledger.json").read_text(encoding="utf-8"))["claims"]
+            self.assertEqual(next(iter(claims.values()))["state"], "HELD")
 
     def test_runtime_preparation_mismatch_fails_closed(self) -> None:
         with tempfile.TemporaryDirectory() as root:
