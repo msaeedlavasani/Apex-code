@@ -16,6 +16,8 @@ from pathlib import Path
 from typing import Any
 
 from .core import ExecutionCoordinator
+from .providers import ModelSelection, ProviderConfigurationError, catalog_records, validate_selection
+from .runtime import OpenCodeRuntimeAdapter
 from .reconciliation import ReconciliationLoop
 
 
@@ -49,6 +51,8 @@ class ApexApplication:
 
     def __init__(self, adapter: Any | None = None) -> None:
         self.coordinator = ExecutionCoordinator(adapter)
+        self._provider_selection: ModelSelection | None = None
+        self._credential_present = False
         self.workspace: Path | None = None
         self._executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="apex-core")
         self._jobs: dict[str, _Job] = {}
@@ -56,6 +60,57 @@ class ApexApplication:
 
     def close(self) -> None:
         self._executor.shutdown(wait=False, cancel_futures=False)
+
+    def provider_state(self) -> dict[str, Any]:
+        selection = self._provider_selection
+        configured_provider_id = selection.provider_id if selection and self._credential_present else None
+        return {
+            "providers": catalog_records(selection, configured_provider_id),
+            "selection": {
+                "provider_id": selection.provider_id,
+                "model_id": selection.model_id,
+            }
+            if selection
+            else None,
+            "credential_status": "CONFIGURED" if self._credential_present else "NOT_CONFIGURED",
+            "secure_storage": "DESKTOP_BROKER",
+        }
+
+    def configure_provider(self, provider_id: str, model_id: str, credential: str | None) -> dict[str, Any]:
+        """Apply one selected provider to future Attempts without persisting its secret."""
+        with self._lock:
+            if any(not job.future.done() and job.workspace == self.workspace for job in self._jobs.values()):
+                raise TaskBusyError("provider configuration cannot change while a task is running")
+            try:
+                selection = validate_selection(provider_id, model_id)
+            except ProviderConfigurationError as exc:
+                raise ApplicationError(str(exc)) from exc
+            self._provider_selection = selection
+            self._credential_present = bool(credential and credential.strip())
+            self.coordinator = ExecutionCoordinator(
+                OpenCodeRuntimeAdapter(provider_id=selection.provider_id, model=selection.model_id, credential=credential)
+            )
+        return self.provider_state()
+
+    def clear_provider_runtime(self) -> dict[str, Any]:
+        with self._lock:
+            if any(not job.future.done() and job.workspace == self.workspace for job in self._jobs.values()):
+                raise TaskBusyError("provider configuration cannot change while a task is running")
+            self._provider_selection = None
+            self._credential_present = False
+            self.coordinator = ExecutionCoordinator(OpenCodeRuntimeAdapter())
+        return self.provider_state()
+
+    def test_provider_configuration(self, provider_id: str, model_id: str, credential: str | None) -> dict[str, str]:
+        try:
+            selection = validate_selection(provider_id, model_id)
+        except ProviderConfigurationError:
+            return {"status": "MODEL_UNAVAILABLE", "message": "Selected provider/model is unavailable."}
+        return OpenCodeRuntimeAdapter(
+            provider_id=selection.provider_id,
+            model=selection.model_id,
+            credential=credential,
+        ).test_connection()
 
     def open_project(self, raw_path: str | Path) -> dict[str, Any]:
         if not str(raw_path).strip():
@@ -93,6 +148,8 @@ class ApexApplication:
             raise ApplicationError("open a project before submitting a task")
         if task_type not in self.TASKS:
             raise ApplicationError("task must be report or summary")
+        if isinstance(self.coordinator.adapter, OpenCodeRuntimeAdapter) and not self._credential_present:
+            raise ApplicationError("provider credential is not configured")
         workspace = self.workspace
         readme = workspace / "README.md"
         if not readme.is_file() or readme.is_symlink():
@@ -190,6 +247,8 @@ class ApexApplication:
             task_id = attempt.get("task_id")
             task = tasks.get(task_id, {}) if isinstance(tasks, dict) else {}
             result = results.get(attempt_id, {}) if isinstance(results, dict) else {}
+            manifests = data.get("manifests", {})
+            manifest = manifests.get(attempt.get("manifest_id"), {}) if isinstance(manifests, dict) else {}
             if not isinstance(task, dict):
                 task = {}
             if not isinstance(result, dict):
@@ -212,6 +271,7 @@ class ApexApplication:
                     "execution_epoch_id": attempt.get("execution_epoch_id"),
                     "authority_revision_id": attempt.get("authority_revision_id"),
                     "runtime_lane_id": attempt.get("runtime_lane_id"),
+                    "model_selection": manifest.get("model_selection"),
                 }
             )
         return list(reversed(records))

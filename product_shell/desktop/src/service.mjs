@@ -6,19 +6,21 @@ export function serviceArguments() {
   return ["-m", "apex_code.shell", "--ui", "openwork", "--host", LOOPBACK_HOST, "--port", "0"];
 }
 
-export function serviceEnvironment(baseEnvironment, runtimeRoot) {
+export function serviceEnvironment(baseEnvironment, runtimeRoot, internalToken = "") {
   const allowed = ["PATH", "HOME", "TMPDIR", "USER", "LANG", "LC_ALL", "LC_CTYPE", "TERM"];
   const environment = Object.fromEntries(
     allowed
       .filter((name) => typeof baseEnvironment[name] === "string" && baseEnvironment[name].length > 0)
       .map((name) => [name, baseEnvironment[name]]),
   );
-  return {
+  const serviceEnv = {
     ...environment,
     APEX_DESKTOP: "1",
     PYTHONPATH: runtimeRoot,
     PYTHONUNBUFFERED: "1",
   };
+  if (internalToken) serviceEnv.APEX_INTERNAL_TOKEN = internalToken;
+  return serviceEnv;
 }
 
 export function parseServiceUrl(output) {
