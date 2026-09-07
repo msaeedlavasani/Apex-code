@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import tempfile
 import unittest
+import json
 from pathlib import Path
 
 from apex_code.core import ExecutionCoordinator, SafetyError
@@ -101,6 +102,9 @@ class VerticalSliceTests(unittest.TestCase):
             ledger = (workspace / "execution-ledger.json").read_text(encoding="utf-8")
             self.assertIn('"semantic_success": true', ledger)
             self.assertIn('"event_type": "verification.completed"', ledger)
+            claims = json.loads(ledger)["claims"]
+            self.assertEqual(len(claims), 1)
+            self.assertEqual(next(iter(claims.values()))["state"], "RELEASED")
 
     def test_runtime_completion_alone_is_not_success(self) -> None:
         with tempfile.TemporaryDirectory() as root:

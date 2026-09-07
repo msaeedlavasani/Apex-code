@@ -305,6 +305,28 @@ class ExecutionLedger:
 
         return self._mutate(mutate)
 
+    def release_resource(self, claim_id: str, attempt_id: str) -> None:
+        """Release a claim only for its owning Attempt after known termination."""
+        def mutate(data: dict[str, Any]) -> None:
+            claim = data.setdefault("claims", {}).get(claim_id)
+            if not claim or claim.get("attempt_id") != attempt_id:
+                raise IdentityMismatch(f"resource claim relation mismatch: {claim_id}")
+            if claim.get("state") == "RELEASED":
+                return
+            if claim.get("state") != "HELD":
+                raise SafetyError(f"resource claim is not releasable: {claim_id}")
+            claim["state"] = "RELEASED"
+            claim["released_at"] = now()
+            event = EventEnvelope.create(
+                new_id("evt"),
+                "resource.released",
+                now(),
+                {"resource_claim_id": claim_id, "attempt_id": attempt_id, "resource": claim.get("resource")},
+            )
+            data.setdefault("events", []).append(event.to_record())
+
+        self._mutate(mutate)
+
 
 class ExecutionBarrier:
     """Core gate for the bounded Core-mediated authority mode."""
@@ -448,6 +470,7 @@ class ExecutionCoordinator:
         ledger.event("attempt.created", {"attempt_id": attempt_id, "task_id": task.task_id})
         ledger.event("manifest.created", {"manifest_id": manifest.manifest_id, "immutable": True})
         ledger.claim_attempt_start(attempt_id, manifest.manifest_id, lane.runtime_lane_id)
+        resource_claim = ledger.claim_resource(attempt_id, manifest.manifest_id, f"workspace:{workspace}")
 
         readme_path = self._safe_path(workspace, spec.input_name, "read", spec.input_name, spec.output_name)
         readme = readme_path.read_text(encoding="utf-8")
@@ -544,6 +567,8 @@ class ExecutionCoordinator:
         ledger.put("tasks", task.task_id, {**asdict(task), "semantic_state": task.semantic_state})
         ledger.put("attempts", attempt_id, {**ledger.data["attempts"][attempt_id], "status": attempt.status, "runtime_session_id": runtime.session_id})
         ledger.update_fence(attempt_id, "RELEASED" if semantic_success else "QUARANTINED")
+        if runtime.fact is RuntimeFact.EXITED:
+            ledger.release_resource(resource_claim["claim_id"], attempt_id)
         if artifact_path:
             ledger.put("artifacts", spec.output_name, {"path": spec.output_name, "sha256": sha256_file(artifact_path), "attempt_id": attempt_id})
         ledger.event("verification.completed", {"attempt_id": attempt_id, "result": result["verification"]})
