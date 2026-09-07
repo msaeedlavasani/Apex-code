@@ -12,6 +12,7 @@ import json
 import os
 import tempfile
 import uuid
+from copy import deepcopy
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from enum import Enum
@@ -91,11 +92,20 @@ def _id(prefix: str) -> str:
 
 def _write_json(path: Path, value: Mapping[str, Any]) -> None:
     _assert_no_secret_material(value)
+    document = dict(value)
+    if path.exists():
+        try:
+            with path.open(encoding="utf-8") as handle:
+                existing = json.load(handle)
+        except (OSError, json.JSONDecodeError):
+            existing = None
+        if isinstance(existing, dict) and existing == document:
+            return
     path.parent.mkdir(parents=True, exist_ok=True)
     fd, temporary = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
     try:
         with os.fdopen(fd, "w", encoding="utf-8") as handle:
-            json.dump(value, handle, indent=2, sort_keys=True)
+            json.dump(document, handle, indent=2, sort_keys=False)
             handle.write("\n")
         os.replace(temporary, path)
     finally:
@@ -306,6 +316,7 @@ class DevelopmentControlPlane:
 
     def refresh_readiness(self) -> list[dict[str, Any]]:
         backlog = self.store.load_backlog()
+        original_backlog = deepcopy(backlog)
         tasks = self._task_map(backlog)
         eligible: list[dict[str, Any]] = []
         for task in backlog["tasks"]:
@@ -330,8 +341,9 @@ class DevelopmentControlPlane:
                 task["status"] = TaskStatus.BLOCKED.value
             elif task.get("status") not in {TaskStatus.DEFERRED.value, TaskStatus.QUARANTINED.value}:
                 task["status"] = TaskStatus.BACKLOG.value
-        backlog["revision"] = int(backlog.get("revision", 0)) + 1
-        self.store.save_backlog(backlog)
+        if backlog != original_backlog:
+            backlog["revision"] = int(backlog.get("revision", 0)) + 1
+            self.store.save_backlog(backlog)
         return eligible
 
     def _score(self, task: Mapping[str, Any]) -> float:

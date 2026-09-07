@@ -82,6 +82,11 @@ It is recorded as `VERIFIED` with `PARTIAL` evidence because future routing and
 unsupported mappings remain unproven. No ECC installation or executor-specific
 integration was introduced.
 
+AC-DEV-016 adds deterministic canonical backlog persistence. Repeated
+readiness/reconciliation cycles now preserve bytes and revision after semantic
+convergence, while actual writes remain atomic and preserve task semantics and
+history.
+
 ## Boundary checks
 
 The implementation is separate from `apex_code/` and does not import Core
