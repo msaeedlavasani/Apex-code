@@ -6,10 +6,11 @@ Status: **IMPLEMENTED / MACHINE_VALIDATED**
 
 ## Scope
 
-This Delta materializes the smallest durable, executor-neutral backlog control
-plane. It does not implement the seeded Goose parallel-delegation probe and it
-does not change Apex Core, RuntimeAdapter, authority, verification, DPT, or
-Orchestration semantics.
+This Delta materialized the smallest durable, executor-neutral backlog control
+plane. The Goose parallel-delegation item was seeded for later work; its
+UI/Desktop probe is recorded separately in
+`docs/evidence/GOOSE-UI-DELEGATION-0015.md`. This Delta does not change Apex
+Core, RuntimeAdapter, authority, verification, DPT, or Orchestration semantics.
 
 ## Canonical artifacts
 
@@ -35,11 +36,12 @@ Orchestration semantics.
 
 ## Seed reconciliation
 
-The backlog is seeded from accepted Apex evidence. It includes the current
+The backlog was seeded from accepted Apex evidence. It included the current
 implementation task (`AC-DEV-001`), unresolved authority/recovery and future
-capability items, and `AC-DEV-007 — Goose Parallel Delegation Capability
-Probe`. The latter remains `BACKLOG` with `NOT_PROVEN` evidence and is not
-reported as executed or supported.
+capability items, and `AC-DEV-007 — Goose UI/Desktop Parallel Delegation
+Capability Probe`. The later probe completed with `VERIFIED` workflow status
+and `PARTIAL` evidence; individual unsupported UI capabilities remain
+`NOT_PROVEN` in its dedicated report.
 
 ## Boundary checks
 

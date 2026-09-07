@@ -101,10 +101,12 @@ Executors are workers selected by compatibility metadata. They are not
 backlog, scheduler, authority, or semantic-success owners. The control plane
 does not depend on Freebuff, Goose, OpenCode, DPT, or product Orchestration.
 
-The seeded `AC-DEV-007` Goose capability probe is backlog work only. Its
-required questions include delegation, isolation, aggregation, failure,
-cancellation, dependency awareness, and model/provider assignment. This
-Delta does not claim those capabilities or execute that probe.
+The seeded `AC-DEV-007` Goose UI/Desktop capability probe is now a verified
+development outcome with partial evidence. Its required questions included
+delegation, isolation, aggregation, failure, cancellation, dependency
+awareness, and model/provider assignment. The evidence report preserves the
+capabilities that remain `NOT_PROVEN`; the task result does not turn Goose into
+a product dependency or scheduler authority.
 
 No secrets may appear in backlog, Passports, incidents, attempts, events,
 evidence, or run summaries. Protected-main and CI governance remain mandatory

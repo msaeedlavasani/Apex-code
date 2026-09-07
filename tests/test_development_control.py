@@ -175,12 +175,13 @@ class DevelopmentControlPlaneTests(unittest.TestCase):
         self.assertEqual(incident["corrective_task_ids"], [new_id])
         self.assertFalse(plane.readiness(new_id)["eligible"])
 
-    def test_canonical_seed_preserves_not_proven_and_has_goose_probe(self):
+    def test_canonical_seed_preserves_partial_goose_ui_probe_evidence(self):
         root = Path(__file__).resolve().parents[1]
         backlog = json.loads((root / "development_control/backlog.json").read_text())
         goose = next(item for item in backlog["tasks"] if item["task_id"] == "AC-DEV-007")
-        self.assertEqual(goose["status"], "BACKLOG")
-        self.assertEqual(goose["evidence_status"], "NOT_PROVEN")
+        self.assertEqual(goose["status"], "DONE")
+        self.assertEqual(goose["verification_status"], "VERIFIED")
+        self.assertEqual(goose["evidence_status"], "PARTIAL")
         self.assertIn("goose", goose["title"].lower())
 
     def test_control_plane_rejects_secret_bearing_persistence_fields(self):

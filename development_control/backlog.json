@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "revision": 1,
+  "revision": 2,
   "source": "accepted Apex Code repository evidence",
   "tasks": [
     {
@@ -110,10 +110,10 @@
     },
     {
       "task_id": "AC-DEV-007",
-      "title": "Goose Parallel Delegation Capability Probe",
-      "status": "BACKLOG",
-      "verification_status": "NOT_RUN",
-      "evidence_status": "NOT_PROVEN",
+      "title": "Goose UI/Desktop Parallel Delegation Capability Probe",
+      "status": "DONE",
+      "verification_status": "VERIFIED",
+      "evidence_status": "PARTIAL",
       "priority": "P1",
       "risk": "MEDIUM",
       "decision_class": "ROUTINE",
@@ -121,6 +121,7 @@
       "executor_compatibility": {"executors": ["generic-executor", "goose-probe"]},
       "dependencies": ["AC-DEV-001"],
       "resource_claims": ["goose-source", "provider-runtime-experiment"],
+      "evidence_refs": ["docs/evidence/GOOSE-UI-DELEGATION-0015.md"],
       "critical_path_weight": 6,
       "downstream_unlock_value": 20,
       "aging_days": 0
