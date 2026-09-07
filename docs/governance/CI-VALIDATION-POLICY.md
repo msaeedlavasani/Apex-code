@@ -17,10 +17,8 @@ The `Apex Code CI Gate` aggregates these always-present required jobs:
 - `npm ci`, `npm run typecheck`, and `npm run build` in `product_shell/openwork`;
 - `npm ci`, `npm run typecheck`, and `npm test` in `product_shell/desktop`.
 
-The legacy `Lean documentation validation` context remains as a temporary
-compatibility job because it is currently required by `main` branch protection.
-It is not the canonical aggregate gate and should be removed after branch
-protection requires `Apex Code CI Gate` instead.
+The legacy `Lean documentation validation` context is retired. It was removed
+after `main` branch protection was migrated to require `Apex Code CI Gate`.
 
 ### Tier 2 — targeted integration validation
 
@@ -82,7 +80,7 @@ Heavy E2E is not part of ordinary PR CI.
 
 ## CI job and path policy
 
-The required aggregate check is named `Apex Code CI Gate`. It fails if any
+The required branch-protection check is `Apex Code CI Gate`. It fails if any
 validation layer fails, is cancelled, or otherwise does not conclude
 successfully. Jobs are not removed by path filters; targeted jobs decide
 applicability inside the job so branch protection never depends on a missing

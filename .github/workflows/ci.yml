@@ -18,33 +18,6 @@ env:
   NODE_VERSION: "24.18.0"
 
 jobs:
-  # Temporary compatibility for the currently protected legacy context. This
-  # is not the aggregate gate and is removable after branch protection moves.
-  legacy-docs-compat:
-    name: Lean documentation validation
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-      - name: Validate documentation and repository structure
-        run: python scripts/validate_docs.py
-      - name: Check whitespace errors
-        env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
-        run: |
-          set -euo pipefail
-          if git cat-file -e "${BASE_SHA}^{commit}" 2>/dev/null; then
-            git diff --check "${BASE_SHA}" "${GITHUB_SHA}"
-          else
-            git diff --check HEAD^ HEAD
-          fi
-
   repo-validation:
     name: Repository validation
     runs-on: ubuntu-latest
