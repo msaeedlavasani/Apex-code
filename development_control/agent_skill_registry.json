@@ -1,0 +1,216 @@
+{
+  "schema_version": 1,
+  "registry_id": "apex-agent-skill-registry-v1",
+  "revision": 1,
+  "status": "PROPOSED",
+  "owner": "apex-control-plane",
+  "executor_neutral": true,
+  "permanent_executor_selected": false,
+  "ecc_installed": false,
+  "claim_states": ["PROVEN", "PARTIAL", "NOT_PROVEN", "NOT_SUPPORTED", "UNKNOWN"],
+  "source_types": ["EXECUTOR", "CURATED_SOURCE", "FUTURE_SYSTEM"],
+  "sources": [
+    {
+      "source_id": "goose-cli",
+      "source_type": "EXECUTOR",
+      "display_name": "Goose CLI",
+      "status": "PARTIAL",
+      "capability_source_only": true,
+      "permanent_selection": false,
+      "evidence_refs": [
+        "docs/evidence/GOOSE-UI-DELEGATION-0015.md",
+        "docs/evidence/GOOSE-CLI-DELEGATION-0016.md"
+      ]
+    },
+    {
+      "source_id": "freebuff-cli",
+      "source_type": "EXECUTOR",
+      "display_name": "Freebuff CLI",
+      "status": "PARTIAL",
+      "capability_source_only": true,
+      "permanent_selection": false,
+      "evidence_refs": [
+        "docs/evidence/FREEBUFF-CLI-DELEGATION-0017.md",
+        "docs/evidence/FREEBUFF-EXTENSION-SURFACE-AUDIT-0019.md"
+      ]
+    },
+    {
+      "source_id": "ecc",
+      "source_type": "CURATED_SOURCE",
+      "display_name": "ECC",
+      "status": "NOT_PROVEN",
+      "capability_source_only": true,
+      "permanent_selection": false,
+      "installation_status": "NOT_INSTALLED",
+      "evidence_refs": [
+        "docs/evidence/EXECUTOR-CAPABILITY-COMPARISON-0018.md",
+        "docs/evidence/FREEBUFF-EXTENSION-SURFACE-AUDIT-0019.md"
+      ]
+    },
+    {
+      "source_id": "future-system",
+      "source_type": "FUTURE_SYSTEM",
+      "display_name": "Future executor or capability system",
+      "status": "UNKNOWN",
+      "capability_source_only": true,
+      "permanent_selection": false,
+      "evidence_refs": []
+    }
+  ],
+  "capabilities": [
+    {
+      "capability_id": "agent.parallel_delegation",
+      "kind": "agent",
+      "title": "Parallel delegated worker execution",
+      "source_mappings": [
+        {"source_id": "goose-cli", "claim_state": "PROVEN", "notes": "Bounded three-worker asynchronous probe; not Apex semantic proof."},
+        {"source_id": "freebuff-cli", "claim_state": "NOT_PROVEN", "notes": "Agent reference surface observed; child execution not observed."},
+        {"source_id": "ecc", "claim_state": "NOT_PROVEN"},
+        {"source_id": "future-system", "claim_state": "UNKNOWN"}
+      ]
+    },
+    {
+      "capability_id": "agent.worker_identity",
+      "kind": "agent",
+      "title": "Distinct worker or session identity",
+      "source_mappings": [
+        {"source_id": "goose-cli", "claim_state": "PROVEN", "notes": "Distinct child IDs observed."},
+        {"source_id": "freebuff-cli", "claim_state": "NOT_PROVEN"},
+        {"source_id": "ecc", "claim_state": "NOT_PROVEN"},
+        {"source_id": "future-system", "claim_state": "UNKNOWN"}
+      ]
+    },
+    {
+      "capability_id": "agent.workspace_isolation",
+      "kind": "agent",
+      "title": "Worker workspace and state isolation",
+      "source_mappings": [
+        {"source_id": "goose-cli", "claim_state": "PARTIAL", "notes": "Repository non-touch observed; unique child cwd isolation not proven."},
+        {"source_id": "freebuff-cli", "claim_state": "PARTIAL", "notes": "Parent disposable cwd observed; child isolation not proven."},
+        {"source_id": "ecc", "claim_state": "NOT_PROVEN"},
+        {"source_id": "future-system", "claim_state": "UNKNOWN"}
+      ]
+    },
+    {
+      "capability_id": "agent.failure_containment",
+      "kind": "agent",
+      "title": "Failure containment across delegated work",
+      "source_mappings": [
+        {"source_id": "goose-cli", "claim_state": "PROVEN", "notes": "Unrelated workers continued after one controlled failure."},
+        {"source_id": "freebuff-cli", "claim_state": "NOT_PROVEN"},
+        {"source_id": "ecc", "claim_state": "NOT_PROVEN"},
+        {"source_id": "future-system", "claim_state": "UNKNOWN"}
+      ]
+    },
+    {
+      "capability_id": "agent.result_aggregation",
+      "kind": "agent",
+      "title": "Machine-readable delegated result aggregation",
+      "source_mappings": [
+        {"source_id": "goose-cli", "claim_state": "PROVEN", "notes": "JSON aggregate with child identities observed."},
+        {"source_id": "freebuff-cli", "claim_state": "NOT_PROVEN"},
+        {"source_id": "ecc", "claim_state": "NOT_PROVEN"},
+        {"source_id": "future-system", "claim_state": "UNKNOWN"}
+      ]
+    },
+    {
+      "capability_id": "agent.retry_rework",
+      "kind": "agent",
+      "title": "Delegated retry or rework",
+      "source_mappings": [
+        {"source_id": "goose-cli", "claim_state": "PARTIAL"},
+        {"source_id": "freebuff-cli", "claim_state": "NOT_PROVEN"},
+        {"source_id": "ecc", "claim_state": "NOT_PROVEN"},
+        {"source_id": "future-system", "claim_state": "UNKNOWN"}
+      ]
+    },
+    {
+      "capability_id": "agent.cancellation",
+      "kind": "agent",
+      "title": "Delegated worker cancellation",
+      "source_mappings": [
+        {"source_id": "goose-cli", "claim_state": "NOT_PROVEN"},
+        {"source_id": "freebuff-cli", "claim_state": "PARTIAL", "notes": "Parent Ctrl+C/Esc advertised; child cancellation not proven."},
+        {"source_id": "ecc", "claim_state": "NOT_PROVEN"},
+        {"source_id": "future-system", "claim_state": "UNKNOWN"}
+      ]
+    },
+    {
+      "capability_id": "agent.dependency_sequencing",
+      "kind": "agent",
+      "title": "Dependency-aware delegated sequencing",
+      "source_mappings": [
+        {"source_id": "goose-cli", "claim_state": "NOT_PROVEN"},
+        {"source_id": "freebuff-cli", "claim_state": "NOT_PROVEN"},
+        {"source_id": "ecc", "claim_state": "NOT_PROVEN"},
+        {"source_id": "future-system", "claim_state": "UNKNOWN"}
+      ]
+    },
+    {
+      "capability_id": "agent.per_task_provider_model",
+      "kind": "agent",
+      "title": "Per-task provider or model assignment",
+      "source_mappings": [
+        {"source_id": "goose-cli", "claim_state": "NOT_PROVEN", "notes": "Parent routing partial; per-subtask assignment unsupported at observed surface."},
+        {"source_id": "freebuff-cli", "claim_state": "NOT_PROVEN", "notes": "Parent model picker observed; child routing not proven."},
+        {"source_id": "ecc", "claim_state": "NOT_PROVEN"},
+        {"source_id": "future-system", "claim_state": "UNKNOWN"}
+      ]
+    },
+    {
+      "capability_id": "agent.definition_catalog",
+      "kind": "agent",
+      "title": "Discoverable native agent definitions",
+      "source_mappings": [
+        {"source_id": "goose-cli", "claim_state": "PARTIAL", "notes": "Extension/summon patterns observed; Apex agent contract not proven."},
+        {"source_id": "freebuff-cli", "claim_state": "PARTIAL", "notes": "AgentDefinition and @agents surfaces observed; exact catalog not proven."},
+        {"source_id": "ecc", "claim_state": "NOT_PROVEN"},
+        {"source_id": "future-system", "claim_state": "UNKNOWN"}
+      ]
+    },
+    {
+      "capability_id": "skill.registry",
+      "kind": "skill",
+      "title": "Dedicated skill registry and discoverability",
+      "source_mappings": [
+        {"source_id": "goose-cli", "claim_state": "NOT_PROVEN"},
+        {"source_id": "freebuff-cli", "claim_state": "NOT_PROVEN"},
+        {"source_id": "ecc", "claim_state": "NOT_PROVEN"},
+        {"source_id": "future-system", "claim_state": "UNKNOWN"}
+      ]
+    },
+    {
+      "capability_id": "skill.invocation",
+      "kind": "skill",
+      "title": "Skill invocation and result contract",
+      "source_mappings": [
+        {"source_id": "goose-cli", "claim_state": "NOT_PROVEN"},
+        {"source_id": "freebuff-cli", "claim_state": "NOT_PROVEN"},
+        {"source_id": "ecc", "claim_state": "NOT_PROVEN"},
+        {"source_id": "future-system", "claim_state": "UNKNOWN"}
+      ]
+    },
+    {
+      "capability_id": "skill.curated_packaging",
+      "kind": "skill",
+      "title": "Curated agent or skill packaging and override",
+      "source_mappings": [
+        {"source_id": "goose-cli", "claim_state": "NOT_PROVEN"},
+        {"source_id": "freebuff-cli", "claim_state": "NOT_PROVEN"},
+        {"source_id": "ecc", "claim_state": "NOT_PROVEN"},
+        {"source_id": "future-system", "claim_state": "UNKNOWN"}
+      ]
+    },
+    {
+      "capability_id": "verification.independent_semantic",
+      "kind": "verification",
+      "title": "Independent semantic verification",
+      "source_mappings": [
+        {"source_id": "goose-cli", "claim_state": "NOT_PROVEN"},
+        {"source_id": "freebuff-cli", "claim_state": "NOT_PROVEN"},
+        {"source_id": "ecc", "claim_state": "NOT_PROVEN"},
+        {"source_id": "future-system", "claim_state": "UNKNOWN"}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "passport_id": "passport_AC-DEV-015_v1",
+  "development_task_id": "AC-DEV-015",
+  "revision": 1,
+  "goal": "Define the Apex Agent/Skill Registry v1 as an executor-neutral capability vocabulary consumable by Task Passports and future routing while preserving Apex ownership of task semantics, scheduling, authority, and verification.",
+  "scope": [
+    "machine-readable canonical registry with stable agent and skill capability IDs",
+    "source mappings constrained by AC-DEV-011 Goose, AC-DEV-012 Freebuff, AC-DEV-013 comparison, and AC-DEV-014 extension audit evidence",
+    "claim-state semantics and Passport/future-routing consumption rules",
+    "Apex ownership and source-only boundaries for Goose, Freebuff, ECC, and future systems",
+    "reconciled evidence and backlog state"
+  ],
+  "out_of_scope": [
+    "ECC installation, source import, dependency addition, or adoption",
+    "Goose, Freebuff, or other executor-specific integration",
+    "permanent executor selection or provider/model routing implementation",
+    "Apex Core Task, Attempt, authority, verification, or semantic-success redesign",
+    "elevating NOT_PROVEN, UNKNOWN, or PARTIAL mappings into runtime proof",
+    "secret inspection or credential persistence"
+  ],
+  "dependencies": ["AC-DEV-011", "AC-DEV-012", "AC-DEV-013", "AC-DEV-014"],
+  "resource_claims": ["agent-skill-registry", "control-plane-contract"],
+  "architecture_constraints": [
+    "Control Plane owns registry vocabulary, task requirements, scheduling, and routing policy",
+    "Apex Core owns runtime authority, verification, and semantic success",
+    "Goose, Freebuff, ECC, and future systems are capability sources only",
+    "PROVEN, PARTIAL, NOT_PROVEN, NOT_SUPPORTED, and UNKNOWN remain distinct",
+    "no ECC installation, no permanent executor, and no executor-specific integration"
+  ],
+  "acceptance_criteria": [
+    "stable capability IDs and source mappings are defined in a machine-readable registry",
+    "Task Passport and future-routing consumption rules are documented without copying executor identity into Core state",
+    "AC-DEV-011 through AC-DEV-014 evidence constrains every current mapping",
+    "unsupported and incomplete mappings remain NOT_PROVEN or UNKNOWN",
+    "Apex ownership of task semantics, scheduling, authority, and verification is explicit",
+    "the registry is reconciled into the canonical backlog without selecting an executor"
+  ],
+  "validation": [
+    "dependency and Passport review for AC-DEV-011 through AC-DEV-014",
+    "registry JSON schema and source/mapping consistency checks",
+    "canonical Python tests and documentation validation",
+    "backlog JSON and Passport validation",
+    "git diff --check and protected PR CI gate"
+  ],
+  "risk": {"class": "MEDIUM", "reversibility": "HIGH"},
+  "executor_compatibility": {"executors": ["generic-executor"]},
+  "human_gates": [],
+  "evidence_refs": [
+    "docs/evidence/GOOSE-CLI-DELEGATION-0016.md",
+    "docs/evidence/FREEBUFF-CLI-DELEGATION-0017.md",
+    "docs/evidence/EXECUTOR-CAPABILITY-COMPARISON-0018.md",
+    "docs/evidence/FREEBUFF-EXTENSION-SURFACE-AUDIT-0019.md",
+    "docs/evidence/APEX-AGENT-SKILL-REGISTRY-0020.md"
+  ]
+}

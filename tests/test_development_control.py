@@ -244,6 +244,29 @@ class DevelopmentControlPlaneTests(unittest.TestCase):
         self.assertEqual(extension_audit["evidence_status"], "PARTIAL")
         self.assertEqual(extension_audit["dependencies"], ["AC-DEV-012", "AC-DEV-013"])
 
+        registry_task = next(item for item in backlog["tasks"] if item["task_id"] == "AC-DEV-015")
+        self.assertEqual(registry_task["title"], "Apex Agent/Skill Registry v1")
+        self.assertEqual(registry_task["status"], "DONE")
+        self.assertEqual(registry_task["verification_status"], "VERIFIED")
+        self.assertEqual(registry_task["evidence_status"], "PARTIAL")
+        self.assertEqual(registry_task["dependencies"], ["AC-DEV-011", "AC-DEV-012", "AC-DEV-013", "AC-DEV-014"])
+
+    def test_agent_skill_registry_is_executor_neutral_and_preserves_claim_states(self):
+        root = Path(__file__).resolve().parents[1]
+        registry = json.loads((root / "development_control/agent_skill_registry.json").read_text())
+        self.assertEqual(registry["registry_id"], "apex-agent-skill-registry-v1")
+        self.assertTrue(registry["executor_neutral"])
+        self.assertFalse(registry["permanent_executor_selected"])
+        self.assertFalse(registry["ecc_installed"])
+        source_ids = {source["source_id"] for source in registry["sources"]}
+        self.assertEqual(source_ids, {"goose-cli", "freebuff-cli", "ecc", "future-system"})
+        claim_states = set(registry["claim_states"])
+        for capability in registry["capabilities"]:
+            self.assertRegex(capability["capability_id"], r"^[a-z]+\.[a-z0-9_.]+$")
+            for mapping in capability["source_mappings"]:
+                self.assertIn(mapping["source_id"], source_ids)
+                self.assertIn(mapping["claim_state"], claim_states)
+
     def test_canonical_owner_authorizations_are_task_specific(self):
         root = Path(__file__).resolve().parents[1]
         backlog = json.loads((root / "development_control/backlog.json").read_text())

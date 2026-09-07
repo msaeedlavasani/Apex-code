@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "revision": 5,
+  "revision": 6,
   "source": "accepted Apex Code repository evidence",
   "tasks": [
     {
@@ -256,6 +256,24 @@
       ],
       "critical_path_weight": 4,
       "downstream_unlock_value": 12,
+      "aging_days": 0
+    },
+    {
+      "task_id": "AC-DEV-015",
+      "title": "Apex Agent/Skill Registry v1",
+      "status": "DONE",
+      "verification_status": "VERIFIED",
+      "evidence_status": "PARTIAL",
+      "priority": "P1",
+      "risk": "MEDIUM",
+      "decision_class": "ROUTINE",
+      "autonomous_allowed": true,
+      "executor_compatibility": {"executors": ["generic-executor"]},
+      "dependencies": ["AC-DEV-011", "AC-DEV-012", "AC-DEV-013", "AC-DEV-014"],
+      "resource_claims": ["agent-skill-registry", "control-plane-contract"],
+      "evidence_refs": ["docs/evidence/APEX-AGENT-SKILL-REGISTRY-0020.md"],
+      "critical_path_weight": 4,
+      "downstream_unlock_value": 20,
       "aging_days": 0
     }
   ]

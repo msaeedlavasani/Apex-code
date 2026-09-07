@@ -129,6 +129,11 @@ surface as partial and preserves exact catalogs, dedicated skills, overrides,
 packaging, and child routing as `NOT_PROVEN`. It reuses the bounded evidence
 without installing ECC or changing executor neutrality.
 
+The Agent/Skill Registry v1 (`AC-DEV-015`) provides stable executor-neutral
+capability IDs for Task Passports and future routing. Its source mappings are
+evidence claims only; Apex retains task semantics, scheduling, authority, and
+verification, and unsupported mappings remain `NOT_PROVEN`.
+
 No secrets may appear in backlog, Passports, incidents, attempts, events,
 evidence, or run summaries. Protected-main and CI governance remain mandatory
 for repository changes.
