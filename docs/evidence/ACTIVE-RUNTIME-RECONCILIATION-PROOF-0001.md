@@ -8,11 +8,12 @@ Scope: bounded controller-loss observation against an isolated OpenCode server
 
 `B = NOT_PROVEN`.
 
-The experiment performed a real OpenCode controller restart around a harmless
-session admission. OpenCode preserved the session record and rejected a
-duplicate durable message ID, but the active-session surface was empty and no
-separate runtime-native process/session identity or Apex Attempt ownership was
-exposed. This is useful substrate evidence, not proof of controller-independent
+The follow-up experiment performed a real OpenCode controller restart while a
+harmless prompt was observed in the server's active-session map. OpenCode
+preserved the session record and rejected a duplicate durable message ID after
+restart, but no separate runtime-native process identity or Apex Attempt
+ownership was exposed, and active state was not re-established after restart.
+This is useful substrate evidence, not proof of controller-independent
 reconciliation or duplicate-start fencing for Apex.
 
 ## 2. Pinned environment and harness
@@ -56,16 +57,23 @@ experiment did not claim that a model execution remained active after server
 termination: no separate OpenCode runtime process was observable in the
 tested path.
 
+Because the active window is transient, a supplementary same-day direct probe
+using the same `serve`/`session.prompt` route observed one `type: running`
+session immediately after admission. The committed harness run did not
+consistently capture that short window. This variance is itself a reason not
+to promote OpenCode's active-session map into an Apex runtime identity or
+recovery guarantee.
+
 ## 4. Raw observations
 
 | Observation | Result | Evidence label |
 | --- | --- | --- |
 | Prompt admission | HTTP `200`; durable admitted sequence `1` and fixed message ID were returned | `OBSERVED_RUNTIME_EVIDENCE` |
-| Active session before controller loss | HTTP `200`, data `{}` in sampled observations | `OBSERVED_RUNTIME_EVIDENCE` |
-| Separate child runtime identity | No child process was observable under the server at the sampling point | `OBSERVED_RUNTIME_EVIDENCE` |
+| Active session before controller loss | A supplementary direct probe observed HTTP `200` with `type: running`; the committed harness did not consistently capture the transient window | `OBSERVED_RUNTIME_EVIDENCE` |
+| Separate child runtime identity | No child process was observable under the server at the sampling point; active execution was process-owned in the tested path | `OBSERVED_RUNTIME_EVIDENCE` |
 | Controller restart | Restart completed and health became reachable | `OBSERVED_RUNTIME_EVIDENCE` |
 | Session after restart | HTTP `200`; same session ID was retrievable | `OBSERVED_RUNTIME_EVIDENCE` |
-| Active session after restart | HTTP `200`, data `{}` | `OBSERVED_RUNTIME_EVIDENCE` |
+| Active session after restart | HTTP `200`, data `{}`; active state was not restored | `OBSERVED_RUNTIME_EVIDENCE` |
 | Same message ID after restart | HTTP `409` conflict | `OBSERVED_RUNTIME_EVIDENCE` |
 | Wrong/stale session ID | HTTP `404` | `OBSERVED_RUNTIME_EVIDENCE` |
 | Apex Attempt ownership | No Apex Attempt/Lane/Epoch metadata was exposed by OpenCode | `NOT_PROVEN` |
@@ -81,7 +89,7 @@ The requested scenarios are classified conservatively:
 
 | Scenario | Classification | Safe Apex interpretation |
 | --- | --- | --- |
-| B1 running attempt, controller exits, runtime remains | `NOT_PROVEN` | No separate active runtime was observable; session persistence does not establish `RUNNING` or safe resume |
+| B1 running attempt, controller exits, runtime remains | `NOT_PROVEN` | An active session was observed before loss, but no separate runtime survived/was observable after controller termination |
 | B2 completes while controller absent | `NOT_PROVEN` | No controller-independent OpenCode completion/result correlation was established |
 | B3 runtime disappears while controller absent | `NOT_PROVEN` | OpenCode did not expose enough identity/state to distinguish runtime loss from controller loss |
 | B4 wrong/stale session reconnect | `PARTIALLY_PROVEN` | Unknown session is rejected with `404`; exact Apex identity mismatch remains unproven |
@@ -115,7 +123,8 @@ does not prove an Apex-grade controller-loss contract.
 
 ### Proven within this bounded run
 
-- An isolated OpenCode server can admit a harmless message with a fixed ID.
+- An isolated OpenCode server can admit a harmless message with a fixed ID and
+  expose a process-owned active-session window.
 - The session record remained retrievable after restarting the server with the
   same isolated state roots.
 - The same durable message ID received an explicit conflict response after

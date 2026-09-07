@@ -16,7 +16,6 @@ from pathlib import Path
 import socket
 import subprocess
 import tempfile
-import threading
 import time
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
@@ -53,7 +52,7 @@ def summarize(value: object) -> object:
     if isinstance(value, dict):
         result: dict[str, object] = {}
         for key, item in value.items():
-            if key in {"data", "info"} and isinstance(item, dict):
+            if key in {"data", "info"} and isinstance(item, (dict, list)):
                 result[key] = summarize(item)
             elif key in {"id", "sessionID", "status", "healthy", "type", "admittedSeq", "promotedSeq"}:
                 result[key] = summarize(item)
@@ -64,7 +63,10 @@ def summarize(value: object) -> object:
                 }
         return result
     if isinstance(value, list):
-        return {"count": len(value)}
+        return {
+            "count": len(value),
+            "roles": sorted({str(x.get("role")) for x in value if isinstance(x, dict) and x.get("role") is not None}),
+        }
     if isinstance(value, (str, int, float, bool)) or value is None:
         return value
     return type(value).__name__
@@ -130,36 +132,33 @@ def main() -> None:
                 session_id = data.get("id")
 
         prompt_id = "msg_apex_reconciliation_probe_001"
-        prompt_result: dict[str, object] = {"state": "NOT_STARTED"}
-
-        def send_prompt() -> None:
-            nonlocal prompt_result
-            if not isinstance(session_id, str):
-                prompt_result = {"state": "NO_SESSION"}
-                return
-            prompt_result = request(
+        prompt_result = (
+            request(
                 base,
                 "POST",
                 f"/api/session/{session_id}/prompt",
                 {
                     "id": prompt_id,
-                    "prompt": {"text": "Reply with a concise harmless status sentence. Do not use tools."},
+                    "prompt": {"text": "Write a harmless 2000-word explanation of recovery in software systems. Do not use tools."},
                 },
                 timeout=30,
             )
-
-        prompt_thread = threading.Thread(target=send_prompt, daemon=True)
-        prompt_thread.start()
+            if isinstance(session_id, str)
+            else {"error": "no_session_id"}
+        )
         active_samples: list[dict] = []
         for _ in range(20):
             active_samples.append(request(base, "GET", "/api/session/active"))
-            if prompt_result.get("http") is not None or prompt_result.get("state") not in {"NOT_STARTED"}:
-                break
             time.sleep(0.25)
+        active_seen_running = any(
+            isinstance(sample.get("json"), dict)
+            and isinstance(sample["json"].get("data"), dict)
+            and bool(sample["json"]["data"])
+            for sample in active_samples
+        )
         children_before = children_of(process.pid)
         process.kill()
         process.wait(timeout=10)
-        prompt_thread.join(timeout=2)
         children_after = children_of(process.pid)
 
         restart_port = free_port()
@@ -200,6 +199,7 @@ def main() -> None:
                     "children_after_controller_loss": children_after,
                     "prompt_admission": prompt_result,
                     "active_samples_before_loss": active_samples,
+                    "active_seen_running": active_seen_running,
                     "session_after_restart": session_after_restart,
                     "active_after_restart": active_after_restart,
                     "messages_after_restart": messages_after_restart,
