@@ -12,9 +12,9 @@ from .core import (
     ExecutionManifest,
     IdentityMismatch,
     ResourceConflict,
-    RuntimeFact,
     SafetyError,
 )
+from .contract import RuntimeAdapter, RuntimeExecution, RuntimeFact, RuntimeIdentity, RuntimePreparation
 from .reconciliation import ReconciliationLoop, ReconciliationOutcome, RuntimeObservation
 from .runtime import OpenCodeRuntimeAdapter
 
@@ -26,6 +26,10 @@ __all__ = [
     "ExecutionManifest",
     "IdentityMismatch",
     "OpenCodeRuntimeAdapter",
+    "RuntimeAdapter",
+    "RuntimeExecution",
+    "RuntimeIdentity",
+    "RuntimePreparation",
     "ReconciliationLoop",
     "ReconciliationOutcome",
     "RuntimeFact",

@@ -10,22 +10,9 @@ import json
 import os
 import subprocess
 import tempfile
-import urllib.parse
-from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable
 
-
-@dataclass(frozen=True)
-class RuntimeExecution:
-    session_id: str | None
-    fact: str
-    exit_code: int
-    text: str
-    event_count: int
-    authority_config_dir: str
-    authority_config_digest: str
-    command: tuple[str, ...]
+from .contract import RuntimeExecution, RuntimeFact, RuntimeIdentity, RuntimePreparation
 
 
 class OpenCodeRuntimeAdapter:
@@ -52,7 +39,7 @@ class OpenCodeRuntimeAdapter:
             },
         }
 
-    def materialize_authority(self, authority_digest: str) -> tuple[str, str]:
+    def materialize_authority(self, authority_digest: str) -> RuntimePreparation:
         """Materialize a deny-all worker config in an isolated temp root."""
         root = Path(tempfile.mkdtemp(prefix="apex-opencode-slice-"))
         config_path = root / "opencode.json"
@@ -61,19 +48,22 @@ class OpenCodeRuntimeAdapter:
         # The digest is carried in a separate file so Core can attest exactly
         # which authority revision the launch preparation referenced.
         (root / "authority-digest").write_text(authority_digest + "\n", encoding="utf-8")
-        return str(root), authority_digest
+        return RuntimePreparation(
+            preparation_id=f"prep_{root.name}",
+            authority_digest=authority_digest,
+            config_dir=str(root),
+            mode="CORE_MEDIATED_NO_RUNTIME_IO",
+            substrate_activation_confirmed=False,
+        )
 
     def execute(
         self,
         prompt: str,
-        authority_digest: str,
         workspace: Path,
-        config_dir: str | None = None,
+        preparation: RuntimePreparation,
     ) -> RuntimeExecution:
-        if config_dir is None:
-            config_dir, materialized_digest = self.materialize_authority(authority_digest)
-        else:
-            materialized_digest = authority_digest
+        config_dir = preparation.config_dir
+        materialized_digest = preparation.authority_digest
         env = os.environ.copy()
         config = self._permission_config()
         env.update(
@@ -107,13 +97,13 @@ class OpenCodeRuntimeAdapter:
             )
         except (OSError, subprocess.TimeoutExpired):
             return RuntimeExecution(
-                session_id=None,
-                fact="UNREACHABLE",
+                identity=RuntimeIdentity(),
+                fact=RuntimeFact.UNREACHABLE,
                 exit_code=124,
                 text="",
                 event_count=0,
-                authority_config_dir=config_dir,
                 authority_config_digest=materialized_digest,
+                preparation_id=preparation.preparation_id,
                 command=command[:-1] + ("<prompt>",),
             )
 
@@ -130,14 +120,14 @@ class OpenCodeRuntimeAdapter:
             part = event.get("part")
             if isinstance(part, dict) and part.get("type") == "text" and isinstance(part.get("text"), str):
                 text_parts.append(part["text"])
-        fact = "EXITED" if completed.returncode == 0 else "UNKNOWN"
+        fact = RuntimeFact.EXITED if completed.returncode == 0 else RuntimeFact.UNKNOWN
         return RuntimeExecution(
-            session_id=session_id,
+            identity=RuntimeIdentity(session_id=session_id),
             fact=fact,
             exit_code=completed.returncode,
             text="".join(text_parts),
             event_count=event_count,
-            authority_config_dir=config_dir,
             authority_config_digest=materialized_digest,
+            preparation_id=preparation.preparation_id,
             command=command[:-1] + ("<prompt>",),
         )
