@@ -39,3 +39,9 @@ guarantees. `NOT_PROVEN`, `UNKNOWN`, and `NOT_RUN` remain visible. The Goose
 UI/Desktop parallel-delegation item (`AC-DEV-007`) was later evaluated in
 `GOOSE-UI-DELEGATION-0015`; its task is verified with `PARTIAL` evidence, while
 the unproven UI capabilities remain explicitly unproven.
+
+Owner-authorized material tasks are admitted only when the canonical backlog
+records `owner_authorized: true`; this is task-specific authorization and does
+not lower task risk or change Passport constraints. The Goose CLI
+parallel-delegation probe is tracked separately as `AC-DEV-011`; `AC-DEV-010`
+retains its original global event-ordering identity.
