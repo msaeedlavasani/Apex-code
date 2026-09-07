@@ -76,6 +76,12 @@ exact native catalogs, dedicated skills, overrides, packaging, and child
 routing `NOT_PROVEN`. It depends on AC-DEV-012 and AC-DEV-013; no ECC was
 installed and no executor was selected.
 
+AC-DEV-015 defines the executor-neutral Agent/Skill Registry v1 with stable
+capability IDs and source mappings constrained by AC-DEV-011 through AC-DEV-014.
+It is recorded as `VERIFIED` with `PARTIAL` evidence because future routing and
+unsupported mappings remain unproven. No ECC installation or executor-specific
+integration was introduced.
+
 ## Boundary checks
 
 The implementation is separate from `apex_code/` and does not import Core

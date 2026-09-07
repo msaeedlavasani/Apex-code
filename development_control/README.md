@@ -52,3 +52,6 @@ selecting a permanent executor. ECC is not installed.
 `AC-DEV-014` audits the Freebuff agent/skill extension surface and records
 native catalogs, skill invocation, override, packaging, and child-routing
 claims as `PARTIAL` or `NOT_PROVEN` where the bounded evidence is incomplete.
+`AC-DEV-015` defines the executor-neutral Agent/Skill Registry v1; registry
+capability IDs may inform Passports and future routing, while Apex retains task
+semantics, scheduling, authority, and verification. ECC remains uninstalled.
