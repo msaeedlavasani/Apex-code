@@ -140,6 +140,10 @@ class ReconciliationTests(unittest.TestCase):
             self.assertEqual(first.runtime_fact, RuntimeFact.UNKNOWN)
             self.assertEqual(first.semantic_state, "RECOVERY_REQUIRED")
             self.assertEqual(second.disposition, "NO_OBSERVATION_FAIL_CLOSED")
+            self.assertEqual(
+                ExecutionLedger(path / "execution-ledger.json").snapshot()["attempts"]["attempt-a"]["reconciliation_state"],
+                "RECOVERY_REQUIRED",
+            )
 
     def test_exclusive_workspace_claim_conflict_and_stale_reclaim_denial(self) -> None:
         with tempfile.TemporaryDirectory() as root:

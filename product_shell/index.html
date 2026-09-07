@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Apex Code</title>
+    <link rel="stylesheet" href="/assets/app.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand-mark">A</div>
+      <div>
+        <div class="eyebrow">APEX CODE</div>
+        <h1>Bounded creation workspace</h1>
+      </div>
+      <div class="topbar-status" id="connection-status" data-state="offline">Connecting…</div>
+    </header>
+
+    <main class="layout">
+      <section class="panel project-panel" aria-labelledby="project-heading">
+        <div class="panel-heading">
+          <div>
+            <div class="eyebrow">PROJECT</div>
+            <h2 id="project-heading">Open a local project</h2>
+          </div>
+          <span class="status-pill" id="project-pill">Not selected</span>
+        </div>
+        <form id="project-form" class="stack">
+          <label for="project-path">Workspace path</label>
+          <div class="inline-form">
+            <input id="project-path" name="path" type="text" placeholder="/path/to/project" autocomplete="off" required>
+            <button type="submit">Open project</button>
+          </div>
+          <p class="help">Only the project identity and non-hidden entry names are shown here. Core owns file reads and writes.</p>
+        </form>
+        <div id="project-summary" class="project-summary empty">Choose a disposable project to begin.</div>
+        <div id="file-list" class="file-list" aria-label="Workspace entries"></div>
+      </section>
+
+      <section class="panel task-panel" aria-labelledby="task-heading">
+        <div class="panel-heading">
+          <div>
+            <div class="eyebrow">BOUNDED TASK</div>
+            <h2 id="task-heading">Create a Core-verified artifact</h2>
+          </div>
+          <span class="status-pill accent" id="execution-pill">Ready</span>
+        </div>
+        <p class="task-description">The task runs through Apex Core, the Core-mediated authority barrier, and the OpenCode Runtime Adapter.</p>
+        <form id="task-form" class="stack">
+          <label for="task-type">Task shape</label>
+          <select id="task-type" name="task">
+            <option value="report">Inspect README.md and create REPORT.md</option>
+            <option value="summary">Inspect README.md and create SUMMARY.md</option>
+          </select>
+          <button id="submit-task" type="submit" disabled>Submit bounded task</button>
+        </form>
+        <div class="execution-card" id="execution-card">
+          <div class="empty">No execution selected.</div>
+        </div>
+      </section>
+
+      <section class="panel history-panel" aria-labelledby="history-heading">
+        <div class="panel-heading">
+          <div>
+            <div class="eyebrow">DURABLE EVIDENCE</div>
+            <h2 id="history-heading">Execution history</h2>
+          </div>
+          <span class="status-pill" id="history-count">0 attempts</span>
+        </div>
+        <p class="help">History is reloaded from the Core ledger. Shell memory is not the source of truth.</p>
+        <div id="history-list" class="history-list"><div class="empty">Open a project to inspect history.</div></div>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="/assets/app.js"></script>
+  </body>
+</html>

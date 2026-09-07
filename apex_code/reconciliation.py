@@ -187,6 +187,15 @@ class ReconciliationLoop:
         for attempt_id, attempt in attempts.items():
             if attempt.get("status") in {"SUCCEEDED", "FAILED", "CANCELLED"} or attempt_id in seen_attempts:
                 continue
+            ledger.put(
+                "attempts",
+                attempt_id,
+                {
+                    **attempt,
+                    "reconciliation_state": "RECOVERY_REQUIRED",
+                    "last_reconciled_at": now(),
+                },
+            )
             ledger.event(
                 "reconciliation.unknown",
                 {"attempt_id": attempt_id, "semantic_state": "RECOVERY_REQUIRED", "reason": "no runtime observation"},
