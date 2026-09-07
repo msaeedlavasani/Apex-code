@@ -14,13 +14,23 @@ class EventEnvelope:
     event_type: str
     schema_version: int
     occurred_at: str
+    sequence: int
+    ordering_scope: str
     correlation_id: str | None
     causation_id: str | None
     references: dict[str, str]
     payload: dict[str, Any]
 
     @classmethod
-    def create(cls, event_id: str, event_type: str, occurred_at: str, payload: dict[str, Any]) -> "EventEnvelope":
+    def create(
+        cls,
+        event_id: str,
+        event_type: str,
+        occurred_at: str,
+        payload: dict[str, Any],
+        sequence: int = 0,
+        ordering_scope: str = "ledger",
+    ) -> "EventEnvelope":
         reference_keys = (
             "execution_id",
             "task_id",
@@ -50,6 +60,8 @@ class EventEnvelope:
             event_type=event_type,
             schema_version=1,
             occurred_at=occurred_at,
+            sequence=sequence,
+            ordering_scope=ordering_scope,
             correlation_id=correlation_id,
             causation_id=causation_id,
             references=references,

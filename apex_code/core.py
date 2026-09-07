@@ -208,8 +208,9 @@ class ExecutionLedger:
 
     def event(self, event_type: str, payload: dict[str, Any]) -> None:
         def mutate(data: dict[str, Any]) -> None:
-            event = EventEnvelope.create(new_id("evt"), event_type, now(), payload)
-            data.setdefault("events", []).append(event.to_record())
+            events = data.setdefault("events", [])
+            event = EventEnvelope.create(new_id("evt"), event_type, now(), payload, sequence=len(events) + 1)
+            events.append(event.to_record())
 
         self._mutate(mutate)
 
@@ -256,13 +257,15 @@ class ExecutionLedger:
                 "acquired_at": now(),
             }
             data["fences"][attempt_id] = fence
+            events = data.setdefault("events", [])
             event = EventEnvelope.create(
                 new_id("evt"),
                 "execution.fence_acquired",
                 now(),
                 {"attempt_id": attempt_id, "fence_id": fence["fence_id"]},
+                sequence=len(events) + 1,
             )
-            data.setdefault("events", []).append(event.to_record())
+            events.append(event.to_record())
             return fence
 
         return self._mutate(mutate)
@@ -295,13 +298,15 @@ class ExecutionLedger:
                 "claimed_at": now(),
             }
             data["claims"][claim["claim_id"]] = claim
+            events = data.setdefault("events", [])
             event = EventEnvelope.create(
                 new_id("evt"),
                 "resource.claimed",
                 now(),
                 {"resource_claim_id": claim["claim_id"], "attempt_id": attempt_id, "resource": resource},
+                sequence=len(events) + 1,
             )
-            data.setdefault("events", []).append(event.to_record())
+            events.append(event.to_record())
             return claim
 
         return self._mutate(mutate)
@@ -318,13 +323,15 @@ class ExecutionLedger:
                 raise SafetyError(f"resource claim is not releasable: {claim_id}")
             claim["state"] = "RELEASED"
             claim["released_at"] = now()
+            events = data.setdefault("events", [])
             event = EventEnvelope.create(
                 new_id("evt"),
                 "resource.released",
                 now(),
                 {"resource_claim_id": claim_id, "attempt_id": attempt_id, "resource": claim.get("resource")},
+                sequence=len(events) + 1,
             )
-            data.setdefault("events", []).append(event.to_record())
+            events.append(event.to_record())
 
         self._mutate(mutate)
 
