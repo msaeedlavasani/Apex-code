@@ -29,9 +29,17 @@ and binding chain is not proven by documentation alone. The bounded slice uses
 Core-mediated artifact I/O and does not establish the full product/runtime
 implementation.
 
-The first local Product Shell can be launched with `python3 -m apex_code.shell`.
+The OpenWork-derived Product Shell can be built and launched locally:
+
+```text
+cd product_shell/openwork && npm install && npm run build
+python3 -m apex_code.shell --ui openwork
+```
+
 It connects project selection and bounded task commands to canonical Apex Core
 through a local application boundary. The shell is a projection: durable
 execution state, authority, verification, and artifacts remain Core-owned. The
-OpenWork source pin and divergence boundary are recorded in
+original lightweight shell remains available as a test harness with
+`python3 -m apex_code.shell --ui bootstrap`. The pinned OpenWork source slice,
+license boundary, and upstream-sync procedure are recorded in
 [docs/apex/FORK_BOUNDARY.md](docs/apex/FORK_BOUNDARY.md).
