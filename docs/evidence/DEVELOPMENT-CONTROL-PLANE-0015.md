@@ -8,12 +8,16 @@ Status: **IMPLEMENTED / MACHINE-VALIDATED / RECONCILED**
 
 This Delta materialized the smallest durable, executor-neutral backlog control
 plane. The canonical reconciliation preserves `AC-DEV-010` as the deferred
-global event-ordering task and allocates `AC-DEV-011` to the Goose CLI probe.
+global event-ordering task and allocates `AC-DEV-011` to the Goose CLI probe,
+`AC-DEV-012` to the Freebuff CLI probe, and `AC-DEV-013` to their comparison.
 The UI/Desktop probe is recorded separately in
 `docs/evidence/GOOSE-UI-DELEGATION-0015.md`, while the CLI probe is recorded in
-`docs/evidence/GOOSE-CLI-DELEGATION-0016.md`. This reconciliation does not
-change Apex Core, RuntimeAdapter, authority, verification, DPT, or
-Orchestration semantics.
+`docs/evidence/GOOSE-CLI-DELEGATION-0016.md`. The Freebuff and comparison
+reports are recorded in `docs/evidence/FREEBUFF-CLI-DELEGATION-0017.md` and
+`docs/evidence/EXECUTOR-CAPABILITY-COMPARISON-0018.md`. This reconciliation
+does not change Apex Core, RuntimeAdapter, authority, verification, DPT, or
+Orchestration semantics, does not select a permanent executor, and does not
+install ECC.
 
 ## Canonical artifacts
 
@@ -57,6 +61,14 @@ Its CLI report directly observed asynchronous delegation, distinct child
 identities, aggregation, and mixed success/failure; child cancellation,
 dependency scheduling, and per-subtask provider/model assignment remain
 unproven or unsupported at the observed surface.
+
+AC-DEV-012 completed with `VERIFIED` workflow status and `PARTIAL` evidence.
+The installed Freebuff CLI reached an isolated disposable TUI and exposed
+parent agent/model surfaces, but child worker identity, concurrency, isolation,
+aggregation, failure containment, retry/rework, dependency sequencing, and
+per-task routing remain `NOT_PROVEN`. AC-DEV-013 completed with `VERIFIED`
+workflow status and `PARTIAL` evidence, depends on AC-DEV-011 and AC-DEV-012,
+and keeps executor choice open.
 
 ## Boundary checks
 

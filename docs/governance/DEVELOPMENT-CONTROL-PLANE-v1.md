@@ -115,6 +115,15 @@ awareness, and model/provider assignment. The evidence report preserves the
 capabilities that remain `NOT_PROVEN`; the task result does not turn Goose into
 a product dependency or scheduler authority.
 
+The Goose CLI probe (`AC-DEV-011`) is supplemented by the Freebuff CLI probe
+(`AC-DEV-012`). Freebuff reached an interactive parent surface and exposed
+source-level extensibility signals, but child delegation, isolation,
+aggregation, recovery, dependency sequencing, and per-task routing remain
+`NOT_PROVEN`. The executor comparison (`AC-DEV-013`) keeps Goose and Freebuff
+as replaceable candidates and does not select a permanent executor. ECC is not
+installed. These probes do not transfer task authority to Goose or Freebuff or
+change the Apex Core boundary.
+
 No secrets may appear in backlog, Passports, incidents, attempts, events,
 evidence, or run summaries. Protected-main and CI governance remain mandatory
 for repository changes.

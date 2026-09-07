@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "passport_id": "passport_AC-DEV-012_v1",
+  "development_task_id": "AC-DEV-012",
+  "revision": 1,
+  "goal": "Operationally characterize the installed Freebuff CLI as a candidate executor for Apex parallel delegated tasks and inventory its native agent and skill extensibility surfaces.",
+  "scope": [
+    "Installed Freebuff CLI and cached runtime binary",
+    "isolated non-repository disposable workspace",
+    "native CLI/TUI help, model/provider picker, agent controls, and cwd behavior",
+    "bounded attempts to observe delegation, concurrency, identity, isolation, failure containment, aggregation, retry/rework, cancellation, dependencies, and per-task model/provider assignment",
+    "evidence report and control-plane suitability classification"
+  ],
+  "out_of_scope": [
+    "ECC installation or adoption",
+    "Freebuff source or binary modification",
+    "production Freebuff adapter",
+    "Apex Core or RuntimeAdapter changes",
+    "Freebuff ownership of backlog, scheduling, authority, verification, or semantic success",
+    "secret inspection, credential persistence, or repository mutation",
+    "permanent executor selection"
+  ],
+  "dependencies": ["AC-DEV-001"],
+  "resource_claims": ["freebuff-cli", "provider-runtime-experiment"],
+  "architecture_constraints": [
+    "executors remain workers and never canonical backlog or scheduler authority",
+    "Apex Core remains authority and verification owner",
+    "isolated disposable workspace only",
+    "no secrets in evidence, logs, backlog, or Passport",
+    "advertised UI/source surfaces must be separated from operational proof",
+    "unsupported or incomplete capabilities remain NOT_PROVEN"
+  ],
+  "acceptance_criteria": [
+    "Freebuff version and public CLI surface are recorded",
+    "native agent and skill/extension surfaces are inventoried with evidence boundaries",
+    "native delegation is executed or classified NOT_PROVEN",
+    "true concurrent execution and distinct worker/session identity are directly evidenced or classified NOT_PROVEN",
+    "workspace/state isolation, failure containment, and result aggregation are tested or classified",
+    "retry/rework and cancellation are tested or classified",
+    "dependency sequencing and per-task model/provider assignment are tested or classified",
+    "Freebuff suitability for Apex Control Plane integration is classified without permanent selection"
+  ],
+  "validation": [
+    "freebuff --version",
+    "freebuff --help and cached binary help",
+    "bounded Freebuff TUI launch with --cwd in a disposable non-repository directory",
+    "native help/agent/model/provider observations",
+    "evidence review",
+    "canonical Python tests and documentation validation"
+  ],
+  "risk": {"class": "MEDIUM", "reversibility": "HIGH"},
+  "executor_compatibility": {"executors": ["freebuff-probe"]},
+  "human_gates": [],
+  "evidence_refs": [
+    "docs/evidence/AGENTIC-DEVELOPMENT-SYSTEMS-COMPARATIVE-HARVEST.md",
+    "docs/evidence/FREEBUFF-CLI-DELEGATION-0017.md"
+  ]
+}

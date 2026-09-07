@@ -44,4 +44,8 @@ Owner-authorized material tasks are admitted only when the canonical backlog
 records `owner_authorized: true`; this is task-specific authorization and does
 not lower task risk or change Passport constraints. The Goose CLI
 parallel-delegation probe is tracked separately as `AC-DEV-011`; `AC-DEV-010`
-retains its original global event-ordering identity.
+retains its original global event-ordering identity. `AC-DEV-012` records the
+bounded Freebuff CLI probe: the parent TUI and advertised agent surface are
+observed, while child delegation and most operational capabilities remain
+`NOT_PROVEN`. `AC-DEV-013` compares the two executor candidates without
+selecting a permanent executor. ECC is not installed.

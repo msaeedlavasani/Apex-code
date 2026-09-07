@@ -224,6 +224,19 @@ class DevelopmentControlPlaneTests(unittest.TestCase):
         self.assertEqual(cli_probe["title"], "Goose CLI Parallel Delegation Capability Probe")
         self.assertEqual(cli_probe["status"], "DONE")
 
+        freebuff_probe = next(item for item in backlog["tasks"] if item["task_id"] == "AC-DEV-012")
+        self.assertEqual(freebuff_probe["title"], "Freebuff CLI Operational Parallel Delegation Probe")
+        self.assertEqual(freebuff_probe["status"], "DONE")
+        self.assertEqual(freebuff_probe["verification_status"], "VERIFIED")
+        self.assertEqual(freebuff_probe["evidence_status"], "PARTIAL")
+
+        comparison = next(item for item in backlog["tasks"] if item["task_id"] == "AC-DEV-013")
+        self.assertEqual(comparison["title"], "Executor Capability Comparison — Goose CLI vs Freebuff CLI")
+        self.assertEqual(comparison["status"], "DONE")
+        self.assertEqual(comparison["verification_status"], "VERIFIED")
+        self.assertEqual(comparison["evidence_status"], "PARTIAL")
+        self.assertEqual(comparison["dependencies"], ["AC-DEV-011", "AC-DEV-012"])
+
     def test_canonical_owner_authorizations_are_task_specific(self):
         root = Path(__file__).resolve().parents[1]
         backlog = json.loads((root / "development_control/backlog.json").read_text())
