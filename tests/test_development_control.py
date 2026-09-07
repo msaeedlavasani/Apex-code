@@ -79,6 +79,27 @@ class DevelopmentControlPlaneTests(unittest.TestCase):
         self.store.save_backlog(backlog)
         self.assertTrue(plane.readiness("AC-DEV-B")["eligible"])
 
+    def test_persistence_skips_semantically_equal_rewrite_and_refresh_is_idempotent(self):
+        original_bytes = b'{"tasks": [], "revision": 7, "schema_version": 1}\n'
+        self.backlog_path.write_bytes(original_bytes)
+        self.store.save_backlog({"schema_version": 1, "revision": 7, "tasks": []})
+        self.assertEqual(self.backlog_path.read_bytes(), original_bytes)
+
+        prerequisite = task("AC-DEV-A", status="DONE")
+        prerequisite["verification_status"] = "VERIFIED"
+        dependent = task("AC-DEV-B", dependencies=["AC-DEV-A"])
+        plane = self.make_plane([prerequisite, dependent])
+
+        self.assertEqual([item["task_id"] for item in plane.refresh_readiness()], ["AC-DEV-B"])
+        first_bytes = self.backlog_path.read_bytes()
+        first_revision = self.store.load_backlog()["revision"]
+        self.assertEqual([item["task_id"] for item in plane.refresh_readiness()], ["AC-DEV-B"])
+        self.assertEqual(self.backlog_path.read_bytes(), first_bytes)
+        self.assertEqual(self.store.load_backlog()["revision"], first_revision)
+        self.assertEqual([item["task_id"] for item in plane.refresh_readiness()], ["AC-DEV-B"])
+        self.assertEqual(self.backlog_path.read_bytes(), first_bytes)
+        self.assertEqual(self.store.load_backlog()["revision"], first_revision)
+
     def test_batch_is_conflict_safe_and_eligibility_waits_for_next_batch(self):
         first = task("AC-DEV-A", claims=["workspace"])
         second = task("AC-DEV-B", claims=["workspace"])
@@ -250,6 +271,12 @@ class DevelopmentControlPlaneTests(unittest.TestCase):
         self.assertEqual(registry_task["verification_status"], "VERIFIED")
         self.assertEqual(registry_task["evidence_status"], "PARTIAL")
         self.assertEqual(registry_task["dependencies"], ["AC-DEV-011", "AC-DEV-012", "AC-DEV-013", "AC-DEV-014"])
+
+        persistence_task = next(item for item in backlog["tasks"] if item["task_id"] == "AC-DEV-016")
+        self.assertEqual(persistence_task["title"], "Deterministic Canonical Backlog Persistence")
+        self.assertEqual(persistence_task["status"], "DONE")
+        self.assertEqual(persistence_task["verification_status"], "VERIFIED")
+        self.assertEqual(persistence_task["evidence_status"], "PROVEN")
 
     def test_agent_skill_registry_is_executor_neutral_and_preserves_claim_states(self):
         root = Path(__file__).resolve().parents[1]

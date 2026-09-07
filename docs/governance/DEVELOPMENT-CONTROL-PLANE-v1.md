@@ -134,6 +134,11 @@ capability IDs for Task Passports and future routing. Its source mappings are
 evidence claims only; Apex retains task semantics, scheduling, authority, and
 verification, and unsupported mappings remain `NOT_PROVEN`.
 
+Canonical backlog persistence (`AC-DEV-016`) is semantic and idempotent. A
+no-op write preserves existing bytes, actual writes retain insertion order
+instead of sorted-key churn, and readiness refresh advances revision only when
+canonical state changes.
+
 No secrets may appear in backlog, Passports, incidents, attempts, events,
 evidence, or run summaries. Protected-main and CI governance remain mandatory
 for repository changes.

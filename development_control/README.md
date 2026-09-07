@@ -55,3 +55,6 @@ claims as `PARTIAL` or `NOT_PROVEN` where the bounded evidence is incomplete.
 `AC-DEV-015` defines the executor-neutral Agent/Skill Registry v1; registry
 capability IDs may inform Passports and future routing, while Apex retains task
 semantics, scheduling, authority, and verification. ECC remains uninstalled.
+`AC-DEV-016` makes canonical backlog persistence idempotent: no-op readiness
+refreshes preserve backlog bytes and revision, while semantic changes remain
+atomic and history-preserving.

@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "passport_id": "passport_AC-DEV-016_v1",
+  "development_task_id": "AC-DEV-016",
+  "revision": 1,
+  "goal": "Make canonical backlog persistence deterministic and idempotent so readiness and reconciliation do not create non-semantic formatting, key-order, or revision churn.",
+  "scope": [
+    "control-plane JSON persistence semantic no-op detection",
+    "stable backlog serialization without sorted-key reordering",
+    "readiness refresh revision changes only when canonical state semantically changes",
+    "regression coverage for repeated refresh and reconciliation cycles",
+    "preservation of existing backlog task semantics and history"
+  ],
+  "out_of_scope": [
+    "backlog task redesign or history migration",
+    "database or external persistence introduction",
+    "changes to Apex Core Task, Attempt, authority, or verification semantics",
+    "executor-specific integration or provider changes",
+    "discarding unexplained local artifacts or unrelated work"
+  ],
+  "dependencies": ["AC-DEV-001"],
+  "resource_claims": ["repository-control-plane", "canonical-backlog-persistence"],
+  "architecture_constraints": [
+    "Control Plane remains executor-neutral",
+    "backlog revision advances only for semantic canonical-state changes",
+    "existing task semantics, evidence states, dependencies, and history remain preserved",
+    "persistence remains atomic and secret-safe",
+    "repeated no-op readiness/reconciliation is idempotent"
+  ],
+  "acceptance_criteria": [
+    "semantically equal JSON persistence does not rewrite existing bytes",
+    "actual persistence does not reorder existing backlog keys through sorted-key serialization",
+    "repeated refresh_readiness calls leave backlog bytes and revision unchanged after convergence",
+    "regression tests cover repeated refresh/reconciliation cycles",
+    "existing backlog semantics and operational history remain unchanged"
+  ],
+  "validation": [
+    "canonical backlog and Passport JSON validation",
+    "focused control-plane persistence and readiness tests",
+    "repository-wide Python tests and documentation validation",
+    "git diff --check and protected PR CI gate"
+  ],
+  "risk": {"class": "MEDIUM", "reversibility": "HIGH"},
+  "executor_compatibility": {"executors": ["generic-executor"]},
+  "human_gates": [],
+  "evidence_refs": ["docs/evidence/DEVELOPMENT-CONTROL-PERSISTENCE-0021.md"]
+}
