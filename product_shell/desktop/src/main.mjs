@@ -1,8 +1,9 @@
+import { randomBytes } from "node:crypto";
 import { spawn } from "node:child_process";
 import { existsSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { app, BrowserWindow, dialog, ipcMain } from "electron";
+import { app, BrowserWindow, dialog, ipcMain, safeStorage } from "electron";
 import {
   isLoopbackUrl,
   parseServiceUrl,
@@ -11,6 +12,7 @@ import {
   serviceArguments,
   serviceEnvironment,
 } from "./service.mjs";
+import { ProviderVault } from "./provider-vault.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const desktopRoot = path.resolve(__dirname, "..");
@@ -18,6 +20,8 @@ let mainWindow = null;
 let apexService = null;
 let apexServiceUrl = null;
 let shuttingDown = false;
+let providerVault = null;
+const internalToken = randomBytes(32).toString("hex");
 
 if (process.env.APEX_DESKTOP_USER_DATA?.trim()) {
   app.setPath("userData", path.resolve(process.env.APEX_DESKTOP_USER_DATA));
@@ -83,13 +87,45 @@ async function startApexService() {
   }
   apexService = spawn(pythonCommand(), serviceArguments(), {
     cwd: root,
-    env: serviceEnvironment(process.env, root),
+    env: serviceEnvironment(process.env, root, internalToken),
     shell: false,
     stdio: ["ignore", "pipe", "ignore"],
   });
   apexServiceUrl = await waitForService(apexService);
   await healthCheck(apexServiceUrl);
   return { renderer };
+}
+
+async function internalPost(pathname, payload) {
+  if (!apexServiceUrl) throw new Error("Apex Core service is unavailable");
+  const response = await fetch(`${apexServiceUrl}${pathname}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Apex-Internal-Token": internalToken,
+    },
+    body: JSON.stringify(payload),
+  });
+  const body = await response.json();
+  if (!response.ok) throw new Error("Apex provider configuration could not be applied");
+  return body;
+}
+
+async function serviceProviderState() {
+  if (!apexServiceUrl) return null;
+  const response = await fetch(`${apexServiceUrl}/api/providers`);
+  if (!response.ok) throw new Error("Apex provider state is unavailable");
+  return response.json();
+}
+
+async function syncProviderRuntime() {
+  const selection = providerVault?.getSelection();
+  const credential = selection ? providerVault.resolveCredential(selection.provider_id) : null;
+  return internalPost("/api/internal/provider-runtime", {
+    provider_id: selection?.provider_id || "",
+    model_id: selection?.model_id || "",
+    credential,
+  });
 }
 
 async function stopApexService() {
@@ -142,6 +178,32 @@ ipcMain.handle("apex:select-project", async () => {
 });
 
 ipcMain.handle("apex:platform", () => ({ platform: process.platform, arch: process.arch }));
+ipcMain.handle("apex:get-provider-state", async () => providerVault.publicState(await serviceProviderState()));
+ipcMain.handle("apex:set-provider-selection", async (_event, selection) => {
+  providerVault.setSelection(selection?.provider_id, selection?.model_id);
+  await syncProviderRuntime();
+  return providerVault.publicState(await serviceProviderState());
+});
+ipcMain.handle("apex:save-provider-credential", async (_event, input) => {
+  providerVault.saveCredential(input?.provider_id, input?.secret);
+  await syncProviderRuntime();
+  return providerVault.publicState(await serviceProviderState());
+});
+ipcMain.handle("apex:delete-provider-credential", async (_event, providerId) => {
+  providerVault.deleteCredential(providerId);
+  await syncProviderRuntime();
+  return providerVault.publicState(await serviceProviderState());
+});
+ipcMain.handle("apex:test-provider", async () => {
+  const selection = providerVault.getSelection();
+  const credential = selection ? providerVault.resolveCredential(selection.provider_id) : null;
+  if (!selection || !credential) return { status: "NO_CREDENTIAL", message: "Configure a credential before testing this provider." };
+  return internalPost("/api/internal/provider-test", {
+    provider_id: selection.provider_id,
+    model_id: selection.model_id,
+    credential,
+  });
+});
 
 app.on("before-quit", (event) => {
   if (shuttingDown) return;
@@ -153,7 +215,9 @@ app.on("before-quit", (event) => {
 app.whenReady().then(async () => {
   if (!hasInstanceLock || !app.isReady() || shuttingDown) return;
   try {
+    providerVault = new ProviderVault(app.getPath("userData"), safeStorage);
     const { renderer } = await startApexService();
+    await syncProviderRuntime();
     createWindow(renderer);
   } catch {
     await stopApexService();

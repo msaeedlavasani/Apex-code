@@ -22,6 +22,7 @@ type Execution = {
   verification_reason?: string | null;
   artifact?: string | null;
   manifest_id?: string;
+  model_selection?: string;
 };
 
 type Status = {
@@ -33,6 +34,21 @@ type Status = {
 };
 
 type History = { executions: Execution[] };
+
+type ProviderModel = { model_id: string; display_name: string };
+type ProviderRecord = {
+  provider_id: string;
+  display_name: string;
+  configured: boolean;
+  credential_status: string;
+  models: ProviderModel[];
+};
+type ProviderStateData = {
+  providers: ProviderRecord[];
+  selection: { provider_id: string; model_id: string } | null;
+  credential_status: string;
+  secure_storage: string;
+};
 
 const API_BASE = window.__APEX_DESKTOP__?.apiBase || "";
 
@@ -55,6 +71,9 @@ export function ApexOpenWorkShell() {
   const [task, setTask] = useState("report");
   const [artifact, setArtifact] = useState<{ name: string; content: string; sha256?: string } | null>(null);
   const [notice, setNotice] = useState("");
+  const [providerState, setProviderState] = useState<ProviderStateData>({ providers: [], selection: null, credential_status: "NOT_CONFIGURED", secure_storage: "UNAVAILABLE" });
+  const [providerSecret, setProviderSecret] = useState("");
+  const [providerTest, setProviderTest] = useState("");
   const [connectionState, setConnectionState] = useState("CONNECTING");
   const connected = connectionState === "READY";
   const sidebarOpen = useUiStateStore((state) => state.sidebarOpen);
@@ -64,12 +83,17 @@ export function ApexOpenWorkShell() {
   const refresh = useCallback(async () => {
     if (!workspace) return;
     try {
-      const [nextStatus, nextHistory] = await Promise.all([
+      const providerRequest = window.__APEX_DESKTOP__?.getProviderState
+        ? window.__APEX_DESKTOP__.getProviderState()
+        : api<ProviderStateData>("/api/providers");
+      const [nextStatus, nextHistory, nextProviderState] = await Promise.all([
         api<Status>("/api/status"),
         api<History>("/api/history"),
+        providerRequest,
       ]);
       setStatus(nextStatus);
       setHistory(nextHistory);
+      setProviderState(nextProviderState);
       setConnectionState("READY");
     } catch (error) {
       setConnectionState("CORE_UNAVAILABLE");
@@ -95,6 +119,13 @@ export function ApexOpenWorkShell() {
   }, []);
 
   useEffect(() => {
+    const load = window.__APEX_DESKTOP__?.getProviderState
+      ? window.__APEX_DESKTOP__.getProviderState()
+      : api<ProviderStateData>("/api/providers");
+    void load.then(setProviderState).catch(() => setProviderTest("Provider settings unavailable"));
+  }, []);
+
+  useEffect(() => {
     if (!workspace) return;
     void api<Project>(`/api/project?path=${encodeURIComponent(workspace)}`).then(setProject).catch(() => undefined);
     void refresh();
@@ -104,7 +135,10 @@ export function ApexOpenWorkShell() {
 
   const currentExecution = status.execution || history.executions[0] || null;
   const currentState = stateLabel(currentExecution, status.state);
-  const canSubmit = project.selected && status.job_state !== "RUNNING" && currentState !== "RECOVERY_REQUIRED";
+  const selectedProvider = providerState.providers.find((provider) => provider.provider_id === providerState.selection?.provider_id) || providerState.providers[0];
+  const selectedModel = providerState.selection?.model_id || selectedProvider?.models[0]?.model_id || "";
+  const providerReady = !window.__APEX_DESKTOP__ || providerState.credential_status === "CONFIGURED";
+  const canSubmit = project.selected && providerReady && status.job_state !== "RUNNING" && currentState !== "RECOVERY_REQUIRED";
   const visibleEntries = project.entries || [];
   const layoutColumns = useMemo(
     () => `${sidebarOpen ? layout.leftSidebarWidth : 0}px minmax(0, 1fr) ${layout.rightSidebarWidth}px`,
@@ -132,6 +166,68 @@ export function ApexOpenWorkShell() {
       setArtifact(await api(`/api/artifact?name=${encodeURIComponent(name)}`));
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Artifact unavailable");
+    }
+  }
+
+  async function selectProvider(providerId: string) {
+    const provider = providerState.providers.find((item) => item.provider_id === providerId);
+    const modelId = provider?.models[0]?.model_id || "";
+    if (!window.__APEX_DESKTOP__ || !modelId) return;
+    try {
+      setProviderState(await window.__APEX_DESKTOP__.setProviderSelection({ provider_id: providerId, model_id: modelId }));
+      setProviderTest("");
+      setNotice("Provider selection saved");
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Provider selection failed");
+    }
+  }
+
+  async function selectModel(modelId: string) {
+    const providerId = providerState.selection?.provider_id || selectedProvider?.provider_id;
+    if (!window.__APEX_DESKTOP__ || !providerId) return;
+    try {
+      setProviderState(await window.__APEX_DESKTOP__.setProviderSelection({ provider_id: providerId, model_id: modelId }));
+      setProviderTest("");
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Model selection failed");
+    }
+  }
+
+  async function saveProviderCredential() {
+    const providerId = providerState.selection?.provider_id || selectedProvider?.provider_id;
+    if (!window.__APEX_DESKTOP__ || !providerId || !providerSecret) return;
+    try {
+      if (!providerState.selection) {
+        setProviderState(await window.__APEX_DESKTOP__.setProviderSelection({ provider_id: providerId, model_id: selectedModel }));
+      }
+      setProviderState(await window.__APEX_DESKTOP__.saveProviderCredential({ provider_id: providerId, secret: providerSecret }));
+      setProviderSecret("");
+      setProviderTest("");
+      setNotice("Credential saved in OS-backed secure storage");
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Credential could not be saved");
+    }
+  }
+
+  async function testProvider() {
+    if (!window.__APEX_DESKTOP__) return;
+    try {
+      const result = await window.__APEX_DESKTOP__.testProvider();
+      setProviderTest(`${result.status}: ${result.message}`);
+    } catch (error) {
+      setProviderTest(error instanceof Error ? error.message : "Provider test failed");
+    }
+  }
+
+  async function deleteProviderCredential() {
+    const providerId = providerState.selection?.provider_id || selectedProvider?.provider_id;
+    if (!window.__APEX_DESKTOP__ || !providerId) return;
+    try {
+      setProviderState(await window.__APEX_DESKTOP__.deleteProviderCredential(providerId));
+      setProviderTest("");
+      setNotice("Credential removed; ambient credentials are not used");
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Credential could not be removed");
     }
   }
 
@@ -184,6 +280,19 @@ export function ApexOpenWorkShell() {
               <button id="submit-task" type="submit" disabled={!canSubmit}>Submit bounded task</button>
             </form>
           </div>
+          <div className="ow-provider-card" data-openwork-surface="provider-settings">
+            <div className="ow-card-kicker">AI PROVIDER SETTINGS</div>
+            <h2>Choose the model for future Attempts</h2>
+            {window.__APEX_DESKTOP__ ? <>
+              <div className="ow-provider-grid">
+                <label>Provider<select id="provider-select" value={selectedProvider?.provider_id || ""} onChange={(event) => void selectProvider(event.target.value)}>{providerState.providers.map((provider) => <option key={provider.provider_id} value={provider.provider_id}>{provider.display_name}</option>)}</select></label>
+                <label>Model<select id="model-select" value={selectedModel} onChange={(event) => void selectModel(event.target.value)}>{(selectedProvider?.models || []).map((model) => <option key={model.model_id} value={model.model_id}>{model.display_name}</option>)}</select></label>
+              </div>
+              <div className="ow-provider-status"><span>Credential</span><strong>{providerState.credential_status}</strong><small>{providerState.secure_storage}</small></div>
+              <div className="ow-provider-actions"><input id="provider-secret" type="password" autoComplete="off" value={providerSecret} onChange={(event) => setProviderSecret(event.target.value)} placeholder="Enter provider credential" aria-label="Provider credential" /><button className="ow-secondary" type="button" onClick={() => void saveProviderCredential()} disabled={!providerSecret}>Save credential</button><button className="ow-secondary" type="button" onClick={() => void testProvider()} disabled={providerState.credential_status !== "CONFIGURED"}>Test connection</button><button className="ow-secondary" type="button" onClick={() => void deleteProviderCredential()} disabled={providerState.credential_status !== "CONFIGURED"}>Remove</button></div>
+              {providerTest && <div className="ow-provider-result" role="status">{providerTest}</div>}
+            </> : <p className="ow-muted">Credential settings are desktop-only. The browser harness never persists credentials.</p>}
+          </div>
           <div className="ow-result-card" data-openwork-surface="result-view">
             <div className="ow-card-kicker">CORE RESULT</div>
             {currentExecution ? <div className="ow-metrics">
@@ -193,6 +302,7 @@ export function ApexOpenWorkShell() {
               <div><small>Attempt</small><strong className="mono">{currentExecution.attempt_id}</strong></div>
               <div><small>Verification</small><strong>{currentExecution.verification || "NOT_RUN"}</strong></div>
               <div><small>Artifact</small><strong>{currentExecution.artifact || "None"}</strong></div>
+              <div><small>Provider / model</small><strong>{currentExecution.model_selection || "NOT_CONFIGURED"}</strong></div>
             </div> : <span className="ow-muted">No Core execution selected.</span>}
             {currentExecution?.artifact && <button className="ow-secondary" data-artifact={currentExecution.artifact} onClick={() => void showArtifact(currentExecution.artifact!)}>View verified artifact</button>}
             {artifact && <pre className="ow-artifact-preview artifact-preview" aria-label="Verified artifact">{artifact.content}</pre>}

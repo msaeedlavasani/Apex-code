@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import argparse
+import hmac
 import json
 import mimetypes
+import os
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -40,6 +42,8 @@ class _ShellHandler(BaseHTTPRequestHandler):
                 if query.get("path"):
                     self.application.open_project(query["path"][0])
                 self._json_response(self.application.project_summary())
+            elif parsed.path == "/api/providers":
+                self._json_response(self.application.provider_state())
             elif parsed.path == "/api/status":
                 self._json_response(self.application.status())
             elif parsed.path == "/api/history":
@@ -56,6 +60,34 @@ class _ShellHandler(BaseHTTPRequestHandler):
     def do_POST(self) -> None:  # noqa: N802 - stdlib handler API
         parsed = urlparse(self.path)
         try:
+            if parsed.path.startswith("/api/internal/"):
+                if not self._internal_authorized():
+                    self._json_response({"error": "not found"}, HTTPStatus.NOT_FOUND)
+                    return
+                body = self._read_json()
+                if parsed.path == "/api/internal/provider-runtime":
+                    if not body.get("provider_id") or not body.get("model_id"):
+                        self._json_response(self.application.clear_provider_runtime())
+                        return
+                    self._json_response(
+                        self.application.configure_provider(
+                            str(body.get("provider_id", "")),
+                            str(body.get("model_id", "")),
+                            body.get("credential") if isinstance(body.get("credential"), str) else None,
+                        )
+                    )
+                    return
+                if parsed.path == "/api/internal/provider-test":
+                    self._json_response(
+                        self.application.test_provider_configuration(
+                            str(body.get("provider_id", "")),
+                            str(body.get("model_id", "")),
+                            body.get("credential") if isinstance(body.get("credential"), str) else None,
+                        )
+                    )
+                    return
+                self._json_response({"error": "not found"}, HTTPStatus.NOT_FOUND)
+                return
             body = self._read_json()
             if parsed.path == "/api/project":
                 self._json_response(self.application.open_project(body.get("path", "")))
@@ -78,6 +110,11 @@ class _ShellHandler(BaseHTTPRequestHandler):
         if not isinstance(data, dict):
             raise ValueError("request body must be an object")
         return data
+
+    def _internal_authorized(self) -> bool:
+        expected = os.environ.get("APEX_INTERNAL_TOKEN", "")
+        supplied = self.headers.get("X-Apex-Internal-Token", "")
+        return bool(expected) and hmac.compare_digest(supplied, expected)
 
     def _static_response(self, path: Path) -> None:
         if not path.is_file():

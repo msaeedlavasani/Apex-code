@@ -27,6 +27,12 @@ test("desktop service environment excludes ambient credentials", () => {
   assert.equal(Object.hasOwn(env, "SECRET_TOKEN"), false);
 });
 
+test("desktop service receives only its internal broker token explicitly", () => {
+  const env = serviceEnvironment({ PATH: "/bin", OPENAI_API_KEY: "must-not-pass" }, "/tmp/apex-runtime", "broker-token");
+  assert.equal(env.APEX_INTERNAL_TOKEN, "broker-token");
+  assert.equal(Object.hasOwn(env, "OPENAI_API_KEY"), false);
+});
+
 test("packaged and development roots are deterministic", () => {
   const desktopRoot = "/repo/product_shell/desktop";
   assert.equal(runtimeRoot({ isPackaged: false, resourcesPath: "/resources", desktopRoot }), "/repo");

@@ -11,7 +11,6 @@ import os
 import subprocess
 import tempfile
 from pathlib import Path
-
 from .contract import RuntimeExecution, RuntimeFact, RuntimeIdentity, RuntimePreparation
 
 
@@ -23,9 +22,30 @@ class OpenCodeRuntimeAdapter:
     REPORT.md is created only by Apex Core after verification.
     """
 
-    def __init__(self, executable: str = "opencode", model: str = "opencode/big-pickle") -> None:
+    PROVIDER_ENV = {
+        "openai": "OPENAI_API_KEY",
+        "anthropic": "ANTHROPIC_API_KEY",
+        "openrouter": "OPENROUTER_API_KEY",
+        "opencode": None,
+    }
+
+    def __init__(
+        self,
+        executable: str = "opencode",
+        model: str = "opencode/big-pickle",
+        provider_id: str | None = None,
+        credential: str | None = None,
+    ) -> None:
         self.executable = executable
-        self.model = model
+        if provider_id is None:
+            provider_id, _, model_id = model.partition("/")
+            model_id = model_id or model
+        else:
+            model_id = model
+        self.provider_id = provider_id
+        self.model_id = model_id
+        self.model = f"{provider_id}/{model_id}"
+        self.credential = credential
 
     @staticmethod
     def _permission_config() -> dict[str, object]:
@@ -44,6 +64,7 @@ class OpenCodeRuntimeAdapter:
         root = Path(tempfile.mkdtemp(prefix="apex-opencode-slice-"))
         config_path = root / "opencode.json"
         config = self._permission_config()
+        config["model"] = self.model
         config_path.write_text(json.dumps(config, sort_keys=True, indent=2) + "\n", encoding="utf-8")
         # The digest is carried in a separate file so Core can attest exactly
         # which authority revision the launch preparation referenced.
@@ -65,7 +86,8 @@ class OpenCodeRuntimeAdapter:
         config_dir = preparation.config_dir
         materialized_digest = preparation.authority_digest
         config = self._permission_config()
-        env = self._safe_environment(config_dir, config)
+        config["model"] = self.model
+        env = self._safe_environment(config_dir, config, self.provider_id, self.credential)
         command = (
             self.executable,
             "run",
@@ -123,8 +145,73 @@ class OpenCodeRuntimeAdapter:
             command=command[:-1] + ("<prompt>",),
         )
 
+    def test_connection(self) -> dict[str, str]:
+        """Run a bounded provider probe without creating Apex execution state."""
+        if not self.credential:
+            return {"status": "NO_CREDENTIAL", "message": "Configure a credential before testing this provider."}
+        root = Path(tempfile.mkdtemp(prefix="apex-provider-test-"))
+        preparation = self.materialize_authority("provider-test")
+        command = (
+            self.executable,
+            "run",
+            "--pure",
+            "--model",
+            self.model,
+            "--format",
+            "json",
+            "Return the word VALID and nothing else.",
+        )
+        try:
+            completed = subprocess.run(
+                command,
+                cwd=root,
+                env=self._safe_environment(preparation.config_dir, self._permission_config(), self.provider_id, self.credential),
+                capture_output=True,
+                text=True,
+                check=False,
+                timeout=30,
+            )
+        except subprocess.TimeoutExpired:
+            return {"status": "PROVIDER_UNAVAILABLE", "message": "The provider test timed out."}
+        except OSError:
+            return {"status": "PROVIDER_UNAVAILABLE", "message": "The OpenCode runtime is unavailable."}
+        if completed.returncode == 0:
+            return {"status": "VALID", "message": "Provider configuration accepted."}
+        detail = self._redacted_failure(completed.stderr, completed.stdout)
+        return {"status": self._classify_failure(detail), "message": detail}
+
     @staticmethod
-    def _safe_environment(config_dir: str, config: dict[str, object]) -> dict[str, str]:
+    def _redacted_failure(stderr: str, stdout: str) -> str:
+        text = " ".join((stderr or "").split() + (stdout or "").split()).lower()
+        if any(token in text for token in ("401", "403", "unauthorized", "invalid api", "authentication", "api key")):
+            return "Provider rejected the credential."
+        if "429" in text or "rate limit" in text:
+            return "Provider rate limit reached."
+        if any(token in text for token in ("timeout", "timed out", "econn", "network", "unreachable")):
+            return "Provider network request failed."
+        if "model" in text and any(token in text for token in ("not found", "unavailable", "invalid")):
+            return "Selected model is unavailable."
+        return "Provider test failed without a safe diagnostic."
+
+    @staticmethod
+    def _classify_failure(message: str) -> str:
+        if "credential" in message.lower():
+            return "INVALID_CREDENTIAL"
+        if "rate limit" in message.lower():
+            return "RATE_LIMITED"
+        if "model" in message.lower():
+            return "MODEL_UNAVAILABLE"
+        if "network" in message.lower():
+            return "NETWORK_ERROR"
+        return "UNKNOWN"
+
+    @staticmethod
+    def _safe_environment(
+        config_dir: str,
+        config: dict[str, object],
+        provider_id: str | None = None,
+        credential: str | None = None,
+    ) -> dict[str, str]:
         """Build a minimal child environment for Core-mediated execution.
 
         Ambient user variables, credentials, and repository-specific
@@ -147,7 +234,7 @@ class OpenCodeRuntimeAdapter:
                 if item
             )
         )
-        return {
+        environment = {
             "PATH": path,
             "HOME": config_dir,
             "TERM": "dumb",
@@ -158,3 +245,7 @@ class OpenCodeRuntimeAdapter:
             "XDG_CACHE_HOME": os.path.join(config_dir, "cache"),
             "XDG_STATE_HOME": os.path.join(config_dir, "state"),
         }
+        credential_env = OpenCodeRuntimeAdapter.PROVIDER_ENV.get(provider_id or "")
+        if credential_env and credential:
+            environment[credential_env] = credential
+        return environment

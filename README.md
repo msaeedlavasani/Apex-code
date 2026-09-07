@@ -57,3 +57,13 @@ same OpenWork renderer, and does not become an execution or authority owner.
 Packaging is currently an unsigned, development-quality macOS directory app;
 signing, notarization, and distribution automation are intentionally out of
 scope.
+
+Provider/model settings are available in the desktop shell for the bounded
+OpenCode MVP. The desktop main process stores credentials with OS-backed
+Electron `safeStorage` when available and exposes only configured status to the
+renderer. Provider/model selection is non-secret product intent; Core records
+the selected provider/model provenance while the RuntimeAdapter injects only
+the selected credential into a sanitized child environment. There is no
+ambient credential fallback. See
+[Provider Architecture](docs/apex/PROVIDER-ARCHITECTURE.md) and
+[BYOK evidence](docs/evidence/PROVIDER-BYOK-0013.md).

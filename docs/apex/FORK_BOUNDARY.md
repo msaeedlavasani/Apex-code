@@ -52,7 +52,7 @@ Alternatives rejected for this bounded slice:
 | `@openwork/sdk` | `DEFER` | Not needed by the current local application seam. | Reconsider only with a bounded adapter review. |
 | `@openwork/types` | `ADAPT_BEHIND_APEX_SEAM` | UI concepts may inform presentation types, but Apex frozen Task/Attempt/Manifest types remain canonical. | Do not leak OpenWork runtime/provider types into Core. |
 | `@openwork/headless-threads` | `REJECT` for this slice | OpenCode/session transport remains behind Apex RuntimeAdapter. | No upstream session state becomes Apex execution truth. |
-| OpenCode/MCP/provider surfaces | `DEFER` | Existing Apex default OpenCode composition remains the runtime path. | Provider UI is not expanded in this mission. |
+| OpenCode/MCP/provider surfaces | `ADAPT_BEHIND_APEX_SEAM` | Provider/model settings are exposed as non-secret Apex product intent; credential resolution and OpenCode materialization remain behind the desktop broker and RuntimeAdapter. | Do not import OpenWork provider/session authority or direct credential storage. |
 | `ee/` and Enterprise-only packages | `REJECT` | Not imported or required. | `LicenseRef-OpenWork-EE`; excluded. |
 
 ## Apex integration boundary
