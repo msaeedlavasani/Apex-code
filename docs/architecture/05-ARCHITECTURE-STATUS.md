@@ -4,6 +4,7 @@ Status vocabulary: **FROZEN**, **FREEZE_CANDIDATE**, **PROPOSED**, **INFERENCE**
 
 Reconciliation trace: [Architecture Reconciliation 0001](../evidence/ARCHITECTURE-RECONCILIATION-0001.md)
 and the [comparative harvest](../evidence/AGENTIC-DEVELOPMENT-SYSTEMS-COMPARATIVE-HARVEST.md).
+Bounded cross-substrate trace: [Goose E2E Conformance 0006](../evidence/GOOSE-E2E-CONFORMANCE-0006.md).
 
 - **FROZEN**: intentionally fixed as current architecture law.
 - **FREEZE_CANDIDATE**: accepted direction that remains subject to contract refinement.
@@ -33,18 +34,23 @@ and the [comparative harvest](../evidence/AGENTIC-DEVELOPMENT-SYSTEMS-COMPARATIV
 | Runtime-specific session identifiers remain adapter-specific | FROZEN | Native session/process behavior stays in substrates. |
 | AuthorityRevision is immutable | FROZEN | Prior authority history is not mutated. |
 | Runtime completion != Task success | FROZEN | Core verification derives semantic Task state. |
+| RuntimeFact vocabulary and runtime fact != semantic success | FROZEN | Bounded vocabulary and Core-owned interpretation are exercised through OpenCode and Goose; see [Goose E2E Conformance 0006](../evidence/GOOSE-E2E-CONFORMANCE-0006.md). |
 | UNKNOWN is a valid semantic state | FROZEN | Unknown information must be preserved. |
 | Task/Attempt/Authority execution primitives belong to Apex Core, not DPT | FROZEN | Capabilities extend but do not replace Core primitives. |
 | Public command API and receipts | FREEZE_CANDIDATE | Conceptual contract pending implementation. |
 | Full Execution Model v1 | FREEZE_CANDIDATE | Lifecycle and authority sequencing are design requirements; implementation guarantee remains NOT_PROVEN. |
 | Execution API v1 | FREEZE_CANDIDATE | Conceptual surface pending contract refinement. |
-| Runtime Adapter API / SPI | FREEZE_CANDIDATE | Bounded Runtime Adapter Contract v1 exists and is tested; stable cross-substrate API/SPI and guarantees remain under refinement. |
+| Runtime Adapter API / SPI, bounded contract | FROZEN | OpenCode and Goose both map preparation, opaque identity, substrate facts, result transport, and Core verification through the bounded contract. Universal runtime conformance, cancellation, recovery, and substrate authority attestation remain outside this status. See [Goose E2E Conformance 0006](../evidence/GOOSE-E2E-CONFORMANCE-0006.md). |
+| RuntimeIdentity/correlation, bounded opaque fields | FROZEN | Adapter-native identity components are optional and are not Apex Attempt identity; exact cross-restart identity binding remains NOT_PROVEN. |
 | Runtime lanes/session binding details | PROPOSED | Requires implementation evidence. |
+| EventEnvelope, typed/versioned and ledger-local ordering | FROZEN | Bounded durable Core events use typed/versioned envelopes with ledger-local ordering; global ordering remains NOT_PROVEN. See [Event Envelope 0001](../evidence/EVENT-ENVELOPE-0001.md) and [Goose E2E Conformance 0006](../evidence/GOOSE-E2E-CONFORMANCE-0006.md). |
+| ResourceClaim, bounded single-controller workspace exclusion | FROZEN | Core rejects conflicting workspace claims and releases bounded claims after known termination; distributed leases and stale reclamation remain NOT_PROVEN. See [Workspace Claim Enforcement 0001](../evidence/WORKSPACE-CLAIM-ENFORCEMENT-0001.md) and [Goose E2E Conformance 0006](../evidence/GOOSE-E2E-CONFORMANCE-0006.md). |
+| Independent Core artifact verification, bounded fixture | FROZEN | Core verifies the exact artifact after adapter execution and before semantic success; general independent semantic verification remains NOT_PROVEN. See [Independent Verification Bound 0001](../evidence/INDEPENDENT-VERIFICATION-BOUND-0001.md) and [Goose E2E Conformance 0006](../evidence/GOOSE-E2E-CONFORMANCE-0006.md). |
 | Core Reconciliation Loop | FREEZE_CANDIDATE | Core concept for comparing durable Attempt state, adapter facts, authority, and resource ownership; controller-loss behavior is not proven. |
 | Projection Protocol / Layer | FREEZE_CANDIDATE | Non-authoritative consumer of canonical Core state and Events; visual/spatial implementation is not implied. |
 | Authority activation and RuntimeLane/Attempt binding guarantee | NOT_PROVEN | Required sequencing is canonical; complete materialization, activation verification, and exact binding lack direct implementation evidence. |
 | Controller-loss reconciliation guarantee | NOT_PROVEN | Startup recovery, stale/orphaned lane handling, and duplicate-start prevention remain unproven. |
-| Independent semantic verification implementation | NOT_PROVEN | Core Verification is required conceptually, but implementation evidence for independent semantic verification does not exist. |
+| Independent semantic verification implementation, general scope | NOT_PROVEN | A bounded independent artifact verifier is frozen separately; general semantic verification, independent judge infrastructure, and advanced verification remain unproven. |
 
 ## Evidence discipline
 
