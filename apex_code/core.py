@@ -14,6 +14,7 @@ from typing import Any
 
 from .contract import RuntimeAdapter, RuntimeExecution, RuntimeFact, RuntimeIdentity
 from .events import EventEnvelope
+from .verification import BoundedArtifactVerifier
 
 
 class SafetyError(RuntimeError):
@@ -555,8 +556,9 @@ class ExecutionCoordinator:
             if artifact_path.exists() and artifact_path.is_symlink():
                 raise AuthorityDenied("existing REPORT.md symlink denied")
             artifact_path.write_text(report, encoding="utf-8")
-            verified = artifact_path.read_text(encoding="utf-8") == report
-            verification_reason = "Core verified exact bounded artifact write and readback"
+            verification = BoundedArtifactVerifier.verify(workspace, spec.output_name, artifact_path, report)
+            verified = verification.passed
+            verification_reason = verification.reason
         semantic_success = bool(verified)
         task.semantic_state = "SUCCEEDED" if semantic_success else "UNKNOWN"
         attempt.status = "SUCCEEDED" if semantic_success else "FAILED"
