@@ -124,6 +124,11 @@ as replaceable candidates and does not select a permanent executor. ECC is not
 installed. These probes do not transfer task authority to Goose or Freebuff or
 change the Apex Core boundary.
 
+The follow-on extension audit (`AC-DEV-014`) records the Freebuff agent/skill
+surface as partial and preserves exact catalogs, dedicated skills, overrides,
+packaging, and child routing as `NOT_PROVEN`. It reuses the bounded evidence
+without installing ECC or changing executor neutrality.
+
 No secrets may appear in backlog, Passports, incidents, attempts, events,
 evidence, or run summaries. Protected-main and CI governance remain mandatory
 for repository changes.

@@ -70,6 +70,12 @@ per-task routing remain `NOT_PROVEN`. AC-DEV-013 completed with `VERIFIED`
 workflow status and `PARTIAL` evidence, depends on AC-DEV-011 and AC-DEV-012,
 and keeps executor choice open.
 
+AC-DEV-014 completed with `VERIFIED` workflow status and `PARTIAL` evidence.
+Its extension audit confirms only the bounded parent/source surfaces and keeps
+exact native catalogs, dedicated skills, overrides, packaging, and child
+routing `NOT_PROVEN`. It depends on AC-DEV-012 and AC-DEV-013; no ECC was
+installed and no executor was selected.
+
 ## Boundary checks
 
 The implementation is separate from `apex_code/` and does not import Core
