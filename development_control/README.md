@@ -36,5 +36,6 @@ the bounded autonomous loop.
 
 The seeded backlog is repository evidence, not permission to claim unresolved
 guarantees. `NOT_PROVEN`, `UNKNOWN`, and `NOT_RUN` remain visible. The Goose
-parallel-delegation item (`AC-DEV-007`) is seeded but intentionally not run by
-this materialization Delta.
+UI/Desktop parallel-delegation item (`AC-DEV-007`) was later evaluated in
+`GOOSE-UI-DELEGATION-0015`; its task is verified with `PARTIAL` evidence, while
+the unproven UI capabilities remain explicitly unproven.
