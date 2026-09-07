@@ -70,6 +70,25 @@ class MismatchedPreparationAdapter(FakeAdapter):
         )
 
 
+class SummaryAdapter(FakeAdapter):
+    def execute(
+        self,
+        prompt: str,
+        workspace: Path,
+        preparation: RuntimePreparation,
+    ) -> RuntimeExecution:
+        return RuntimeExecution(
+            identity=RuntimeIdentity(session_id="ses_summary"),
+            fact=RuntimeFact.EXITED,
+            exit_code=0,
+            text="SUMMARY_CONTENT_BEGIN\n# Safe summary\nGenerated from README.\nSUMMARY_CONTENT_END",
+            event_count=1,
+            authority_config_digest=preparation.authority_digest,
+            preparation_id=preparation.preparation_id,
+            command=("fake", "<prompt>"),
+        )
+
+
 class VerticalSliceTests(unittest.TestCase):
     def test_core_verifies_before_marking_success(self) -> None:
         with tempfile.TemporaryDirectory() as root:
@@ -98,6 +117,16 @@ class VerticalSliceTests(unittest.TestCase):
             (workspace / "README.md").write_text("# Example\n", encoding="utf-8")
             with self.assertRaisesRegex(SafetyError, "preparation identity mismatch"):
                 ExecutionCoordinator(MismatchedPreparationAdapter()).run_report(workspace)  # type: ignore[arg-type]
+            self.assertFalse((workspace / "REPORT.md").exists())
+
+    def test_second_bounded_artifact_shape_uses_same_core_pipeline(self) -> None:
+        with tempfile.TemporaryDirectory() as root:
+            workspace = Path(root)
+            (workspace / "README.md").write_text("# Example\n", encoding="utf-8")
+            result = ExecutionCoordinator(SummaryAdapter()).run_summary(workspace)  # type: ignore[arg-type]
+            self.assertTrue(result["semantic_success"])
+            self.assertEqual(result["artifact"], "SUMMARY.md")
+            self.assertEqual((workspace / "SUMMARY.md").read_text(encoding="utf-8"), "# Safe summary\nGenerated from README.\n")
             self.assertFalse((workspace / "REPORT.md").exists())
 
 

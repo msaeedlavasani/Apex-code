@@ -136,6 +136,17 @@ class Attempt:
     result: dict[str, Any] | None = None
 
 
+@dataclass(frozen=True)
+class ArtifactTaskSpec:
+    """Internal bounded task shape for a single authorized artifact output."""
+
+    objective: str
+    input_name: str
+    output_name: str
+    begin_marker: str
+    end_marker: str
+
+
 class ExecutionLedger:
     """Small atomic JSON ledger for sufficient slice evidence."""
 
@@ -328,19 +339,25 @@ class ExecutionCoordinator:
         self.adapter = adapter
 
     @staticmethod
-    def _authority() -> AuthorityRevision:
+    def _authority(input_name: str = "README.md", output_name: str = "REPORT.md") -> AuthorityRevision:
         return AuthorityRevision(
-            authority_revision_id="ar_slice_report_001",
+            authority_revision_id=f"ar_bounded_{digest({'input': input_name, 'output': output_name})[:16]}",
             envelope=PermissionEnvelope(
-                read_paths=("README.md",),
-                write_paths=("REPORT.md",),
+                read_paths=(input_name,),
+                write_paths=(output_name,),
                 denied_paths=("../**", "~/.ssh/**", "~/.aws/**", "~/.config/**"),
             ),
             created_at=now(),
         )
 
     @staticmethod
-    def _safe_path(workspace: Path, relative: str, operation: str) -> Path:
+    def _safe_path(
+        workspace: Path,
+        relative: str,
+        operation: str,
+        input_name: str = "README.md",
+        output_name: str = "REPORT.md",
+    ) -> Path:
         root = workspace.resolve()
         raw = root / relative
         if raw.is_symlink():
@@ -348,21 +365,51 @@ class ExecutionCoordinator:
         candidate = raw.resolve()
         if candidate.parent != root or candidate == root:
             raise AuthorityDenied(f"{operation} denied outside bounded workspace: {relative}")
-        if operation == "read" and relative != "README.md":
+        if operation == "read" and relative != input_name:
             raise AuthorityDenied(f"read denied by PermissionEnvelope: {relative}")
-        if operation == "write" and relative != "REPORT.md":
+        if operation == "write" and relative != output_name:
             raise AuthorityDenied(f"write denied by PermissionEnvelope: {relative}")
         return candidate
 
     def run_report(self, workspace: Path) -> dict[str, Any]:
+        return self.run_artifact_task(
+            workspace,
+            ArtifactTaskSpec(
+                objective="Inspect README and create REPORT.md",
+                input_name="README.md",
+                output_name="REPORT.md",
+                begin_marker="REPORT_CONTENT_BEGIN",
+                end_marker="REPORT_CONTENT_END",
+            ),
+        )
+
+    def run_summary(self, workspace: Path) -> dict[str, Any]:
+        return self.run_artifact_task(
+            workspace,
+            ArtifactTaskSpec(
+                objective="Inspect README and create SUMMARY.md",
+                input_name="README.md",
+                output_name="SUMMARY.md",
+                begin_marker="SUMMARY_CONTENT_BEGIN",
+                end_marker="SUMMARY_CONTENT_END",
+            ),
+        )
+
+    def run_artifact_task(self, workspace: Path, spec: ArtifactTaskSpec) -> dict[str, Any]:
         workspace = workspace.resolve()
         if not workspace.is_dir():
             raise SafetyError(f"workspace missing: {workspace}")
+        if not spec.input_name or Path(spec.input_name).name != spec.input_name:
+            raise SafetyError("input must be one workspace file")
+        if not spec.output_name or Path(spec.output_name).name != spec.output_name:
+            raise SafetyError("output must be one workspace file")
+        if spec.input_name == spec.output_name:
+            raise SafetyError("input and output must differ")
         ledger = ExecutionLedger(workspace / "execution-ledger.json")
-        request = ExecutionRequest(new_id("req"), "Inspect README and create REPORT.md", str(workspace))
+        request = ExecutionRequest(new_id("req"), spec.objective, str(workspace))
         execution = Execution(new_id("exec"), request.request_id)
         task = Task(new_id("task"), execution.execution_id, request.objective)
-        authority = self._authority()
+        authority = self._authority(spec.input_name, spec.output_name)
         attempt_id = new_id("att")
         epoch_id = new_id("epoch")
         lane = RuntimeLane(new_id("lane"), attempt_id, str(workspace), now())
@@ -374,7 +421,7 @@ class ExecutionCoordinator:
             agent_selection="opencode-worker",
             model_selection=self.adapter.model,
             runtime_requirement="text-worker-no-runtime-filesystem-io",
-            workspace_snapshot=digest({"workspace": str(workspace), "read": "README.md"}),
+            workspace_snapshot=digest({"workspace": str(workspace), "read": spec.input_name}),
             created_at=now(),
         )
         attempt = Attempt(attempt_id, task.task_id, epoch_id, "CREATED", manifest, lane, authority)
@@ -402,7 +449,7 @@ class ExecutionCoordinator:
         ledger.event("manifest.created", {"manifest_id": manifest.manifest_id, "immutable": True})
         ledger.claim_attempt_start(attempt_id, manifest.manifest_id, lane.runtime_lane_id)
 
-        readme_path = self._safe_path(workspace, "README.md", "read")
+        readme_path = self._safe_path(workspace, spec.input_name, "read", spec.input_name, spec.output_name)
         readme = readme_path.read_text(encoding="utf-8")
         if not readme.strip():
             raise SafetyError("README.md is empty")
@@ -445,7 +492,7 @@ class ExecutionCoordinator:
         ledger.put("attempts", attempt_id, {**ledger.data["attempts"][attempt_id], "status": attempt.status, "barrier": attempt.barrier})
         ledger.event("execution.barrier_released", {"attempt_id": attempt_id, "mode": authority_evidence.binding_mode})
 
-        prompt = self._prompt(readme)
+        prompt = self._prompt(readme, spec)
         runtime: RuntimeExecution = self.adapter.execute(
             prompt,
             workspace,
@@ -465,12 +512,12 @@ class ExecutionCoordinator:
                 "exit_code": runtime.exit_code,
             },
         )
-        report = self._extract_report(runtime.text)
+        report = self._extract_report(runtime.text, spec)
         verified = False
         artifact_path: Path | None = None
         verification_reason = "runtime completion is not semantic success"
         if runtime.fact is RuntimeFact.EXITED and runtime.exit_code == 0 and report:
-            artifact_path = self._safe_path(workspace, "REPORT.md", "write")
+            artifact_path = self._safe_path(workspace, spec.output_name, "write", spec.input_name, spec.output_name)
             if artifact_path.exists() and artifact_path.is_symlink():
                 raise AuthorityDenied("existing REPORT.md symlink denied")
             artifact_path.write_text(report, encoding="utf-8")
@@ -489,7 +536,7 @@ class ExecutionCoordinator:
             "semantic_success": semantic_success,
             "verification": "PASS" if verified else "FAIL",
             "verification_reason": verification_reason,
-            "artifact": "REPORT.md" if artifact_path else None,
+            "artifact": spec.output_name if artifact_path else None,
             "authority_binding": "CORE_MEDIATED_NO_RUNTIME_IO",
             "substrate_authority_activation": "NOT_PROVEN",
         }
@@ -498,7 +545,7 @@ class ExecutionCoordinator:
         ledger.put("attempts", attempt_id, {**ledger.data["attempts"][attempt_id], "status": attempt.status, "runtime_session_id": runtime.session_id})
         ledger.update_fence(attempt_id, "RELEASED" if semantic_success else "QUARANTINED")
         if artifact_path:
-            ledger.put("artifacts", "REPORT.md", {"path": "REPORT.md", "sha256": sha256_file(artifact_path), "attempt_id": attempt_id})
+            ledger.put("artifacts", spec.output_name, {"path": spec.output_name, "sha256": sha256_file(artifact_path), "attempt_id": attempt_id})
         ledger.event("verification.completed", {"attempt_id": attempt_id, "result": result["verification"]})
         ledger.event("task.semantic_state", {"task_id": task.task_id, "state": task.semantic_state})
         return {
@@ -518,28 +565,29 @@ class ExecutionCoordinator:
         }
 
     @staticmethod
-    def _prompt(readme: str) -> str:
+    def _prompt(readme: str, spec: ArtifactTaskSpec) -> str:
         return (
             "You are a bounded report-writing worker. Do not use tools and do not read or write files. "
             "Using only the README content supplied below, return exactly a concise Markdown report "
-            "between the markers REPORT_CONTENT_BEGIN and REPORT_CONTENT_END. The report must state "
+            f"between the markers {spec.begin_marker} and {spec.end_marker}. The report must state "
             "the repository/product name, its purpose, and that this report was generated by the "
             "Apex Code safe vertical slice. Do not include any other markers or tool calls.\n\n"
             "README CONTENT:\n---\n"
             + readme
             + "\n---\n"
-            "REPORT_CONTENT_BEGIN\n"
-            "REPORT_CONTENT_END"
+            + spec.begin_marker
+            + "\n"
+            + spec.end_marker
         )
 
     @staticmethod
-    def _extract_report(text: str) -> str | None:
-        start = "REPORT_CONTENT_BEGIN"
-        end = "REPORT_CONTENT_END"
+    def _extract_report(text: str, spec: ArtifactTaskSpec) -> str | None:
+        start = spec.begin_marker
+        end = spec.end_marker
         if start not in text or end not in text:
             return None
         body = text.split(start, 1)[1].split(end, 1)[0].strip()
-        if not body or "REPORT_CONTENT_BEGIN" in body or "REPORT_CONTENT_END" in body:
+        if not body or start in body or end in body:
             return None
         return body + "\n"
 
