@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any
 
 from .contract import RuntimeAdapter, RuntimeExecution, RuntimeFact
+from .events import EventEnvelope
 
 
 class SafetyError(RuntimeError):
@@ -195,14 +196,8 @@ class ExecutionLedger:
 
     def event(self, event_type: str, payload: dict[str, Any]) -> None:
         def mutate(data: dict[str, Any]) -> None:
-            data.setdefault("events", []).append(
-                {
-                    "event_id": new_id("evt"),
-                    "event_type": event_type,
-                    "occurred_at": now(),
-                    "payload": payload,
-                }
-            )
+            event = EventEnvelope.create(new_id("evt"), event_type, now(), payload)
+            data.setdefault("events", []).append(event.to_record())
 
         self._mutate(mutate)
 
@@ -249,14 +244,13 @@ class ExecutionLedger:
                 "acquired_at": now(),
             }
             data["fences"][attempt_id] = fence
-            data.setdefault("events", []).append(
-                {
-                    "event_id": new_id("evt"),
-                    "event_type": "execution.fence_acquired",
-                    "occurred_at": now(),
-                    "payload": {"attempt_id": attempt_id, "fence_id": fence["fence_id"]},
-                }
+            event = EventEnvelope.create(
+                new_id("evt"),
+                "execution.fence_acquired",
+                now(),
+                {"attempt_id": attempt_id, "fence_id": fence["fence_id"]},
             )
+            data.setdefault("events", []).append(event.to_record())
             return fence
 
         return self._mutate(mutate)
@@ -289,14 +283,13 @@ class ExecutionLedger:
                 "claimed_at": now(),
             }
             data["claims"][claim["claim_id"]] = claim
-            data.setdefault("events", []).append(
-                {
-                    "event_id": new_id("evt"),
-                    "event_type": "resource.claimed",
-                    "occurred_at": now(),
-                    "payload": {"claim_id": claim["claim_id"], "attempt_id": attempt_id, "resource": resource},
-                }
+            event = EventEnvelope.create(
+                new_id("evt"),
+                "resource.claimed",
+                now(),
+                {"resource_claim_id": claim["claim_id"], "attempt_id": attempt_id, "resource": resource},
             )
+            data.setdefault("events", []).append(event.to_record())
             return claim
 
         return self._mutate(mutate)

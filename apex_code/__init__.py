@@ -15,6 +15,7 @@ from .core import (
     SafetyError,
 )
 from .contract import RuntimeAdapter, RuntimeExecution, RuntimeFact, RuntimeIdentity, RuntimePreparation
+from .events import EventEnvelope
 from .reconciliation import ReconciliationLoop, ReconciliationOutcome, RuntimeObservation
 from .runtime import OpenCodeRuntimeAdapter
 
@@ -24,6 +25,7 @@ __all__ = [
     "DuplicateStart",
     "ExecutionCoordinator",
     "ExecutionManifest",
+    "EventEnvelope",
     "IdentityMismatch",
     "OpenCodeRuntimeAdapter",
     "RuntimeAdapter",
