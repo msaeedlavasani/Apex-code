@@ -84,3 +84,110 @@ active-runtime reattachment, distributed fencing, stale lease reclamation,
 checkpoint side-effect safety, global event ordering, or general semantic
 verification. Provider selection remains product intent and is not advanced
 routing.
+
+## Authorized real-provider acceptance — 2026-09-07
+
+The Owner confirmed that the credential was entered directly into the actual
+Apex Code Desktop UI and saved successfully. The credential value was not
+shared with Freebuff, ChatGPT, GitHub, the repository, or the evidence record.
+
+```text
+OWNER_LOCAL_UI_ENTRY: PASS
+PROVIDER: OpenRouter
+MODEL: OpenAI GPT-4o mini
+CREDENTIAL_SAVED: YES
+CREDENTIAL_STATUS: CONFIGURED
+SECURE_STORAGE: OS_BACKED
+CONNECTION_TEST: VALID (Owner-confirmed)
+AUTOMATED_NATIVE_VISUAL_E2E: NOT_AVAILABLE_IN_CURRENT_ENVIRONMENT
+```
+
+### First real execution
+
+Using the already running packaged desktop service and a disposable project
+containing only a harmless `README.md`, the production Application Boundary
+was used to select the project and submit the bounded report task. No provider
+mock or direct runtime invocation was used.
+
+| Field | Observed result |
+| --- | --- |
+| Task | `task_b59e6f1056374b4b` — Inspect README and create REPORT.md |
+| Attempt | `att_da6a9adfaead461b` |
+| Provider/model provenance | `openrouter/openai/gpt-4o-mini` |
+| Runtime fact | `EXITED` |
+| Artifact | `REPORT.md` |
+| Core verification | `PASS` |
+| Semantic result | `SUCCEEDED` |
+
+The artifact was retrieved through the Application Boundary and its recorded
+Attempt correlation and Core verification were present. No credential field,
+header, prefix, suffix, or secret-derived value was returned.
+
+### Full application restart and second execution
+
+The packaged desktop process and its Apex service were terminated, then the
+packaged application was relaunched. The desktop broker restored the selected
+provider/model and reported `CONFIGURED`; the first Attempt, artifact, and
+verification were recovered from the durable workspace ledger. A second
+bounded summary task then completed without re-entering the credential:
+
+| Field | Observed result |
+| --- | --- |
+| Task | `task_350699b385374a00` — Inspect README and create SUMMARY.md |
+| Attempt | `att_07af7c8a82464a0c` |
+| Provider/model provenance | `openrouter/openai/gpt-4o-mini` |
+| Runtime fact | `EXITED` |
+| Artifact | `SUMMARY.md` |
+| Core verification | `PASS` |
+| Semantic result | `SUCCEEDED` |
+
+### Credential deletion and fail-closed behavior
+
+Because native visual automation was unavailable in this environment, deletion
+was exercised through the same production `ProviderVault` deletion seam after
+the desktop was closed; the vault value was never read or emitted. After
+relaunch:
+
+```text
+CREDENTIAL_STATUS: NOT_CONFIGURED
+POST_DELETE_TASK: REJECTED
+POST_DELETE_ERROR: provider credential is not configured
+AMBIENT_FALLBACK: NO
+```
+
+The post-delete task was rejected before useful provider execution and did not
+create a new artifact or semantic success. The selected non-secret provider /
+model preference remained visible, but no credential was available to the
+RuntimeAdapter.
+
+### Secret-forensics result
+
+The audit used structural checks only. It did not read, hash, print, or compare
+the credential value.
+
+| Surface | Result |
+| --- | --- |
+| Repository | `NO` — no credential was entered into source or evidence. |
+| Ledger/events | `NO` — durable records contain provider/model provenance only; no credential fields. |
+| Logs | `NO OBSERVED` — the service uses quiet request logging and no credential-bearing log was produced. |
+| Renderer storage | `NO` — renderer has no credential readback and no credential persistence path. |
+| Screenshots | `NOT_AVAILABLE` — native visual automation was unavailable; no screenshot containing a credential was captured. |
+| GitHub | `NO` — the credential was not entered into GitHub or CI. |
+
+### Final acceptance classification
+
+```text
+REAL_PROVIDER_CREDENTIAL: AUTHORIZED
+REAL_CONNECTION_TEST: PASS (Owner-confirmed)
+REAL_PROVIDER_EXECUTION: PASS
+REAL_OPENCODE_EXECUTION: PASS
+CORE_VERIFICATION: PASS
+SEMANTIC_SUCCESS: PASS
+REAL_PROVIDER_PROVENANCE: PASS
+DESKTOP_RESTART_CREDENTIAL_PERSISTENCE: PASS
+POST_RESTART_PROVIDER_EXECUTION: PASS
+CREDENTIAL_DELETE: PASS
+AMBIENT_FALLBACK_AFTER_DELETE: NO
+PLAINTEXT_SECRET_LEAK: NO OBSERVED
+SECOND_PROVIDER_CONFORMANCE: PASS (deterministic; no second live credential used)
+```
