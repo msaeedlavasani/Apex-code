@@ -52,6 +52,15 @@ class RuntimeAdapterConformanceTests(unittest.TestCase):
         )
         self.assertNotIn("SUCCEEDED", {fact.value for fact in RuntimeFact})
 
+    def test_opencode_child_environment_does_not_inherit_ambient_values(self) -> None:
+        adapter = OpenCodeRuntimeAdapter()
+        environment = adapter._safe_environment("/tmp/apex-isolated-config", adapter._permission_config())
+        self.assertEqual(environment["HOME"], "/tmp/apex-isolated-config")
+        self.assertEqual(environment["TERM"], "dumb")
+        self.assertNotIn("OPENAI_API_KEY", environment)
+        self.assertNotIn("ANTHROPIC_API_KEY", environment)
+        self.assertNotIn("AWS_SECRET_ACCESS_KEY", environment)
+
 
 if __name__ == "__main__":
     unittest.main()

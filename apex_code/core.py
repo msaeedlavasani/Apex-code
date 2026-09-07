@@ -590,7 +590,11 @@ class ExecutionCoordinator:
             },
         )
         ledger.update_fence(attempt_id, "RELEASED" if semantic_success else "QUARANTINED")
-        if runtime.fact is RuntimeFact.EXITED:
+        # An EXITED process is not enough to make an uncertain workspace safe
+        # to reuse. Keep the claim held until Core verification succeeds; an
+        # operator/recovery path must explicitly resolve failed or incomplete
+        # work before reuse.
+        if runtime.fact is RuntimeFact.EXITED and semantic_success:
             ledger.release_resource(resource_claim["claim_id"], attempt_id)
         if artifact_path:
             ledger.put("artifacts", spec.output_name, {"path": spec.output_name, "sha256": sha256_file(artifact_path), "attempt_id": attempt_id})

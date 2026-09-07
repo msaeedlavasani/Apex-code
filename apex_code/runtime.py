@@ -64,17 +64,8 @@ class OpenCodeRuntimeAdapter:
     ) -> RuntimeExecution:
         config_dir = preparation.config_dir
         materialized_digest = preparation.authority_digest
-        env = os.environ.copy()
         config = self._permission_config()
-        env.update(
-            {
-                "OPENCODE_CONFIG_DIR": config_dir,
-                "OPENCODE_CONFIG_CONTENT": json.dumps(config, sort_keys=True),
-                "XDG_DATA_HOME": os.path.join(config_dir, "data"),
-                "XDG_CACHE_HOME": os.path.join(config_dir, "cache"),
-                "XDG_STATE_HOME": os.path.join(config_dir, "state"),
-            }
-        )
+        env = self._safe_environment(config_dir, config)
         command = (
             self.executable,
             "run",
@@ -131,3 +122,39 @@ class OpenCodeRuntimeAdapter:
             preparation_id=preparation.preparation_id,
             command=command[:-1] + ("<prompt>",),
         )
+
+    @staticmethod
+    def _safe_environment(config_dir: str, config: dict[str, object]) -> dict[str, str]:
+        """Build a minimal child environment for Core-mediated execution.
+
+        Ambient user variables, credentials, and repository-specific
+        configuration are intentionally not inherited by the worker.
+        """
+        path_entries = [
+            os.defpath,
+            "/usr/local/bin",
+            "/opt/homebrew/bin",
+            "/usr/bin",
+            "/bin",
+            "/usr/sbin",
+            "/sbin",
+        ]
+        path = os.pathsep.join(
+            dict.fromkeys(
+                item
+                for entry in path_entries
+                for item in entry.split(os.pathsep)
+                if item
+            )
+        )
+        return {
+            "PATH": path,
+            "HOME": config_dir,
+            "TERM": "dumb",
+            "NO_COLOR": "1",
+            "OPENCODE_CONFIG_DIR": config_dir,
+            "OPENCODE_CONFIG_CONTENT": json.dumps(config, sort_keys=True),
+            "XDG_DATA_HOME": os.path.join(config_dir, "data"),
+            "XDG_CACHE_HOME": os.path.join(config_dir, "cache"),
+            "XDG_STATE_HOME": os.path.join(config_dir, "state"),
+        }
