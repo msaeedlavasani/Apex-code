@@ -1,6 +1,9 @@
 # Apex Code Development System
 
-Status: **PROPOSED** canonical overview. Detailed contracts remain in
+Status: **CURRENT** canonical overview. The bounded backlog-driven control
+plane is materialized in
+[`governance/DEVELOPMENT-CONTROL-PLANE-v1.md`](governance/DEVELOPMENT-CONTROL-PLANE-v1.md).
+The earlier proposal and detailed contracts remain in
 [`governance/DEVELOPMENT-CONTROL-SYSTEM-v1.md`](governance/DEVELOPMENT-CONTROL-SYSTEM-v1.md), especially the [Task System](governance/TASK-SYSTEM-v1.md),
 [Task Passport](governance/TASK-PASSPORT-v1.md), [validation governance](governance/VALIDATION-GOVERNANCE-v1.md),
 and [handoff contract](governance/HANDOFF-CONTRACT-v1.md).
@@ -87,13 +90,21 @@ commercial decisions, and critical risk.
 
 ## Work and branch boundaries
 
-The future Work Registry is the one authoritative active-work owner; its P2
-machine implementation is not created here. Current State is a bounded resume
-snapshot, Handoff is transfer context, Completion Report is a result, and
-Evidence Report is an immutable observation snapshot. Roadmap is evolution, not
-backlog. A branch records purpose, base, Task/Passport, receiver, and closure;
-the normal path is branch → PR → validation/review → merge → target verification
-→ retirement.
+The canonical development backlog and Passport collection now provide the
+bounded active-work owner for this workflow. Runtime state is durable at the
+caller-selected state path; it is not a second Core ledger. Current State is a
+bounded resume snapshot, Handoff is transfer context, Completion Report is a
+result, and Evidence Report is an immutable observation snapshot. Roadmap is
+evolution, not backlog. A branch records purpose, base, Task/Passport, receiver,
+and closure; the normal path is branch → PR → validation/review → merge → target
+verification → retirement.
+
+The control plane admits only complete Passports with verified dependencies,
+closed Human Gates, compatible executors, permitted risk, and conflict-safe
+resource claims. Its run loop continues across batches; failure returns a task
+to backlog or quarantine and creates incident evidence. Human Gates accumulate
+in an Owner Decision Queue while unrelated eligible work continues. See the
+current bounded contract for the complete status vocabulary and non-claims.
 
 Development Control System works without DPT and Orchestration. Either may
 consume these generic contracts later, but Apex Core does not depend on them.

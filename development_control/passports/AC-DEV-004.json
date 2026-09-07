@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "passport_id": "passport_AC-DEV-004_v1",
+  "development_task_id": "AC-DEV-004",
+  "revision": 1,
+  "goal": "Evaluate distributed and multi-controller fencing only after an authorized architecture decision.",
+  "scope": ["distributed fencing evidence"],
+  "out_of_scope": ["implementation in this bounded control-plane task"],
+  "dependencies": ["AC-DEV-001"],
+  "resource_claims": ["distributed-control-plane"],
+  "architecture_constraints": ["single-controller MVP remains canonical", "no distributed scheduler"],
+  "acceptance_criteria": ["scope and safety decision recorded before implementation"],
+  "validation": ["architecture review", "bounded experiment if authorized"],
+  "risk": {"class": "HIGH", "reversibility": "HIGH"},
+  "executor_compatibility": {"executors": ["*"]},
+  "human_gates": ["owner-authorize-distributed-fencing"],
+  "evidence_refs": ["docs/evidence/ATTEMPT-RECONCILIATION-HARDENING-0002.md"]
+}

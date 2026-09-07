@@ -34,7 +34,7 @@ authority.
 | DPT | product, modular architecture, DCS boundaries | DPT-related evidence and capability contracts | treating DPT as Core |
 | Public API | execution API, system design, terminology | execution model, architecture status | internal runtime details unless exposed |
 | Governance / ADR | AGENTS, relevant governance policy, source of truth | ADR policy, architecture status | unrelated runtime evidence |
-| Task / Passport | [`DEVELOPMENT-SYSTEM.md`](DEVELOPMENT-SYSTEM.md), task/passport governance, active work state when available | classification, validation, handoff | full architecture unless affected |
+| Task / Passport | [`DEVELOPMENT-SYSTEM.md`](DEVELOPMENT-SYSTEM.md), [`governance/DEVELOPMENT-CONTROL-PLANE-v1.md`](governance/DEVELOPMENT-CONTROL-PLANE-v1.md), canonical backlog/passports, active state when available | classification, validation, handoff | full architecture unless affected |
 | Testing | [`TESTING-STRATEGY.md`](TESTING-STRATEGY.md), validation governance | affected contract, security | unrelated product history |
 | Documentation | INDEX, source-of-truth, documentation ownership in governance | target owner document, evidence | full repository scan |
 | Repository / CI | AGENTS, development workflow, CI validation policy | validator, PR template | runtime/product docs unless scope says so |

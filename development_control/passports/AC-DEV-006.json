@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "passport_id": "passport_AC-DEV-006_v1",
+  "development_task_id": "AC-DEV-006",
+  "revision": 1,
+  "goal": "Complete native visual desktop acceptance when a supported automation surface exists.",
+  "scope": ["desktop visual automation", "non-secret acceptance evidence"],
+  "out_of_scope": ["credential entry through chat", "security-boundary changes"],
+  "dependencies": ["AC-DEV-001"],
+  "resource_claims": ["desktop-automation-surface"],
+  "architecture_constraints": ["visual UI is non-authoritative", "Core state remains canonical"],
+  "acceptance_criteria": ["native launch and settings surface visible", "success and fail-closed flows observed without secrets"],
+  "validation": ["desktop visual smoke"],
+  "risk": {"class": "LOW", "reversibility": "HIGH"},
+  "executor_compatibility": {"executors": ["desktop-visual"]},
+  "human_gates": [],
+  "evidence_refs": ["docs/evidence/PROVIDER-BYOK-0013.md"]
+}

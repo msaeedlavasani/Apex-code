@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "passport_id": "passport_AC-DEV-008_v1",
+  "development_task_id": "AC-DEV-008",
+  "revision": 1,
+  "goal": "Define general independent semantic verification beyond the bounded artifact verifier.",
+  "scope": ["verification evidence and architecture proposal"],
+  "out_of_scope": ["LLM-as-judge implementation", "moving verification authority out of Core"],
+  "dependencies": ["AC-DEV-001"],
+  "resource_claims": ["verification-framework"],
+  "architecture_constraints": ["Core owns semantic completion", "bounded independent verification remains frozen"],
+  "acceptance_criteria": ["general verification boundary and evidence requirements proposed"],
+  "validation": ["architecture reconciliation", "independent verifier evidence"],
+  "risk": {"class": "HIGH", "reversibility": "HIGH"},
+  "executor_compatibility": {"executors": ["*"]},
+  "human_gates": ["owner-authorize-general-verification"],
+  "evidence_refs": ["docs/evidence/INDEPENDENT-VERIFICATION-BOUND-0001.md"]
+}

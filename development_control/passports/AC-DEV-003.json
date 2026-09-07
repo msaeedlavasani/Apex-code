@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "passport_id": "passport_AC-DEV-003_v1",
+  "development_task_id": "AC-DEV-003",
+  "revision": 1,
+  "goal": "Characterize active-runtime controller-loss reconciliation without silent adoption or duplicate execution.",
+  "scope": ["bounded recovery experiment", "runtime facts", "durable reconciliation evidence"],
+  "out_of_scope": ["active-runtime reattachment guarantee", "distributed fencing", "automatic stale lease reclamation"],
+  "dependencies": ["AC-DEV-001"],
+  "resource_claims": ["opencode-runtime", "recovery-experiment"],
+  "architecture_constraints": ["UNKNOWN fails closed", "runtime facts are not semantic success"],
+  "acceptance_criteria": ["controller-loss scenarios classified", "duplicate start remains fenced", "unknown ownership is not adopted"],
+  "validation": ["targeted runtime smoke", "durable evidence review"],
+  "risk": {"class": "HIGH", "reversibility": "HIGH"},
+  "executor_compatibility": {"executors": ["runtime-proof"]},
+  "human_gates": ["owner-authorize-controller-loss-proof"],
+  "evidence_refs": ["docs/evidence/ACTIVE-RUNTIME-RECONCILIATION-PROOF-0001.md"]
+}

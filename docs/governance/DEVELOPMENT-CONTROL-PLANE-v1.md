@@ -1,0 +1,135 @@
+# Apex Code Development Control Plane v1
+
+Status: **CURRENT bounded implementation**. This document describes the
+machine-readable, backlog-driven development workflow materialized for
+`AC-DEVELOPMENT-CONTROL-PLANE-0015`. It is a development workflow control
+plane, not Apex Core execution authority, DPT, or product Orchestration.
+
+## Canonical ownership
+
+The canonical backlog is `development_control/backlog.json`. Task Passports
+are the files in `development_control/passports/`. Operational state is
+runtime data supplied to `ControlPlaneStore.state_path`; it must not be
+committed as canonical product truth unless a later governance decision adds a
+durable state publication policy.
+
+The control plane owns Development Task admission, batching, development
+Attempts, incidents, owner decisions, and run summaries. Apex Core remains the
+authority for Core `Task`, `Attempt`, `ExecutionManifest`, runtime facts,
+verification, semantic success, and execution evidence.
+
+```text
+Canonical backlog + Task Passport
+              ↓
+      readiness / eligibility
+              ↓
+    immutable BatchSnapshot
+              ↓
+ executor-neutral development Attempt
+              ↓
+       verify / rework / incident
+              ↓
+     next batch or owner queue
+```
+
+## Status vocabulary
+
+The backlog uses these workflow statuses:
+
+`DONE`, `BACKLOG`, `BLOCKED`, `READY`, `ELIGIBLE`, `BATCHED`, `IN_PROGRESS`,
+`VERIFYING`, `HUMAN_GATE`, `QUARANTINED`, and `DEFERRED`.
+
+Workflow status is separate from evidence/claim status. `NOT_PROVEN` remains
+an evidence state and is never converted to proof by readiness, successful
+execution, or lack of observed failure.
+
+## Passport admission
+
+Every runnable task requires a complete Passport v1 containing goal, scope,
+out-of-scope boundaries, dependencies, resource claims, architecture
+constraints, acceptance criteria, validation, risk, executor compatibility,
+and Human Gates. Admission is fail-closed when any required field is missing,
+a dependency is not verified/done, a Human Gate is open, autonomous policy
+does not allow the task, or the selected executor is incompatible.
+
+## Deterministic batching
+
+`DevelopmentControlPlane.select_batch()` refreshes readiness and selects a
+conflict-safe subset using priority, critical-path weight, downstream unlock
+value, aging, risk, and task ID as a deterministic tie-breaker. The persisted
+`BatchSnapshot` is immutable in meaning: tasks that become eligible after the
+snapshot wait for the next batch, and resource-claim conflicts are not placed
+in the same batch.
+
+## Attempts, failures, and incidents
+
+Every execution and rework is recorded as a distinct development Attempt. A
+task failure does not fail its batch. The failure is classified as
+`TASK_FAILURE` or `SYSTEM_FAILURE`, linked to a stable incident fingerprint,
+and returned to `BACKLOG` only within the bounded rework policy. Repeated or
+systemic failures are `QUARANTINED`. Dependent tasks remain blocked until the
+prerequisite is verified/done.
+
+Incidents retain affected tasks, evidence references, occurrence count,
+resolution, and corrective-task links. Repeated correlated failures can open
+the systemic circuit breaker; the run loop then stops further wasteful
+execution while preserving the owner decision queue and evidence.
+
+## Batch verification and autonomous run loop
+
+A batch closes only when every member has a terminal outcome and no task is
+missing, `UNKNOWN`, or otherwise dangling. A batch may complete with mixed
+success and failure. Tasks retain task-level verification, and an integration
+verification result is required when the batch declares one.
+
+The run loop is:
+
+```text
+BACKLOG → prioritize → READY/ELIGIBLE → immutable batch
+        → execute → bounded recovery → verify/reconcile
+        → update backlog → reprioritize → next batch
+```
+
+Batch completion never ends the run by itself. Human-Gated tasks accumulate in
+the Owner Decision Queue while unrelated eligible work continues. The run
+stops only at no safe batch, human-gates-only, a systemic circuit breaker, or
+an explicit configured run bound.
+
+## Executor neutrality and boundaries
+
+Executors are workers selected by compatibility metadata. They are not
+backlog, scheduler, authority, or semantic-success owners. The control plane
+does not depend on Freebuff, Goose, OpenCode, DPT, or product Orchestration.
+
+The seeded `AC-DEV-007` Goose capability probe is backlog work only. Its
+required questions include delegation, isolation, aggregation, failure,
+cancellation, dependency awareness, and model/provider assignment. This
+Delta does not claim those capabilities or execute that probe.
+
+No secrets may appear in backlog, Passports, incidents, attempts, events,
+evidence, or run summaries. Protected-main and CI governance remain mandatory
+for repository changes.
+
+## Durable operational use
+
+```python
+from development_control import ControlPlaneStore, DevelopmentControlPlane
+
+store = ControlPlaneStore(backlog, passports, state)
+plane = DevelopmentControlPlane(store, executor_id="generic-executor")
+summary = plane.run(executor, concurrency=1)
+```
+
+The state path is supplied by the caller so deployments can choose an
+appropriate durable location. Atomic file replacement prevents partial JSON
+writes; this bounded implementation is not a distributed or multi-controller
+registry.
+
+## Evidence boundary
+
+Implementation and seed decisions are recorded in
+[`docs/evidence/DEVELOPMENT-CONTROL-PLANE-0015.md`](../evidence/DEVELOPMENT-CONTROL-PLANE-0015.md).
+The accepted architecture and evidence sources remain authoritative for Core
+semantics. In particular, authority activation, active-runtime recovery,
+distributed fencing, stale lease reclamation, checkpoint safety, and other
+`NOT_PROVEN` claims remain unchanged.
