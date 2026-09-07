@@ -43,3 +43,17 @@ original lightweight shell remains available as a test harness with
 `python3 -m apex_code.shell --ui bootstrap`. The pinned OpenWork source slice,
 license boundary, and upstream-sync procedure are recorded in
 [docs/apex/FORK_BOUNDARY.md](docs/apex/FORK_BOUNDARY.md).
+
+The first local desktop container can be run and packaged with:
+
+```text
+cd product_shell/desktop && npm ci
+npm run dev
+npm run package:dir
+```
+
+The desktop process starts the bounded Apex service on loopback, reuses the
+same OpenWork renderer, and does not become an execution or authority owner.
+Packaging is currently an unsigned, development-quality macOS directory app;
+signing, notarization, and distribution automation are intentionally out of
+scope.

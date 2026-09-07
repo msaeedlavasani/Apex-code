@@ -1,0 +1,24 @@
+{
+  "name": "@apex/desktop",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Apex Code local desktop container",
+  "author": "Apex Code",
+  "type": "module",
+  "main": "src/main.mjs",
+  "scripts": {
+    "build:renderer": "npm --prefix ../openwork run build",
+    "prepare:electron": "node node_modules/electron/install.js",
+    "typecheck": "node --check src/main.mjs && node --check src/preload.cjs && node --check src/service.mjs",
+    "test": "node --test test/*.test.mjs",
+    "dev": "npm run prepare:electron && npm run build:renderer && electron src/main.mjs",
+    "package:dir": "npm run prepare:electron && npm run build:renderer && electron-builder --dir",
+    "package:mac": "npm run prepare:electron && npm run build:renderer && electron-builder --mac dir",
+    "package": "npm run package:mac"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "electron": "43.2.0",
+    "electron-builder": "26.15.3"
+  }
+}

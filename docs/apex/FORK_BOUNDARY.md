@@ -47,7 +47,7 @@ Alternatives rejected for this bounded slice:
 | `apps/app/src/react-app/shell/ui-state-store.ts` | `FORK_THINLY` | Copied to `product_shell/openwork/src/openwork/ui-state-store.ts`; owns presentation layout only. | MIT; compare file-level changes at every pin update. |
 | `apps/app/src/react-app/shell/workspace-shell-layout.ts` | `FORK_THINLY` | Copied to `product_shell/openwork/src/openwork/workspace-shell-layout.ts`; owns pane sizing/toggle behavior only. | MIT; rebase the narrow source slice when upstream changes. |
 | `apps/app` routes and task/session surfaces | `ADAPT_BEHIND_APEX_SEAM` | The Apex shell uses the OpenWork workspace/sidebar/history shape but calls `/api/*` on the Apex Application Boundary. | MIT portions only; do not import direct runtime paths. |
-| `apps/desktop` | `DEFER` | Electron lifecycle is not required for this local web MVP. | Inspect again before desktop packaging; no EE source. |
+| `apps/desktop` | `ADAPT` | Desktop lifecycle was audited but not imported; Apex uses a smaller Electron container in `product_shell/desktop/`. | OpenWork desktop source is MIT-adjacent in selected paths, but its server/runtime graph is excluded; preserve this bounded map. |
 | `apps/server` | `REJECT` as canonical server | OpenWork server/session/database/runtime ownership is not Apex truth. | Do not copy into Core or use as the execution authority. |
 | `@openwork/sdk` | `DEFER` | Not needed by the current local application seam. | Reconsider only with a bounded adapter review. |
 | `@openwork/types` | `ADAPT_BEHIND_APEX_SEAM` | UI concepts may inform presentation types, but Apex frozen Task/Attempt/Manifest types remain canonical. | Do not leak OpenWork runtime/provider types into Core. |
@@ -84,6 +84,46 @@ they are not imported into the shell's execution path.
 | OW-APEX-0009-02 | `apps/app/.../shell/workspace-shell-layout.ts` | `product_shell/openwork/src/openwork/workspace-shell-layout.ts` | Reuse workspace pane behavior in a dependency-light shell. | Product Shell | Product Shell non-authority | Rebase when upstream layout contract changes. |
 | OW-APEX-0009-03 | OpenWork app/server runtime paths | `ApexOpenWorkShell.tsx` → Apex `/api/*` | Replace direct OpenWork runtime/session ownership with the Apex Application Boundary. | Apex Application Boundary | RuntimeAdapter, authority, ResourceClaim, EventEnvelope | Remove only when an equivalent bounded Apex seam is retained. |
 | OW-APEX-0009-04 | OpenWork desktop lifecycle | `apex_code/shell.py --ui openwork` | Serve the built shell from the local Apex process; defer Electron packaging. | Product Shell | No Core frontend dependency | Revisit for an approved desktop distribution target. |
+
+## Desktop adoption map — AC-DESKTOP-MVP-PACKAGING-0010
+
+The pinned OpenWork `apps/desktop` source was audited at the same upstream
+commit. It bundles OpenWork server/database/runtime/session ownership, direct
+OpenCode sidecars, updater/telemetry, and Enterprise-adjacent package paths.
+Those responsibilities are **REJECTED** for Apex's canonical desktop path.
+
+| Upstream path / surface | Treatment | Apex destination | License / attribution | Sync handling |
+| --- | --- | --- | --- | --- |
+| `apps/desktop/electron/main.mjs` | `REIMPLEMENT_SMALL` | `product_shell/desktop/src/main.mjs` | No upstream source reused; no attribution required. | Re-audit lifecycle changes before any future reuse. |
+| `apps/desktop/electron/preload.mjs` | `REJECT` | `product_shell/desktop/src/preload.cjs` | No upstream source reused. | Keep the bridge limited to desktop-native concerns. |
+| `apps/desktop/electron-builder*.yml` | `REJECT` | `product_shell/desktop/electron-builder.yml` | No upstream source reused. | Maintain Apex-specific resource layout and unsigned target policy. |
+| OpenWork desktop server/runtime startup | `REJECT` | Apex Python service launched on loopback | No source reused. | Never import OpenWork server/database/runtime authority. |
+| Electron window/container concept | `ADAPT` | `product_shell/desktop/` | Conceptual learning only. | Compare lifecycle/security behavior at sync review. |
+| OpenWork Enterprise desktop paths | `REJECT` | None | `LicenseRef-OpenWork-EE`; none reused. | Permanently excluded unless separately authorized. |
+
+The current desktop wrapper is a small Apex implementation, not a copied
+OpenWork desktop fork. The shared renderer remains the actual OpenWork-derived
+surface. Electron-specific dependencies remain under Product Shell and do not
+enter `apex_code` or frozen contracts.
+
+## Desktop lifecycle and security boundary
+
+| Process | Owner | Allowed responsibility |
+| --- | --- | --- |
+| Desktop main | Electron container | Window lifecycle, single-instance lock, native folder picker, loopback service process. |
+| Renderer | OpenWork-derived Product Shell | Projection and bounded commands through the Application Boundary. |
+| Apex Application process | Apex Core boundary | Project validation, startup reconciliation, task command, history/artifact queries. |
+| Runtime/OpenCode process | RuntimeAdapter | Substrate execution facts and raw bounded result only. |
+
+The service is started with `--host 127.0.0.1 --port 0`; the renderer receives
+only the selected loopback base URL through an isolated preload bridge. The
+desktop allowlist excludes ambient credential-shaped environment variables.
+The existing RuntimeAdapter performs its own stricter child-environment
+sanitization. A second launch is refused by Electron's single-instance lock.
+
+Desktop failure does not fabricate semantic state: service loss or renderer
+loss leaves durable Core state to reconciliation, and uncertain work remains
+fail-closed.
 
 ## Bootstrap shell disposition
 
