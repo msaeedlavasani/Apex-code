@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "passport_id": "passport_AC-DEV-013_v1",
+  "development_task_id": "AC-DEV-013",
+  "revision": 1,
+  "goal": "Compare verified Goose CLI and Freebuff CLI evidence for Apex execution and assess the viability of combining native agents with curated Apex/ECC agents or skills without selecting a permanent executor.",
+  "scope": [
+    "Verified AC-DEV-011 Goose CLI evidence",
+    "Verified AC-DEV-012 Freebuff CLI evidence",
+    "comparison of parallelism, isolation, failure/recovery, controllability, observability, extensibility, provider/model flexibility, and Control Plane integration",
+    "viability assessment for Freebuff native agents plus curated Apex/ECC agents or skills",
+    "reconciled evidence and follow-up backlog state"
+  ],
+  "out_of_scope": [
+    "permanent executor selection",
+    "ECC installation, source import, or dependency addition",
+    "production adapters or integration code",
+    "Apex Core architecture changes",
+    "converting source/documentation evidence into runtime proof",
+    "secret inspection or credential persistence"
+  ],
+  "dependencies": ["AC-DEV-011", "AC-DEV-012"],
+  "resource_claims": ["executor-comparison", "goose-cli", "freebuff-cli"],
+  "architecture_constraints": [
+    "Apex Control Plane remains scheduler and Development Task owner",
+    "Apex Core remains runtime authority, verification, and semantic-success owner",
+    "executor capabilities are adapter facts, not Core semantics",
+    "PROVEN, PARTIAL, NOT_PROVEN, NOT_SUPPORTED, and UNKNOWN remain distinct",
+    "no ECC installation and no permanent executor decision"
+  ],
+  "acceptance_criteria": [
+    "all requested comparison dimensions have an evidence-backed classification",
+    "Goose and Freebuff claims are kept separate from Apex-grade guarantees",
+    "Freebuff native-agent plus curated Apex/ECC-agent viability is assessed without installing ECC",
+    "unsupported or incomplete capabilities remain visible as NOT_PROVEN",
+    "the backlog records the dependency relationship and no premature executor selection"
+  ],
+  "validation": [
+    "dependency and Passport review for AC-DEV-011 and AC-DEV-012",
+    "evidence report cross-check",
+    "canonical Python tests and documentation validation",
+    "backlog JSON and Passport schema validation"
+  ],
+  "risk": {"class": "MEDIUM", "reversibility": "HIGH"},
+  "executor_compatibility": {"executors": ["generic-executor"]},
+  "human_gates": [],
+  "evidence_refs": [
+    "docs/evidence/GOOSE-CLI-DELEGATION-0016.md",
+    "docs/evidence/FREEBUFF-CLI-DELEGATION-0017.md",
+    "docs/evidence/EXECUTOR-CAPABILITY-COMPARISON-0018.md"
+  ]
+}

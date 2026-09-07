@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "revision": 3,
+  "revision": 4,
   "source": "accepted Apex Code repository evidence",
   "tasks": [
     {
@@ -197,6 +197,42 @@
       "evidence_refs": ["docs/evidence/GOOSE-CLI-DELEGATION-0016.md"],
       "critical_path_weight": 5,
       "downstream_unlock_value": 18,
+      "aging_days": 0
+    },
+    {
+      "task_id": "AC-DEV-012",
+      "title": "Freebuff CLI Operational Parallel Delegation Probe",
+      "status": "DONE",
+      "verification_status": "VERIFIED",
+      "evidence_status": "PARTIAL",
+      "priority": "P1",
+      "risk": "MEDIUM",
+      "decision_class": "ROUTINE",
+      "autonomous_allowed": true,
+      "executor_compatibility": {"executors": ["freebuff-probe"]},
+      "dependencies": ["AC-DEV-001"],
+      "resource_claims": ["freebuff-cli", "provider-runtime-experiment"],
+      "evidence_refs": ["docs/evidence/FREEBUFF-CLI-DELEGATION-0017.md"],
+      "critical_path_weight": 5,
+      "downstream_unlock_value": 18,
+      "aging_days": 0
+    },
+    {
+      "task_id": "AC-DEV-013",
+      "title": "Executor Capability Comparison — Goose CLI vs Freebuff CLI",
+      "status": "DONE",
+      "verification_status": "VERIFIED",
+      "evidence_status": "PARTIAL",
+      "priority": "P1",
+      "risk": "MEDIUM",
+      "decision_class": "ROUTINE",
+      "autonomous_allowed": true,
+      "executor_compatibility": {"executors": ["generic-executor"]},
+      "dependencies": ["AC-DEV-011", "AC-DEV-012"],
+      "resource_claims": ["executor-comparison", "goose-cli", "freebuff-cli"],
+      "evidence_refs": ["docs/evidence/EXECUTOR-CAPABILITY-COMPARISON-0018.md"],
+      "critical_path_weight": 4,
+      "downstream_unlock_value": 15,
       "aging_days": 0
     }
   ]
