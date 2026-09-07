@@ -24,6 +24,7 @@ second source of truth.
 | [`TESTING-STRATEGY.md`](TESTING-STRATEGY.md) | Validation philosophy | Canonical testing strategy | Selecting validation | Individual test output |
 | [`SECURITY-MODEL.md`](SECURITY-MODEL.md) | Trust and security boundaries | Canonical security model | Authority/security work | Runtime implementation proof |
 | [`SOURCE-OF-TRUTH-v1.md`](governance/SOURCE-OF-TRUTH-v1.md) | Factual precedence and permission/intent separation | Canonical governance model | Any source conflict | Replacing domain contracts |
+| [`apex/FORK_BOUNDARY.md`](apex/FORK_BOUNDARY.md) | OpenWork pin and Product Shell divergence boundary | Current integration record | Shell/upstream synchronization work | Replacing the architecture or runtime contract |
 
 ## Formal directories
 
