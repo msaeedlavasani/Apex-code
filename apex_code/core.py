@@ -324,7 +324,14 @@ class ExecutionBarrier:
 class ExecutionCoordinator:
     """Create, gate, execute, verify, and persist one safe slice."""
 
-    def __init__(self, adapter: RuntimeAdapter) -> None:
+    def __init__(self, adapter: RuntimeAdapter | None = None) -> None:
+        if adapter is None:
+            # Default composition is kept for the bounded CLI/API convenience,
+            # while the Core module itself remains free of a concrete adapter
+            # import until this boundary is explicitly used.
+            from .runtime import OpenCodeRuntimeAdapter
+
+            adapter = OpenCodeRuntimeAdapter()
         self.adapter = adapter
 
     @staticmethod
