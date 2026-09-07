@@ -43,6 +43,10 @@ class CoreSafetyTests(unittest.TestCase):
             with self.assertRaises(AuthorityDenied):
                 ExecutionCoordinator._safe_path(workspace, "other.txt", "read")
 
+    def test_default_adapter_is_lazy_and_available(self) -> None:
+        coordinator = ExecutionCoordinator()
+        self.assertEqual(coordinator.adapter.__class__.__name__, "OpenCodeRuntimeAdapter")
+
 
 if __name__ == "__main__":
     unittest.main()
