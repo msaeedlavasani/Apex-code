@@ -10,9 +10,11 @@ from apex_code.core import (
     AuthorityEvidence,
     ExecutionBarrier,
     ExecutionCoordinator,
+    ExecutionLedger,
     ExecutionManifest,
     RuntimeLane,
 )
+from apex_code.events import EventEnvelope
 
 
 class CoreSafetyTests(unittest.TestCase):
@@ -46,6 +48,21 @@ class CoreSafetyTests(unittest.TestCase):
     def test_default_adapter_is_lazy_and_available(self) -> None:
         coordinator = ExecutionCoordinator()
         self.assertEqual(coordinator.adapter.__class__.__name__, "OpenCodeRuntimeAdapter")
+
+    def test_ledger_events_use_versioned_envelope_and_references(self) -> None:
+        with tempfile.TemporaryDirectory() as root:
+            ledger = ExecutionLedger(Path(root) / "ledger.json")
+            ledger.event(
+                "attempt.tested",
+                {"attempt_id": "attempt-1", "task_id": "task-1", "causation_id": "evt-parent", "value": "fact"},
+            )
+            event = ledger.snapshot()["events"][0]
+            self.assertEqual(event["schema_version"], 1)
+            self.assertEqual(event["correlation_id"], "attempt-1")
+            self.assertEqual(event["causation_id"], "evt-parent")
+            self.assertEqual(event["references"], {"task_id": "task-1", "attempt_id": "attempt-1"})
+            self.assertEqual(event["payload"]["value"], "fact")
+            self.assertIsInstance(EventEnvelope.create("evt", "type", "now", {}).to_record(), dict)
 
 
 if __name__ == "__main__":
