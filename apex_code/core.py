@@ -9,11 +9,10 @@ import tempfile
 import uuid
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
-from enum import Enum
 from pathlib import Path
 from typing import Any
 
-from .runtime import OpenCodeRuntimeAdapter, RuntimeExecution
+from .contract import RuntimeAdapter, RuntimeExecution, RuntimeFact
 
 
 class SafetyError(RuntimeError):
@@ -34,15 +33,6 @@ class IdentityMismatch(SafetyError):
 
 class ResourceConflict(SafetyError):
     """An exclusive resource is already durably claimed."""
-
-
-class RuntimeFact(str, Enum):
-    RUNNING = "RUNNING"
-    EXITED = "EXITED"
-    MISSING = "MISSING"
-    UNREACHABLE = "UNREACHABLE"
-    MISMATCH = "MISMATCH"
-    UNKNOWN = "UNKNOWN"
 
 
 def now() -> str:
@@ -334,8 +324,8 @@ class ExecutionBarrier:
 class ExecutionCoordinator:
     """Create, gate, execute, verify, and persist one safe slice."""
 
-    def __init__(self, adapter: OpenCodeRuntimeAdapter | None = None) -> None:
-        self.adapter = adapter or OpenCodeRuntimeAdapter()
+    def __init__(self, adapter: RuntimeAdapter) -> None:
+        self.adapter = adapter
 
     @staticmethod
     def _authority() -> AuthorityRevision:
@@ -428,9 +418,13 @@ class ExecutionCoordinator:
         )
         # The adapter materializes its deny-all configuration before the
         # barrier. The digest is then checked against Core's immutable revision.
-        config_dir, materialized_digest = self.adapter.materialize_authority(authority.content_digest)
+        preparation = self.adapter.materialize_authority(authority.content_digest)
         authority_evidence = AuthorityEvidence(
-            **{**asdict(authority_evidence), "materialized": True, "authority_digest": materialized_digest}
+            **{
+                **asdict(authority_evidence),
+                "materialized": True,
+                "authority_digest": preparation.authority_digest,
+            }
         )
         if authority_evidence.authority_digest != authority.content_digest:
             raise SafetyError("materialized authority digest mismatch")
@@ -439,7 +433,8 @@ class ExecutionCoordinator:
             {
                 "authority_revision_id": authority.authority_revision_id,
                 "authority_digest": authority.content_digest,
-                "config_dir": config_dir,
+                "preparation_id": preparation.preparation_id,
+                "mode": preparation.mode,
                 "substrate_activation_confirmed": False,
             },
         )
@@ -453,17 +448,20 @@ class ExecutionCoordinator:
         prompt = self._prompt(readme)
         runtime: RuntimeExecution = self.adapter.execute(
             prompt,
-            authority.content_digest,
             workspace,
-            config_dir=config_dir,
+            preparation,
         )
+        if runtime.preparation_id != preparation.preparation_id:
+            raise SafetyError("runtime preparation identity mismatch")
+        if runtime.authority_config_digest != authority.content_digest:
+            raise SafetyError("runtime authority digest mismatch")
         attempt.runtime_session_id = runtime.session_id
         ledger.event(
             "runtime.fact",
             {
                 "attempt_id": attempt_id,
                 "runtime_session_id": runtime.session_id,
-                "fact": runtime.fact,
+                "fact": runtime.fact.value,
                 "exit_code": runtime.exit_code,
             },
         )
@@ -471,7 +469,7 @@ class ExecutionCoordinator:
         verified = False
         artifact_path: Path | None = None
         verification_reason = "runtime completion is not semantic success"
-        if runtime.fact == RuntimeFact.EXITED.value and runtime.exit_code == 0 and report:
+        if runtime.fact is RuntimeFact.EXITED and runtime.exit_code == 0 and report:
             artifact_path = self._safe_path(workspace, "REPORT.md", "write")
             if artifact_path.exists() and artifact_path.is_symlink():
                 raise AuthorityDenied("existing REPORT.md symlink denied")
@@ -483,7 +481,7 @@ class ExecutionCoordinator:
         attempt.status = "SUCCEEDED" if semantic_success else "FAILED"
         result = {
             "attempt_id": attempt_id,
-            "runtime_fact": runtime.fact,
+            "runtime_fact": runtime.fact.value,
             "runtime_session_id": runtime.session_id,
             "exit_code": runtime.exit_code,
             "runtime_event_count": runtime.event_count,
@@ -509,7 +507,7 @@ class ExecutionCoordinator:
             "attempt_id": attempt_id,
             "manifest_id": manifest.manifest_id,
             "runtime_session_id": runtime.session_id,
-            "runtime_fact": runtime.fact,
+            "runtime_fact": runtime.fact.value,
             "semantic_success": semantic_success,
             "verification": result["verification"],
             "artifact": result["artifact"],
