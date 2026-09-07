@@ -12,7 +12,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from .contract import RuntimeAdapter, RuntimeExecution, RuntimeFact
+from .contract import RuntimeAdapter, RuntimeExecution, RuntimeFact, RuntimeIdentity
 from .events import EventEnvelope
 
 
@@ -133,6 +133,7 @@ class Attempt:
     authority: AuthorityRevision
     barrier: str = "CLOSED"
     runtime_session_id: str | None = None
+    runtime_identity: RuntimeIdentity | None = None
     result: dict[str, Any] | None = None
 
 
@@ -465,6 +466,7 @@ class ExecutionCoordinator:
                 "manifest_id": manifest.manifest_id,
                 "authority_revision_id": authority.authority_revision_id,
                 "runtime_lane_id": lane.runtime_lane_id,
+                "runtime_identity": None,
             },
         )
         ledger.event("attempt.created", {"attempt_id": attempt_id, "task_id": task.task_id})
@@ -526,11 +528,13 @@ class ExecutionCoordinator:
         if runtime.authority_config_digest != authority.content_digest:
             raise SafetyError("runtime authority digest mismatch")
         attempt.runtime_session_id = runtime.session_id
+        attempt.runtime_identity = runtime.identity
         ledger.event(
             "runtime.fact",
             {
                 "attempt_id": attempt_id,
                 "runtime_session_id": runtime.session_id,
+                "runtime_identity": asdict(runtime.identity),
                 "fact": runtime.fact.value,
                 "exit_code": runtime.exit_code,
             },
@@ -553,6 +557,7 @@ class ExecutionCoordinator:
             "attempt_id": attempt_id,
             "runtime_fact": runtime.fact.value,
             "runtime_session_id": runtime.session_id,
+            "runtime_identity": asdict(runtime.identity),
             "exit_code": runtime.exit_code,
             "runtime_event_count": runtime.event_count,
             "runtime_text_digest": digest(runtime.text),
@@ -565,7 +570,16 @@ class ExecutionCoordinator:
         }
         ledger.put("results", attempt_id, result)
         ledger.put("tasks", task.task_id, {**asdict(task), "semantic_state": task.semantic_state})
-        ledger.put("attempts", attempt_id, {**ledger.data["attempts"][attempt_id], "status": attempt.status, "runtime_session_id": runtime.session_id})
+        ledger.put(
+            "attempts",
+            attempt_id,
+            {
+                **ledger.data["attempts"][attempt_id],
+                "status": attempt.status,
+                "runtime_session_id": runtime.session_id,
+                "runtime_identity": asdict(runtime.identity),
+            },
+        )
         ledger.update_fence(attempt_id, "RELEASED" if semantic_success else "QUARANTINED")
         if runtime.fact is RuntimeFact.EXITED:
             ledger.release_resource(resource_claim["claim_id"], attempt_id)
@@ -579,6 +593,7 @@ class ExecutionCoordinator:
             "attempt_id": attempt_id,
             "manifest_id": manifest.manifest_id,
             "runtime_session_id": runtime.session_id,
+            "runtime_identity": asdict(runtime.identity),
             "runtime_fact": runtime.fact.value,
             "semantic_success": semantic_success,
             "verification": result["verification"],

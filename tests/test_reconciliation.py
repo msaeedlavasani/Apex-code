@@ -20,6 +20,7 @@ from apex_code.core import (
     sha256_file,
 )
 from apex_code.reconciliation import ReconciliationLoop, RuntimeObservation
+from apex_code.contract import RuntimeIdentity
 from apex_code.core import RuntimeFact
 
 
@@ -80,6 +81,20 @@ class ReconciliationTests(unittest.TestCase):
             self.assertEqual(outcome.semantic_state, "RECOVERY_REQUIRED")
             data = ExecutionLedger(path / "execution-ledger.json").snapshot()
             self.assertEqual(data["attempts"]["attempt-a"]["runtime_session_id"], "session-x")
+
+    def test_native_runtime_identity_mismatch_fails_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as root:
+            path = Path(root)
+            ledger = seed_attempt(path)
+            ledger.put(
+                "attempts",
+                "attempt-a",
+                {**ledger.snapshot()["attempts"]["attempt-a"], "runtime_identity": {"session_id": "session-x", "process_id": 7, "adapter_instance_id": "adapter-a"}},
+            )
+            outcome = ReconciliationLoop(path / "execution-ledger.json").reconcile(
+                [RuntimeObservation(RuntimeFact.RUNNING, "attempt-a", "session-x", identity=RuntimeIdentity("session-x", 8, "adapter-a"))]
+            )[0]
+            self.assertEqual((outcome.runtime_fact, outcome.semantic_state), (RuntimeFact.MISMATCH, "RECOVERY_REQUIRED"))
 
     def test_missing_and_unreachable_remain_recovery_states(self) -> None:
         with tempfile.TemporaryDirectory() as root:

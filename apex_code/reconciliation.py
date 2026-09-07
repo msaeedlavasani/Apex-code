@@ -2,12 +2,13 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 import hashlib
 from pathlib import Path
 from typing import Iterable
 
 from .core import ExecutionLedger, IdentityMismatch, RuntimeFact, now
+from .contract import RuntimeIdentity
 
 
 @dataclass(frozen=True)
@@ -17,6 +18,7 @@ class RuntimeObservation:
     session_id: str | None = None
     verified_artifact: bool = False
     detail: str = ""
+    identity: RuntimeIdentity | None = None
 
 
 @dataclass(frozen=True)
@@ -113,6 +115,36 @@ class ReconciliationLoop:
                     )
                 )
                 continue
+
+            expected_identity = attempt.get("runtime_identity")
+            if observation.identity is not None and isinstance(expected_identity, dict):
+                observed_identity = asdict(observation.identity)
+                identity_mismatch = any(
+                    expected_identity.get(key) is not None
+                    and observed_identity.get(key) is not None
+                    and expected_identity.get(key) != observed_identity.get(key)
+                    for key in ("session_id", "process_id", "adapter_instance_id")
+                )
+                if identity_mismatch:
+                    ledger.event(
+                        "reconciliation.identity_mismatch",
+                        {
+                            "attempt_id": attempt_id,
+                            "expected_runtime_identity": expected_identity,
+                            "observed_runtime_identity": observed_identity,
+                            "runtime_fact": observation.fact.value,
+                        },
+                    )
+                    outcomes.append(
+                        ReconciliationOutcome(
+                            attempt_id=attempt_id,
+                            runtime_fact=RuntimeFact.MISMATCH,
+                            semantic_state="RECOVERY_REQUIRED",
+                            disposition="MISMATCH_FAIL_CLOSED",
+                            identity_valid=False,
+                        )
+                    )
+                    continue
 
             semantic_state, disposition = self._classify(observation, data, attempt_id)
             ledger.put(
