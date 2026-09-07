@@ -2,15 +2,18 @@
 
 Delta: `AC-DEVELOPMENT-CONTROL-PLANE-0015`
 
-Status: **IMPLEMENTED / MACHINE_VALIDATED**
+Status: **IMPLEMENTED / MACHINE-VALIDATED / RECONCILED**
 
 ## Scope
 
 This Delta materialized the smallest durable, executor-neutral backlog control
-plane. The Goose parallel-delegation item was seeded for later work; its
-UI/Desktop probe is recorded separately in
-`docs/evidence/GOOSE-UI-DELEGATION-0015.md`. This Delta does not change Apex
-Core, RuntimeAdapter, authority, verification, DPT, or Orchestration semantics.
+plane. The canonical reconciliation preserves `AC-DEV-010` as the deferred
+global event-ordering task and allocates `AC-DEV-011` to the Goose CLI probe.
+The UI/Desktop probe is recorded separately in
+`docs/evidence/GOOSE-UI-DELEGATION-0015.md`, while the CLI probe is recorded in
+`docs/evidence/GOOSE-CLI-DELEGATION-0016.md`. This reconciliation does not
+change Apex Core, RuntimeAdapter, authority, verification, DPT, or
+Orchestration semantics.
 
 ## Canonical artifacts
 
@@ -32,7 +35,11 @@ Core, RuntimeAdapter, authority, verification, DPT, or Orchestration semantics.
 - batch terminal-outcome and integration verification;
 - autonomous multi-batch run loop with owner decision accumulation;
 - systemic failure circuit breaker and concise durable run summaries;
-- atomic JSON persistence without a database or permanent dependency.
+- atomic JSON persistence without a database or permanent dependency;
+- task-specific `owner_authorized` admission for explicitly authorized
+  material tasks without lowering their risk or changing Passport constraints;
+- per-member canonical backlog reload during a batch run, preventing stale
+  snapshots from overwriting an earlier member's successful outcome.
 
 ## Seed reconciliation
 
@@ -42,6 +49,14 @@ capability items, and `AC-DEV-007 — Goose UI/Desktop Parallel Delegation
 Capability Probe`. The later probe completed with `VERIFIED` workflow status
 and `PARTIAL` evidence; individual unsupported UI capabilities remain
 `NOT_PROVEN` in its dedicated report.
+
+Owner-authorized AC-DEV-002, AC-DEV-003, and AC-DEV-009 proofs completed with
+`VERIFIED` workflow status while preserving `NOT_PROVEN` evidence claims.
+AC-DEV-011 completed with `VERIFIED` workflow status and `PARTIAL` evidence.
+Its CLI report directly observed asynchronous delegation, distinct child
+identities, aggregation, and mixed success/failure; child cancellation,
+dependency scheduling, and per-subtask provider/model assignment remain
+unproven or unsupported at the observed surface.
 
 ## Boundary checks
 
@@ -56,5 +71,6 @@ The focused control-plane tests cover Passport admission, verified
 dependencies, resource-conflict batching, next-batch eligibility, distinct
 Attempts, failure/rework and incidents, quarantine/circuit-breaker behavior,
 batch dangling/unknown protection, owner decision accumulation, corrective
-tasks, and multi-batch continuation. Repository-wide Python tests and the
+tasks, multi-batch continuation, owner-authorized material admission, and
+stale-snapshot protection. Repository-wide Python tests and the
 documentation validator are required before merge.

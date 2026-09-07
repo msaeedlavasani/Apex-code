@@ -126,6 +126,17 @@ class DevelopmentControlPlaneTests(unittest.TestCase):
         self.assertNotEqual(b_attempts[0]["attempt_id"], b_attempts[1]["attempt_id"])
         self.assertEqual(self.store.load_backlog()["tasks"][1]["status"], TaskStatus.DONE.value)
 
+    def test_run_preserves_each_successful_member_in_a_multi_task_batch(self):
+        first = task("AC-DEV-A")
+        second = task("AC-DEV-B")
+        plane = self.make_plane([first, second])
+
+        summary = plane.run(lambda _item, _passport: {"status": "PASS", "evidence_status": "PROVEN"}, concurrency=2)
+
+        self.assertEqual(summary.verified_tasks, 2)
+        statuses = {item["task_id"]: item["status"] for item in self.store.load_backlog()["tasks"]}
+        self.assertEqual(statuses, {"AC-DEV-A": TaskStatus.DONE.value, "AC-DEV-B": TaskStatus.DONE.value})
+
     def test_systemic_failure_opens_circuit_breaker(self):
         plane = self.make_plane([task("AC-DEV-A"), task("AC-DEV-B")])
 
@@ -163,6 +174,24 @@ class DevelopmentControlPlaneTests(unittest.TestCase):
         self.assertEqual(snapshot.task_ids, ("AC-DEV-FREE",))
         self.assertEqual([item["task_id"] for item in plane.open_human_gates()], ["AC-DEV-GATE"])
 
+    def test_owner_authorized_material_task_is_admissible_without_changing_risk_class(self):
+        authorized = task("AC-DEV-A")
+        authorized.update({"decision_class": "MATERIAL", "risk": "HIGH", "owner_authorized": True})
+        plane = self.make_plane([authorized])
+
+        readiness = plane.readiness("AC-DEV-A")
+        self.assertTrue(readiness["eligible"])
+        self.assertNotIn("NON_ROUTINE_DECISION_CLASS", readiness["reasons"])
+
+    def test_material_task_without_owner_authorization_remains_ineligible(self):
+        gated = task("AC-DEV-A")
+        gated.update({"decision_class": "MATERIAL", "risk": "HIGH"})
+        plane = self.make_plane([gated])
+
+        readiness = plane.readiness("AC-DEV-A")
+        self.assertFalse(readiness["eligible"])
+        self.assertIn("NON_ROUTINE_DECISION_CLASS", readiness["reasons"])
+
     def test_corrective_task_is_linked_to_incident(self):
         plane = self.make_plane([task("AC-DEV-A")])
         snapshot = plane.select_batch()
@@ -183,6 +212,28 @@ class DevelopmentControlPlaneTests(unittest.TestCase):
         self.assertEqual(goose["verification_status"], "VERIFIED")
         self.assertEqual(goose["evidence_status"], "PARTIAL")
         self.assertIn("goose", goose["title"].lower())
+
+    def test_canonical_seed_preserves_event_ordering_task_and_adds_cli_probe(self):
+        root = Path(__file__).resolve().parents[1]
+        backlog = json.loads((root / "development_control/backlog.json").read_text())
+        event_ordering = next(item for item in backlog["tasks"] if item["task_id"] == "AC-DEV-010")
+        cli_probe = next(item for item in backlog["tasks"] if item["task_id"] == "AC-DEV-011")
+        self.assertEqual(event_ordering["title"], "Global event ordering beyond ledger-local ordering")
+        self.assertEqual(event_ordering["status"], "DEFERRED")
+        self.assertEqual(event_ordering["evidence_status"], "NOT_PROVEN")
+        self.assertEqual(cli_probe["title"], "Goose CLI Parallel Delegation Capability Probe")
+        self.assertEqual(cli_probe["status"], "DONE")
+
+    def test_canonical_owner_authorizations_are_task_specific(self):
+        root = Path(__file__).resolve().parents[1]
+        backlog = json.loads((root / "development_control/backlog.json").read_text())
+        tasks = {item["task_id"]: item for item in backlog["tasks"]}
+        for task_id in ("AC-DEV-002", "AC-DEV-003", "AC-DEV-009"):
+            self.assertTrue(tasks[task_id]["owner_authorized"])
+            self.assertTrue(tasks[task_id]["autonomous_allowed"])
+            self.assertEqual(tasks[task_id]["decision_class"], "MATERIAL")
+            self.assertEqual(tasks[task_id]["evidence_status"], "NOT_PROVEN")
+        self.assertNotIn("owner_authorized", tasks["AC-DEV-010"])
 
     def test_control_plane_rejects_secret_bearing_persistence_fields(self):
         with self.assertRaises(ValueError):

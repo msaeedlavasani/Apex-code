@@ -51,6 +51,13 @@ constraints, acceptance criteria, validation, risk, executor compatibility,
 and Human Gates. Admission is fail-closed when any required field is missing,
 a dependency is not verified/done, a Human Gate is open, autonomous policy
 does not allow the task, or the selected executor is incompatible.
+An explicitly recorded `owner_authorized` task may pass the material-decision
+policy check only for the named task; its risk, decision class, Passport
+constraints, and evidence status remain unchanged. Deterministic and
+reversible control-plane inconsistencies may be repaired when intent is
+unambiguous and canonical history is preserved. Ambiguous or material
+architecture, authority, security, or destructive decisions still require an
+Owner gate.
 
 ## Deterministic batching
 

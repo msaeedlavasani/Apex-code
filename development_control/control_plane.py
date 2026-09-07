@@ -273,7 +273,7 @@ class DevelopmentControlPlane:
             reasons.append("AUTONOMOUS_POLICY_DISALLOWS")
         if str(task.get("risk", "LOW")) == "CRITICAL":
             reasons.append("CRITICAL_RISK_HUMAN_GATE")
-        if str(task.get("decision_class", "ROUTINE")) != "ROUTINE":
+        if str(task.get("decision_class", "ROUTINE")) != "ROUTINE" and not task.get("owner_authorized", False):
             reasons.append("NON_ROUTINE_DECISION_CLASS")
         compatibility = task.get("executor_compatibility", {})
         if isinstance(compatibility, dict):
@@ -612,9 +612,9 @@ class DevelopmentControlPlane:
                 break
             batches += 1
             considered += len(snapshot.task_ids)
-            backlog = self.store.load_backlog()
-            tasks = self._task_map(backlog)
             for task_id in snapshot.task_ids:
+                backlog = self.store.load_backlog()
+                tasks = self._task_map(backlog)
                 task = tasks[task_id]
                 task["status"] = TaskStatus.IN_PROGRESS.value
                 self.store.save_backlog(backlog)

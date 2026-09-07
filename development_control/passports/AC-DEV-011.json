@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "passport_id": "passport_AC-DEV-011_v1",
+  "development_task_id": "AC-DEV-011",
+  "revision": 1,
+  "goal": "Operationally characterize Goose CLI as a candidate executor for Apex parallel delegated tasks.",
+  "scope": [
+    "Goose CLI 1.49.0 executable and configured provider path",
+    "isolated non-destructive delegation workspace",
+    "multiple delegated subtasks",
+    "concurrency, identity, aggregation, failure, retry, cancellation, dependencies, and per-subtask model/provider observations",
+    "evidence report and control-plane suitability classification"
+  ],
+  "out_of_scope": [
+    "Goose UI/Desktop acceptance",
+    "production Goose adapter",
+    "Apex Core or RuntimeAdapter changes",
+    "Goose ownership of backlog, scheduling, authority, or verification",
+    "secret inspection or credential persistence",
+    "DPT or product Orchestration"
+  ],
+  "dependencies": ["AC-DEV-001"],
+  "resource_claims": ["goose-cli", "provider-runtime-experiment"],
+  "architecture_constraints": [
+    "executors remain workers and never canonical backlog or scheduler authority",
+    "Apex Core remains authority and verification owner",
+    "isolated disposable workspace only",
+    "no secrets in evidence, logs, backlog, or Passport",
+    "docs and runtime observations must distinguish PROVEN from PROMPT-SEMANTIC and NOT_PROVEN"
+  ],
+  "acceptance_criteria": [
+    "parent delegation to multiple independent subtasks is executed",
+    "true concurrent execution is directly evidenced or classified conservatively",
+    "distinct delegated identity is observed where available",
+    "result aggregation is observed or classified",
+    "one controlled subtask failure leaves unrelated work classified independently",
+    "retry or rework behavior is tested or classified",
+    "individual cancellation is tested or classified",
+    "dependency sequencing is tested or classified",
+    "per-subtask model/provider assignment is tested or classified",
+    "executor suitability for Apex Control Plane integration is classified"
+  ],
+  "validation": [
+    "goose --version",
+    "bounded Goose CLI runtime probes",
+    "machine-readable or timestamped observations where available",
+    "evidence review",
+    "canonical Python tests and documentation validation"
+  ],
+  "risk": {"class": "MEDIUM", "reversibility": "HIGH"},
+  "executor_compatibility": {"executors": ["goose-probe"]},
+  "human_gates": [],
+  "evidence_refs": [
+    "docs/evidence/GOOSE-UI-DELEGATION-0015.md",
+    "docs/evidence/GOOSE-CLI-DELEGATION-0016.md"
+  ]
+}
