@@ -22,7 +22,7 @@ class FakeAdapter:
         preparation: RuntimePreparation,
     ) -> RuntimeExecution:
         return RuntimeExecution(
-            identity=RuntimeIdentity(session_id="ses_test"),
+            identity=RuntimeIdentity(session_id="ses_test", process_id=101, adapter_instance_id="fake-v1"),
             fact=RuntimeFact.EXITED,
             exit_code=0,
             text="REPORT_CONTENT_BEGIN\n# Safe report\nGenerated from README.\nREPORT_CONTENT_END",
@@ -105,6 +105,8 @@ class VerticalSliceTests(unittest.TestCase):
             claims = json.loads(ledger)["claims"]
             self.assertEqual(len(claims), 1)
             self.assertEqual(next(iter(claims.values()))["state"], "RELEASED")
+            attempt = next(iter(json.loads(ledger)["attempts"].values()))
+            self.assertEqual(attempt["runtime_identity"], {"session_id": "ses_test", "process_id": 101, "adapter_instance_id": "fake-v1"})
 
     def test_runtime_completion_alone_is_not_success(self) -> None:
         with tempfile.TemporaryDirectory() as root:
