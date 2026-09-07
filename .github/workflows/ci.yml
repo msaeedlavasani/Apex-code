@@ -1,4 +1,4 @@
-name: CI
+name: Apex Code Validation
 
 on:
   pull_request:
@@ -9,8 +9,18 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: apex-code-ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  PYTHON_VERSION: "3.14"
+  NODE_VERSION: "24.18.0"
+
 jobs:
-  lean-validation:
+  # Temporary compatibility for the currently protected legacy context. This
+  # is not the aggregate gate and is removable after branch protection moves.
+  legacy-docs-compat:
     name: Lean documentation validation
     runs-on: ubuntu-latest
     steps:
@@ -21,8 +31,211 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.x"
+          python-version: ${{ env.PYTHON_VERSION }}
       - name: Validate documentation and repository structure
         run: python scripts/validate_docs.py
       - name: Check whitespace errors
-        run: git diff --check "${{ github.event.pull_request.base.sha || github.event.before }}" "${{ github.sha }}"
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          set -euo pipefail
+          if git cat-file -e "${BASE_SHA}^{commit}" 2>/dev/null; then
+            git diff --check "${BASE_SHA}" "${GITHUB_SHA}"
+          else
+            git diff --check HEAD^ HEAD
+          fi
+
+  repo-validation:
+    name: Repository validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Validate documentation and repository structure
+        run: python scripts/validate_docs.py
+      - name: Check whitespace errors against change range
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          set -euo pipefail
+          if git cat-file -e "${BASE_SHA}^{commit}" 2>/dev/null; then
+            git diff --check "${BASE_SHA}" "${GITHUB_SHA}"
+          else
+            git diff --check HEAD^ HEAD
+          fi
+
+  core-tests:
+    name: Core tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Run canonical Core tests
+        run: python3 -B -m unittest discover -s tests -v
+
+  renderer-validation:
+    name: Renderer validation
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: product_shell/openwork
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: product_shell/openwork/package-lock.json
+      - name: Install locked renderer dependencies
+        run: npm ci
+      - name: Typecheck renderer
+        run: npm run typecheck
+      - name: Build renderer
+        run: npm run build
+
+  desktop-validation:
+    name: Desktop validation
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: product_shell/desktop
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: product_shell/desktop/package-lock.json
+      - name: Install locked desktop dependencies
+        run: npm ci
+      - name: Typecheck desktop container
+        run: npm run typecheck
+      - name: Run deterministic desktop tests
+        run: npm test
+
+  targeted-integration:
+    name: Targeted integration validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: |
+            product_shell/openwork/package-lock.json
+            product_shell/desktop/package-lock.json
+      - name: Run targeted seam checks when applicable
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          set -euo pipefail
+          if git cat-file -e "${BASE_SHA}^{commit}" 2>/dev/null; then
+            changed="$(git diff --name-only "${BASE_SHA}" "${GITHUB_SHA}")"
+          else
+            changed="$(git diff --name-only HEAD^ HEAD)"
+          fi
+          printf '%s\n' "${changed}"
+          if ! grep -Eq '^(apex_code/|tests/|product_shell/|scripts/validate_docs\.py|\.github/workflows/)' <<<"${changed}"; then
+            echo "NOT_APPLICABLE: no executable boundary changed"
+            exit 0
+          fi
+          python3 -B -m unittest tests.test_application -v
+          npm --prefix product_shell/openwork ci
+          npm --prefix product_shell/openwork run typecheck
+          npm --prefix product_shell/openwork run build
+          npm --prefix product_shell/desktop ci
+          npm --prefix product_shell/desktop run typecheck
+          npm --prefix product_shell/desktop test
+
+  macos-validation:
+    name: macOS targeted validation
+    runs-on: macos-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: |
+            product_shell/openwork/package-lock.json
+            product_shell/desktop/package-lock.json
+      - name: Run packaging-sensitive checks when applicable
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          set -euo pipefail
+          if git cat-file -e "${BASE_SHA}^{commit}" 2>/dev/null; then
+            changed="$(git diff --name-only "${BASE_SHA}" "${GITHUB_SHA}")"
+          else
+            changed="$(git diff --name-only HEAD^ HEAD)"
+          fi
+          if ! grep -Eq '^(product_shell/|\.github/workflows/)' <<<"${changed}"; then
+            echo "NOT_APPLICABLE: no shell or packaging surface changed"
+            exit 0
+          fi
+          npm --prefix product_shell/openwork ci
+          npm --prefix product_shell/openwork run typecheck
+          npm --prefix product_shell/openwork run build
+          npm --prefix product_shell/desktop ci
+          npm --prefix product_shell/desktop run typecheck
+          npm --prefix product_shell/desktop test
+          npm --prefix product_shell/desktop run package:dir
+
+  ci-gate:
+    name: Apex Code CI Gate
+    if: ${{ always() }}
+    needs:
+      - repo-validation
+      - core-tests
+      - renderer-validation
+      - desktop-validation
+      - targeted-integration
+      - macos-validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every validation layer to conclude successfully
+        env:
+          REPO: ${{ needs.repo-validation.result }}
+          CORE: ${{ needs.core-tests.result }}
+          RENDERER: ${{ needs.renderer-validation.result }}
+          DESKTOP: ${{ needs.desktop-validation.result }}
+          TARGETED: ${{ needs.targeted-integration.result }}
+          MACOS: ${{ needs.macos-validation.result }}
+        run: |
+          set -euo pipefail
+          printf 'repo=%s core=%s renderer=%s desktop=%s targeted=%s macos=%s\n' \
+            "$REPO" "$CORE" "$RENDERER" "$DESKTOP" "$TARGETED" "$MACOS"
+          for result in "$REPO" "$CORE" "$RENDERER" "$DESKTOP" "$TARGETED" "$MACOS"; do
+            if [[ "$result" != "success" ]]; then
+              echo "Apex Code CI Gate failed because a validation layer was not successful."
+              exit 1
+            fi
+          done
+          echo "Apex Code CI Gate passed."

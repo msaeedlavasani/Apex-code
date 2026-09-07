@@ -1,0 +1,70 @@
+name: Apex Code Acceptance
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: apex-code-acceptance-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  NODE_VERSION: "24.18.0"
+
+jobs:
+  static-acceptance:
+    name: Static acceptance validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - name: Run Core tests
+        run: python3 -B -m unittest discover -s tests -v
+      - name: Validate documentation
+        run: python scripts/validate_docs.py
+      - name: Check whitespace
+        run: git diff --check
+
+  packaged-desktop-smoke:
+    name: Packaged desktop smoke
+    runs-on: macos-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: |
+            product_shell/openwork/package-lock.json
+            product_shell/desktop/package-lock.json
+      - name: Install renderer dependencies
+        run: npm --prefix product_shell/openwork ci
+      - name: Install desktop dependencies
+        run: npm --prefix product_shell/desktop ci
+      - name: Build unsigned macOS directory artifact
+        run: npm --prefix product_shell/desktop run package:dir
+      - name: Verify packaged artifact exists
+        run: test -d product_shell/desktop/dist-electron/mac*/Apex\ Code.app
+      - name: Retain packaged smoke evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: apex-code-macos-directory-smoke
+          path: product_shell/desktop/dist-electron/mac*/Apex Code.app/Contents/Info.plist
+          retention-days: 3
+
+  provider-acceptance-boundary:
+    name: Provider acceptance boundary
+    runs-on: ubuntu-latest
+    steps:
+      - name: Explain credential-free boundary
+        run: |
+          echo "Provider-backed execution is intentionally excluded from ordinary CI."
+          echo "Run authorized real-provider and visual acceptance outside PR CI."
