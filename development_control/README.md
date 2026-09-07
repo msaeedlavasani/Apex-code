@@ -49,3 +49,6 @@ bounded Freebuff CLI probe: the parent TUI and advertised agent surface are
 observed, while child delegation and most operational capabilities remain
 `NOT_PROVEN`. `AC-DEV-013` compares the two executor candidates without
 selecting a permanent executor. ECC is not installed.
+`AC-DEV-014` audits the Freebuff agent/skill extension surface and records
+native catalogs, skill invocation, override, packaging, and child-routing
+claims as `PARTIAL` or `NOT_PROVEN` where the bounded evidence is incomplete.

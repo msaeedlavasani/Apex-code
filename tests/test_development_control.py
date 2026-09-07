@@ -237,6 +237,13 @@ class DevelopmentControlPlaneTests(unittest.TestCase):
         self.assertEqual(comparison["evidence_status"], "PARTIAL")
         self.assertEqual(comparison["dependencies"], ["AC-DEV-011", "AC-DEV-012"])
 
+        extension_audit = next(item for item in backlog["tasks"] if item["task_id"] == "AC-DEV-014")
+        self.assertEqual(extension_audit["title"], "Freebuff Agent/Skill Extension Surface Audit")
+        self.assertEqual(extension_audit["status"], "DONE")
+        self.assertEqual(extension_audit["verification_status"], "VERIFIED")
+        self.assertEqual(extension_audit["evidence_status"], "PARTIAL")
+        self.assertEqual(extension_audit["dependencies"], ["AC-DEV-012", "AC-DEV-013"])
+
     def test_canonical_owner_authorizations_are_task_specific(self):
         root = Path(__file__).resolve().parents[1]
         backlog = json.loads((root / "development_control/backlog.json").read_text())

@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "passport_id": "passport_AC-DEV-014_v1",
+  "development_task_id": "AC-DEV-014",
+  "revision": 1,
+  "goal": "Audit the Freebuff native agent, skill, and extension surfaces using the approved AC-DEV-012 and AC-DEV-013 evidence boundary, then define the safe Apex-owned composition boundary without installing ECC or selecting a permanent executor.",
+  "scope": [
+    "installed Freebuff CLI help, TUI agent controls, and parent model/provider surfaces already observed by AC-DEV-012",
+    "pinned Freebuff source patterns including AgentDefinition, agents, spawn_agents, spawnableAgents, SDK, and agent-runtime seams",
+    "native agent discoverability, dedicated skill registry or invocation, local overrides, curated packaging, and provider/model injection surfaces",
+    "separate source/documentation evidence from direct runtime proof and classify each surface",
+    "assess the layered boundary for Freebuff-native workers plus curated Apex or ECC agents/skills"
+  ],
+  "out_of_scope": [
+    "ECC installation, source import, dependency addition, or adoption",
+    "production adapter or integration implementation",
+    "permanent executor selection",
+    "Apex Core, RuntimeAdapter, authority, or semantic-verification redesign",
+    "treating source symbols, parent UI responses, or agent self-report as Apex semantic proof",
+    "secret inspection or credential persistence"
+  ],
+  "dependencies": ["AC-DEV-012", "AC-DEV-013"],
+  "resource_claims": ["freebuff-cli", "freebuff-extension-audit"],
+  "architecture_constraints": [
+    "Control Plane remains Development Task, dependency, resource, and executor-policy owner",
+    "Apex Core remains runtime authority, verification, and semantic-success owner",
+    "native and curated extension surfaces are adapter inputs, not authority",
+    "PROVEN, PARTIAL, NOT_PROVEN, NOT_SUPPORTED, and UNKNOWN remain distinct",
+    "no ECC installation and no permanent executor decision"
+  ],
+  "acceptance_criteria": [
+    "native Freebuff agent and agent-definition surfaces are inventoried with evidence class",
+    "skill registry, skill invocation, override, curated packaging, and provider/model injection are each classified",
+    "runtime-observed facts are separated from pinned source or documentation evidence",
+    "the Freebuff-native plus curated Apex/ECC composition boundary is assessed without installing ECC",
+    "unsupported or incomplete capabilities remain visible as NOT_PROVEN",
+    "the result is reconciled into the canonical backlog without changing Apex Core ownership"
+  ],
+  "validation": [
+    "dependency and Passport review for AC-DEV-012 and AC-DEV-013",
+    "cross-check AC-DEV-012, AC-DEV-013, and pinned comparative-harvest evidence",
+    "canonical Python tests and documentation validation",
+    "backlog JSON and Passport schema validation",
+    "git diff --check and protected PR CI gate"
+  ],
+  "risk": {"class": "MEDIUM", "reversibility": "HIGH"},
+  "executor_compatibility": {"executors": ["generic-executor"]},
+  "human_gates": [],
+  "evidence_refs": [
+    "docs/evidence/FREEBUFF-CLI-DELEGATION-0017.md",
+    "docs/evidence/EXECUTOR-CAPABILITY-COMPARISON-0018.md",
+    "docs/evidence/AGENTIC-DEVELOPMENT-SYSTEMS-COMPARATIVE-HARVEST.md",
+    "docs/evidence/FREEBUFF-EXTENSION-SURFACE-AUDIT-0019.md"
+  ]
+}

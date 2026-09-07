@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "revision": 4,
+  "revision": 5,
   "source": "accepted Apex Code repository evidence",
   "tasks": [
     {
@@ -233,6 +233,29 @@
       "evidence_refs": ["docs/evidence/EXECUTOR-CAPABILITY-COMPARISON-0018.md"],
       "critical_path_weight": 4,
       "downstream_unlock_value": 15,
+      "aging_days": 0
+    },
+    {
+      "task_id": "AC-DEV-014",
+      "title": "Freebuff Agent/Skill Extension Surface Audit",
+      "status": "DONE",
+      "verification_status": "VERIFIED",
+      "evidence_status": "PARTIAL",
+      "priority": "P1",
+      "risk": "MEDIUM",
+      "decision_class": "ROUTINE",
+      "autonomous_allowed": true,
+      "executor_compatibility": {"executors": ["generic-executor"]},
+      "dependencies": ["AC-DEV-012", "AC-DEV-013"],
+      "resource_claims": ["freebuff-cli", "freebuff-extension-audit"],
+      "evidence_refs": [
+        "docs/evidence/FREEBUFF-CLI-DELEGATION-0017.md",
+        "docs/evidence/EXECUTOR-CAPABILITY-COMPARISON-0018.md",
+        "docs/evidence/AGENTIC-DEVELOPMENT-SYSTEMS-COMPARATIVE-HARVEST.md",
+        "docs/evidence/FREEBUFF-EXTENSION-SURFACE-AUDIT-0019.md"
+      ],
+      "critical_path_weight": 4,
+      "downstream_unlock_value": 12,
       "aging_days": 0
     }
   ]
