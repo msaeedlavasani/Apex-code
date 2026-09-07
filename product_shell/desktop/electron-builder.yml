@@ -1,0 +1,18 @@
+appId: com.apexcode.desktop
+productName: Apex Code
+directories:
+  output: dist-electron
+files:
+  - src/**/*
+  - package.json
+extraResources:
+  - from: ../../apex_code
+    to: apex-runtime/apex_code
+  - from: ../openwork/dist
+    to: apex-runtime/product_shell/openwork/dist
+mac:
+  category: public.app-category.developer-tools
+  target:
+    - dir
+  artifactName: apex-code-${os}-${arch}-${version}.${ext}
+electronVersion: 43.2.0

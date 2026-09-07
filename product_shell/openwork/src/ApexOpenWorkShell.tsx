@@ -34,8 +34,10 @@ type Status = {
 
 type History = { executions: Execution[] };
 
+const API_BASE = window.__APEX_DESKTOP__?.apiBase || "";
+
 async function api<T>(path: string, options?: RequestInit): Promise<T> {
-  const response = await fetch(path, options);
+  const response = await fetch(`${API_BASE}${path}`, options);
   const payload = await response.json() as T & { error?: string };
   if (!response.ok) throw new Error(payload.error || "Apex application request failed");
   return payload;
@@ -53,7 +55,8 @@ export function ApexOpenWorkShell() {
   const [task, setTask] = useState("report");
   const [artifact, setArtifact] = useState<{ name: string; content: string; sha256?: string } | null>(null);
   const [notice, setNotice] = useState("");
-  const [connected, setConnected] = useState(false);
+  const [connectionState, setConnectionState] = useState("CONNECTING");
+  const connected = connectionState === "READY";
   const sidebarOpen = useUiStateStore((state) => state.sidebarOpen);
   const toggleSidebar = useUiStateStore((state) => state.toggleSidebar);
   const layout = useWorkspaceShellLayout({ expandedRightWidth: 390 });
@@ -67,9 +70,9 @@ export function ApexOpenWorkShell() {
       ]);
       setStatus(nextStatus);
       setHistory(nextHistory);
-      setConnected(true);
+      setConnectionState("READY");
     } catch (error) {
-      setConnected(false);
+      setConnectionState("CORE_UNAVAILABLE");
       setNotice(error instanceof Error ? error.message : "Apex application unavailable");
     }
   }, [workspace]);
@@ -88,7 +91,7 @@ export function ApexOpenWorkShell() {
   }, []);
 
   useEffect(() => {
-    void api<{ ok: boolean }>("/api/health").then(() => setConnected(true)).catch(() => setConnected(false));
+    void api<{ ok: boolean }>("/api/health").then(() => setConnectionState("READY")).catch(() => setConnectionState("CORE_UNAVAILABLE"));
   }, []);
 
   useEffect(() => {
@@ -132,11 +135,23 @@ export function ApexOpenWorkShell() {
     }
   }
 
+  async function chooseProject() {
+    try {
+      const selected = await window.__APEX_DESKTOP__?.selectProject();
+      if (typeof selected === "string" && selected) {
+        setWorkspace(selected);
+        await openProject(selected);
+      }
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Project could not be selected");
+    }
+  }
+
   return (
     <div className="ow-app" data-openwork-shell="true">
       <header className="ow-titlebar">
         <div className="ow-brand"><span className="ow-brand-mark">A</span><span><small>APEX CODE · OPENWORK SHELL</small><strong>Bounded creation workspace</strong></span></div>
-        <div className={connected ? "ow-connection online" : "ow-connection"}>{connected ? "Core connected" : "Core unavailable"}</div>
+        <div className={connected ? "ow-connection online" : "ow-connection"}>{connectionState}</div>
       </header>
       <div className="ow-layout" style={{ gridTemplateColumns: layoutColumns }}>
         {sidebarOpen && <aside className="ow-sidebar" data-openwork-surface="workspace-sidebar">
@@ -144,6 +159,7 @@ export function ApexOpenWorkShell() {
           <form id="project-form" className="ow-open-form" onSubmit={(event) => { event.preventDefault(); void openProject(workspace).catch((error) => setNotice(error instanceof Error ? error.message : "Project could not be opened")); }}>
             <label htmlFor="project-path">Local project</label>
             <input id="project-path" value={workspace} onChange={(event) => setWorkspace(event.target.value)} placeholder="/path/to/project" />
+            {window.__APEX_DESKTOP__ && <button id="choose-project" className="ow-secondary" type="button" onClick={() => void chooseProject()}>Choose folder…</button>}
             <button type="submit">Open project</button>
           </form>
           <div className="ow-workspace-card" data-openwork-surface="workspace-identity">
