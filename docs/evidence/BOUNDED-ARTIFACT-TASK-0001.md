@@ -53,6 +53,10 @@ model `opencode/big-pickle`:
 `REPORT.md` was absent in that workspace, confirming the selected output
 contract was applied.
 
+The CLI now exposes the same bounded choices with `--task report|summary`;
+`report` remains the default. A focused CLI test verifies selection without
+coupling the entry point to a concrete adapter implementation.
+
 Documentation validation and `git diff --check` passed. No Runtime Adapter,
 authority, event, architecture status, dependency, DPT, or Orchestration
 guarantee was upgraded by this task.
