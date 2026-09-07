@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "passport_id": "passport_AC-DEV-002_v1",
+  "development_task_id": "AC-DEV-002",
+  "revision": 1,
+  "goal": "Determine whether the exact OpenCode AuthorityRevision activation and binding chain can be machine-proven.",
+  "scope": ["OpenCode source", "disposable authority experiment", "evidence"],
+  "out_of_scope": ["authority expansion", "production adapter changes", "secret inspection"],
+  "dependencies": ["AC-DEV-001"],
+  "resource_claims": ["opencode-runtime", "authority-experiment"],
+  "architecture_constraints": ["authority remains Core-owned", "NOT_PROVEN cannot be upgraded by absence of failure"],
+  "acceptance_criteria": ["direct activation evidence classified", "binding evidence classified", "gaps preserved"],
+  "validation": ["source inspection", "bounded runtime evidence", "evidence review"],
+  "risk": {"class": "HIGH", "reversibility": "HIGH"},
+  "executor_compatibility": {"executors": ["runtime-proof"]},
+  "human_gates": ["owner-authorize-authority-proof"],
+  "evidence_refs": ["docs/evidence/OPENCODE-AUTHORITY-ATTESTATION-PROOF-0001.md"]
+}

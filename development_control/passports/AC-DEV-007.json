@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "passport_id": "passport_AC-DEV-007_v1",
+  "development_task_id": "AC-DEV-007",
+  "revision": 1,
+  "goal": "Determine whether Goose supports Apex-required parallel delegation semantics without making Goose a product dependency.",
+  "scope": ["Goose source/capability inspection", "disposable probe harness", "evidence"],
+  "out_of_scope": ["Goose production adapter", "Orchestration implementation", "multi-agent product capability", "permanent dependency"],
+  "dependencies": ["AC-DEV-001"],
+  "resource_claims": ["goose-source", "provider-runtime-experiment"],
+  "architecture_constraints": ["executor neutrality", "DPT and Orchestration remain optional", "no external source reuse without review"],
+  "acceptance_criteria": ["parallel delegation classified", "isolation classified", "aggregation classified", "failure/cancellation/dependency/model assignment classified"],
+  "validation": ["bounded source inspection", "disposable runtime probe only if safe", "evidence artifact"],
+  "risk": {"class": "MEDIUM", "reversibility": "HIGH"},
+  "executor_compatibility": {"executors": ["generic-executor", "goose-probe"]},
+  "human_gates": [],
+  "evidence_refs": ["docs/evidence/GOOSE-CONFORMANCE-0005.md", "docs/evidence/GOOSE-E2E-CONFORMANCE-0006.md"]
+}

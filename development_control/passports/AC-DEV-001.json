@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "passport_id": "passport_AC-DEV-001_v1",
+  "development_task_id": "AC-DEV-001",
+  "revision": 1,
+  "goal": "Materialize a durable backlog-driven development control plane without changing Apex Core semantics.",
+  "scope": ["development_control/", "docs/governance/", "tests/"],
+  "out_of_scope": ["Apex Core runtime state", "DPT", "Orchestration product capability", "provider execution"],
+  "dependencies": [],
+  "resource_claims": ["repository-control-plane"],
+  "architecture_constraints": ["Development Task != Core Task", "DCS is executor-neutral", "frozen Core contracts unchanged"],
+  "acceptance_criteria": ["durable backlog", "complete passport schema", "deterministic eligibility", "immutable batch snapshot", "failure and incident semantics", "owner decision queue", "run summary"],
+  "validation": ["unit tests", "documentation validation", "git diff check"],
+  "risk": {"class": "MEDIUM", "reversibility": "HIGH"},
+  "executor_compatibility": {"executors": ["*"]},
+  "human_gates": [],
+  "evidence_refs": ["docs/governance/DEVELOPMENT-CONTROL-SYSTEM-v1.md", "docs/adr/0001-ac-ods-0001-development-control-system.md"]
+}

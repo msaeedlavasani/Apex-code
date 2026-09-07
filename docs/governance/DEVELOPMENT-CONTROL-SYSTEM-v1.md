@@ -1,6 +1,15 @@
 # Apex Code Development Control System v1
 
-Status: **PROPOSED**. This document governs development of Apex Code; it is not the Apex Code runtime execution engine and is not DPT.
+Status: **PROPOSED historical design**. The bounded implementation is
+materialized by
+[`DEVELOPMENT-CONTROL-PLANE-v1.md`](DEVELOPMENT-CONTROL-PLANE-v1.md). This
+document governs development of Apex Code; it is not the Apex Code runtime
+execution engine and is not DPT.
+
+The materialized control plane is the current bounded backlog/work owner for
+this workflow. References below to a future P2 Work Registry describe the
+earlier proposal and do not authorize a second competing backlog or active
+work owner.
 
 ## Purpose and boundary
 

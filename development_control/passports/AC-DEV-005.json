@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "passport_id": "passport_AC-DEV-005_v1",
+  "development_task_id": "AC-DEV-005",
+  "revision": 1,
+  "goal": "Evaluate stale ResourceLease reclamation without weakening fail-closed uncertain-claim behavior.",
+  "scope": ["resource ownership evidence"],
+  "out_of_scope": ["automatic reclamation in the bounded MVP"],
+  "dependencies": ["AC-DEV-001"],
+  "resource_claims": ["distributed-resource-ownership"],
+  "architecture_constraints": ["uncertain claims are not silently reused", "ResourceClaim remains bounded"],
+  "acceptance_criteria": ["reclamation safety assumptions and evidence classified"],
+  "validation": ["architecture review", "bounded resource experiment if authorized"],
+  "risk": {"class": "HIGH", "reversibility": "HIGH"},
+  "executor_compatibility": {"executors": ["*"]},
+  "human_gates": ["owner-authorize-lease-reclamation"],
+  "evidence_refs": ["docs/evidence/PREPROD-SAFETY-BOUNDARY-0007.md"]
+}

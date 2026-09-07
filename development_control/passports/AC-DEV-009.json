@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "passport_id": "passport_AC-DEV-009_v1",
+  "development_task_id": "AC-DEV-009",
+  "revision": 1,
+  "goal": "Determine whether checkpoint continuation can repeat external side effects.",
+  "scope": ["checkpoint/resume source and runtime evidence"],
+  "out_of_scope": ["adding a checkpoint framework", "changing ExecutionEpoch semantics"],
+  "dependencies": ["AC-DEV-001"],
+  "resource_claims": ["checkpoint-runtime"],
+  "architecture_constraints": ["provider checkpoints are not Apex epochs", "side effects require explicit evidence"],
+  "acceptance_criteria": ["checkpoint side-effect safety classified or preserved NOT_PROVEN"],
+  "validation": ["source inspection", "bounded runtime experiment if applicable"],
+  "risk": {"class": "HIGH", "reversibility": "HIGH"},
+  "executor_compatibility": {"executors": ["runtime-proof"]},
+  "human_gates": ["owner-authorize-checkpoint-proof"],
+  "evidence_refs": ["docs/evidence/RUNTIME-AUTHORITY-RECOVERY-PROOF-0001.md"]
+}
