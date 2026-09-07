@@ -58,10 +58,13 @@ class CoreSafetyTests(unittest.TestCase):
             )
             event = ledger.snapshot()["events"][0]
             self.assertEqual(event["schema_version"], 1)
+            self.assertEqual((event["sequence"], event["ordering_scope"]), (1, "ledger"))
             self.assertEqual(event["correlation_id"], "attempt-1")
             self.assertEqual(event["causation_id"], "evt-parent")
             self.assertEqual(event["references"], {"task_id": "task-1", "attempt_id": "attempt-1"})
             self.assertEqual(event["payload"]["value"], "fact")
+            ledger.event("attempt.second", {"attempt_id": "attempt-1"})
+            self.assertEqual([item["sequence"] for item in ledger.snapshot()["events"]], [1, 2])
             self.assertIsInstance(EventEnvelope.create("evt", "type", "now", {}).to_record(), dict)
 
 
