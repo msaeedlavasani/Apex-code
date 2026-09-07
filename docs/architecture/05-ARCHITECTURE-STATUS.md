@@ -38,7 +38,7 @@ and the [comparative harvest](../evidence/AGENTIC-DEVELOPMENT-SYSTEMS-COMPARATIV
 | Public command API and receipts | FREEZE_CANDIDATE | Conceptual contract pending implementation. |
 | Full Execution Model v1 | FREEZE_CANDIDATE | Lifecycle and authority sequencing are design requirements; implementation guarantee remains NOT_PROVEN. |
 | Execution API v1 | FREEZE_CANDIDATE | Conceptual surface pending contract refinement. |
-| Runtime Adapter API / SPI | FREEZE_CANDIDATE | Runtime Adapter Contract v1 has not yet been designed. |
+| Runtime Adapter API / SPI | FREEZE_CANDIDATE | Bounded Runtime Adapter Contract v1 exists and is tested; stable cross-substrate API/SPI and guarantees remain under refinement. |
 | Runtime lanes/session binding details | PROPOSED | Requires implementation evidence. |
 | Core Reconciliation Loop | FREEZE_CANDIDATE | Core concept for comparing durable Attempt state, adapter facts, authority, and resource ownership; controller-loss behavior is not proven. |
 | Projection Protocol / Layer | FREEZE_CANDIDATE | Non-authoritative consumer of canonical Core state and Events; visual/spatial implementation is not implied. |

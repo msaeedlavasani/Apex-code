@@ -40,9 +40,11 @@ Receipts and Events make command acceptance, replay, and outcome distinguishable
 ## Runtime facts and Events
 
 Runtime Adapter facts are substrate observations, not semantic Apex outcomes.
-A future Adapter Contract may expose normalized facts such as `RUNNING`,
+The bounded Runtime Adapter Contract v1 exposes normalized facts such as `RUNNING`,
 `EXITED`, `MISSING`, `UNREACHABLE`, `MISMATCH`, and `UNKNOWN`, together with
-runtime-native identifiers and bounded command results. Core interprets those
+runtime-native identifiers and bounded command results. Its implementation is
+[`apex_code/contract.py`](../../apex_code/contract.py); the stable
+cross-substrate contract remains a `FREEZE_CANDIDATE`. Core interprets those
 facts into Attempt, Epoch, verification, recovery, and Task state; an adapter
 must not directly mark a Task successful or failed.
 
