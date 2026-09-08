@@ -386,9 +386,9 @@ class DevelopmentControlPlaneTests(unittest.TestCase):
         self.assertIn("docs/evidence/AC-DEV-022-OWNER-DECISION-0029.md", strategy["evidence_refs"])
 
         adapter_proof = next(item for item in backlog["tasks"] if item["task_id"] == "AC-DEV-023")
-        self.assertEqual(adapter_proof["status"], "READY")
-        self.assertEqual(adapter_proof["verification_status"], "NOT_RUN")
-        self.assertEqual(adapter_proof["evidence_status"], "NOT_PROVEN")
+        self.assertEqual(adapter_proof["status"], "DONE")
+        self.assertEqual(adapter_proof["verification_status"], "VERIFIED")
+        self.assertEqual(adapter_proof["evidence_status"], "PROVEN")
         self.assertEqual(adapter_proof["dependencies"], ["AC-DEV-022"])
 
     def test_agent_skill_registry_is_executor_neutral_and_preserves_claim_states(self):

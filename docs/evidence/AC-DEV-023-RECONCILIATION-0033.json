@@ -1,0 +1,123 @@
+{
+  "ac_dev_017_matching": {
+    "dispatch_allowed": false,
+    "observed_mappings": [
+      {
+        "claim_rank": 0,
+        "claim_state": "NOT_PROVEN",
+        "compatible": false,
+        "display_name": "ECC",
+        "evidence_refs": [
+          "docs/evidence/EXECUTOR-CAPABILITY-COMPARISON-0018.md",
+          "docs/evidence/FREEBUFF-EXTENSION-SURFACE-AUDIT-0019.md"
+        ],
+        "minimum_claim_state": "PARTIAL",
+        "reason": "CLAIM_STATE_NOT_PROVEN",
+        "source_id": "ecc",
+        "source_status": "NOT_PROVEN",
+        "source_type": "CURATED_SOURCE"
+      },
+      {
+        "claim_rank": 0,
+        "claim_state": "NOT_PROVEN",
+        "compatible": false,
+        "display_name": "Freebuff CLI",
+        "evidence_refs": [
+          "docs/evidence/FREEBUFF-CLI-DELEGATION-0017.md",
+          "docs/evidence/FREEBUFF-EXTENSION-SURFACE-AUDIT-0019.md",
+          "docs/evidence/AC-DEV-019-EXECUTOR-CAPABILITY-DISAMBIGUATION-0024.md"
+        ],
+        "minimum_claim_state": "PARTIAL",
+        "notes": "AC-DEV-019 isolated CLI/TUI probe exposed no catalog command or stable named native agent entry. Prior AgentDefinition and @agents observations remain source/advertised-surface evidence only.",
+        "reason": "CLAIM_STATE_NOT_PROVEN",
+        "source_id": "freebuff-cli",
+        "source_status": "PARTIAL",
+        "source_type": "EXECUTOR"
+      },
+      {
+        "claim_rank": 0,
+        "claim_state": "UNKNOWN",
+        "compatible": false,
+        "display_name": "Future executor or capability system",
+        "evidence_refs": [],
+        "minimum_claim_state": "PARTIAL",
+        "reason": "CLAIM_STATE_NOT_PROVEN",
+        "source_id": "future-system",
+        "source_status": "UNKNOWN",
+        "source_type": "FUTURE_SYSTEM"
+      },
+      {
+        "claim_rank": 0,
+        "claim_state": "NOT_PROVEN",
+        "compatible": false,
+        "display_name": "Goose CLI",
+        "evidence_refs": [
+          "docs/evidence/GOOSE-UI-DELEGATION-0015.md",
+          "docs/evidence/GOOSE-CLI-DELEGATION-0016.md",
+          "docs/evidence/AC-DEV-019-EXECUTOR-CAPABILITY-DISAMBIGUATION-0024.md"
+        ],
+        "minimum_claim_state": "PARTIAL",
+        "notes": "AC-DEV-019 isolated recipe catalog returned no entries; skills catalog is not an agent-definition catalog. Source summon patterns remain source evidence only.",
+        "reason": "CLAIM_STATE_NOT_PROVEN",
+        "source_id": "goose-cli",
+        "source_status": "PARTIAL",
+        "source_type": "EXECUTOR"
+      }
+    ],
+    "passport_id": "passport_AC-DEV-018_v1",
+    "permanent_executor_selected": false,
+    "plan_input_digest": "6a307fc29c4dea9def46f435309a59657fb6ab32d4cc8e2057313b9d61dbebf4",
+    "plan_status": "BLOCKED_REQUIRED_CAPABILITY",
+    "repeated_output_equal": true,
+    "required_match_status": "UNAVAILABLE"
+  },
+  "ac_dev_018_admission": {
+    "blocked_reasons": [
+      "REQUIRED_CAPABILITY_UNAVAILABLE:agent.definition_catalog"
+    ],
+    "decision_input_digest": "0651c3b1f1f2d45ee841a052f95c15bb3bc89623314c43ef613599b896476498",
+    "dispatch_allowed": false,
+    "passport_id": "passport_AC-DEV-018_v1",
+    "permanent_executor_selected": false,
+    "policy": {
+      "allow_deterministic_tie_break": false,
+      "source_id_asc_used": false,
+      "tie_break_strategy": null
+    },
+    "repeated_output_equal": true,
+    "runtime_side_effects": false,
+    "selection": null,
+    "selection_rationale": null,
+    "status": "BLOCKED_CAPABILITY"
+  },
+  "development_task_id": "AC-DEV-023",
+  "evidence_refs": [
+    "docs/evidence/AC-DEV-023-ADAPTER-PROOF-0031.json"
+  ],
+  "observed_at": "2026-09-08T01:48:02Z",
+  "receipt_id": "receipt_AC-DEV-023_reconciliation_0033",
+  "receipt_type": "CAPABILITY_MATCHING_AND_ADMISSION_RECONCILIATION",
+  "registry": {
+    "capability_id": "agent.definition_catalog",
+    "mapping_changes": {},
+    "registry_id": "apex-agent-skill-registry-v1",
+    "revision": 2,
+    "unchanged_controls": {
+      "agent_definition_catalog_claims": {
+        "ecc": "NOT_PROVEN",
+        "freebuff-cli": "NOT_PROVEN",
+        "future-system": "UNKNOWN",
+        "goose-cli": "NOT_PROVEN"
+      },
+      "ecc_installed": false,
+      "permanent_executor_selected": false
+    }
+  },
+  "result": {
+    "adapter_contract_proven": true,
+    "admission_reason": "REQUIRED_NATIVE_CAPABILITY_REMAINS_UNAVAILABLE",
+    "admission_reconciled": false,
+    "native_agent_definition_catalog_proven": false
+  },
+  "schema_version": 1
+}

@@ -2,7 +2,7 @@
   "schema_version": 1,
   "passport_id": "passport_AC-DEV-023_v1",
   "development_task_id": "AC-DEV-023",
-  "revision": 1,
+  "revision": 2,
   "goal": "Prove a bounded Apex-owned AgentDefinition projection adapter without granting executor ownership of Apex semantics or authority.",
   "scope": [
     "immutable task-scoped definition projection",
@@ -52,5 +52,10 @@
   "risk": {"class": "MEDIUM", "reversibility": "HIGH"},
   "executor_compatibility": {"executors": ["generic-executor"]},
   "human_gates": [],
-  "evidence_refs": ["docs/evidence/AC-DEV-023-ADAPTER-PROOF-CONTRACT-0030.md"]
+  "evidence_refs": [
+    "docs/evidence/AC-DEV-023-ADAPTER-PROOF-CONTRACT-0030.md",
+    "docs/evidence/AC-DEV-023-ADAPTER-PROOF-0031.json",
+    "docs/evidence/AC-DEV-023-AUTONOMOUS-RUN-0032.md",
+    "docs/evidence/AC-DEV-023-RECONCILIATION-0033.json"
+  ]
 }

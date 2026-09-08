@@ -40,6 +40,22 @@ class EvidenceReceiptValidationTests(unittest.TestCase):
         self.assertFalse(receipt["preserved_controls"]["dispatch_allowed"])
         self.assertEqual(receipt["evidence_state"]["generic_executor_injection"], "NOT_PROVEN")
 
+    def test_ac_dev_023_adapter_proof_validates_without_native_catalog_promotion(self):
+        receipt = load_json("docs/evidence/AC-DEV-023-ADAPTER-PROOF-0031.json")
+        report = validate_receipt(receipt, self.registry, repository_root=ROOT)
+        self.assertTrue(report["valid"], report)
+        self.assertFalse(report["claim_promotion"])
+        self.assertEqual(receipt["acceptance"]["fail_closed_invocation"], "PROVEN")
+        self.assertEqual(receipt["registry_reconciliation"]["mapping_changes"], {})
+        self.assertEqual(receipt["ac_dev_018_effect"]["status"], "BLOCKED_CAPABILITY")
+
+    def test_ac_dev_023_reconciliation_preserves_blocked_admission(self):
+        receipt = load_json("docs/evidence/AC-DEV-023-RECONCILIATION-0033.json")
+        report = validate_receipt(receipt, self.registry, repository_root=ROOT)
+        self.assertTrue(report["valid"], report)
+        self.assertEqual(receipt["ac_dev_017_matching"]["required_match_status"], "UNAVAILABLE")
+        self.assertEqual(receipt["ac_dev_018_admission"]["status"], "BLOCKED_CAPABILITY")
+
     def test_secret_shaped_fields_fail_closed(self):
         receipt = load_json("docs/evidence/AC-DEV-019-OPERATIONAL-PROBE-0024.json")
         receipt["operational_evidence"]["goose"]["token"] = "redacted"
