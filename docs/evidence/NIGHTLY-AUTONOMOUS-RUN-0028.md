@@ -56,7 +56,8 @@ development branch `codex/nightly-reconciliation-020-021`:
   unexplained tracked changes remain. `.freebuff/` remains untracked and
   untouched.
 
-The durable machine-readable receipt records this delivery reconciliation.
+The durable machine-readable receipt records this delivery reconciliation,
+including the receipt-reconciliation PR #46 and its post-merge `main` CI.
 
 ## Remaining backlog and Owner Decision Queue
 

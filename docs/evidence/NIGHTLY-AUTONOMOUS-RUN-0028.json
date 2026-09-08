@@ -5,7 +5,7 @@
   "development_task_id": "NIGHTLY-AUTONOMOUS-RUN-0028",
   "run_id": "run_82138d51dc9f4ebd",
   "started_at": "2026-09-08T00:57:29Z",
-  "ended_at": "2026-09-08T01:08:44Z",
+  "ended_at": "2026-09-08T01:11:47Z",
   "executor": "generic-executor",
   "batches": [
     {
@@ -69,6 +69,10 @@
     "local_main_commit": "36aa90747d3a3c5f182925b37a33216021f3db4a",
     "origin_main_commit": "36aa90747d3a3c5f182925b37a33216021f3db4a",
     "post_merge_main_ci": "PASS",
+    "reconciliation_pr_number": 46,
+    "reconciliation_merge_commit": "a2bd185c032c62af95680277e48e8ec1d97ad345",
+    "reconciliation_pr_workflow_run_id": 34175749771,
+    "reconciliation_main_workflow_run_id": 34175787673,
     "tracked_worktree": "CLEAN",
     "freebuff": "PRESERVED_UNTOUCHED"
   },
