@@ -87,6 +87,11 @@ readiness/reconciliation cycles now preserve bytes and revision after semantic
 convergence, while actual writes remain atomic and preserve task semantics and
 history.
 
+AC-DEV-017 adds executor-neutral required/optional capability requirements and
+deterministic registry matching. Its Candidate Execution Plan preserves source
+claim/evidence state, fails closed for required gaps or ambiguity, and never
+dispatches or selects an executor.
+
 ## Boundary checks
 
 The implementation is separate from `apex_code/` and does not import Core

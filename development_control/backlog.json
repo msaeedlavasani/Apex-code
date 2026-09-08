@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "revision": 7,
+  "revision": 8,
   "source": "accepted Apex Code repository evidence",
   "tasks": [
     {
@@ -292,6 +292,24 @@
       "evidence_refs": ["docs/evidence/DEVELOPMENT-CONTROL-PERSISTENCE-0021.md"],
       "critical_path_weight": 4,
       "downstream_unlock_value": 16,
+      "aging_days": 0
+    },
+    {
+      "task_id": "AC-DEV-017",
+      "title": "Task Capability Requirements & Registry Matching v1",
+      "status": "DONE",
+      "verification_status": "VERIFIED",
+      "evidence_status": "PROVEN",
+      "priority": "P1",
+      "risk": "MEDIUM",
+      "decision_class": "ROUTINE",
+      "autonomous_allowed": true,
+      "executor_compatibility": {"executors": ["generic-executor"]},
+      "dependencies": ["AC-DEV-011", "AC-DEV-012", "AC-DEV-013", "AC-DEV-014", "AC-DEV-015", "AC-DEV-016"],
+      "resource_claims": ["capability-matching", "agent-skill-registry", "control-plane-contract"],
+      "evidence_refs": ["docs/evidence/TASK-CAPABILITY-MATCHING-0022.md"],
+      "critical_path_weight": 5,
+      "downstream_unlock_value": 20,
       "aging_days": 0
     }
   ]

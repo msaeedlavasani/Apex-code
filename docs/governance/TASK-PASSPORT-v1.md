@@ -34,6 +34,29 @@ The passport may influence capability requirements, agent/model/runtime requirem
 
 `taskId` is a link to a Core Task when one exists; it does not copy runtime identity. `ExecutionManifest` fields such as session identifiers, attempt identity, and immutable execution birth data remain Core-owned.
 
+## Capability requirements
+
+The optional `capability_requirements` Passport field has this shape:
+
+```json
+{
+  "required": [
+    {"capability_id": "agent.parallel_delegation", "minimum_claim_state": "PROVEN"}
+  ],
+  "optional": [
+    {"capability_id": "skill.registry", "minimum_claim_state": "PARTIAL"}
+  ]
+}
+```
+
+Capability IDs resolve only through the executor-neutral Agent/Skill Registry.
+Required and optional requirements are distinct. A required capability with no
+compatible source, a `NOT_PROVEN`/`NOT_SUPPORTED`/`UNKNOWN` claim, or an
+ambiguous best match fails closed. Optional gaps remain visible in the
+Candidate Execution Plan without making the plan dispatchable. Matching does
+not dispatch work, select a permanent executor, or transfer scheduling,
+authority, verification, retry, or semantic-success ownership.
+
 ## Passport rules
 
 - Every revision records why an authority-relevant field changed.

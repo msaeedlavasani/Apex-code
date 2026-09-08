@@ -278,6 +278,16 @@ class DevelopmentControlPlaneTests(unittest.TestCase):
         self.assertEqual(persistence_task["verification_status"], "VERIFIED")
         self.assertEqual(persistence_task["evidence_status"], "PROVEN")
 
+        matching_task = next(item for item in backlog["tasks"] if item["task_id"] == "AC-DEV-017")
+        self.assertEqual(matching_task["title"], "Task Capability Requirements & Registry Matching v1")
+        self.assertEqual(matching_task["status"], "DONE")
+        self.assertEqual(matching_task["verification_status"], "VERIFIED")
+        self.assertEqual(matching_task["evidence_status"], "PROVEN")
+        self.assertEqual(
+            matching_task["dependencies"],
+            ["AC-DEV-011", "AC-DEV-012", "AC-DEV-013", "AC-DEV-014", "AC-DEV-015", "AC-DEV-016"],
+        )
+
     def test_agent_skill_registry_is_executor_neutral_and_preserves_claim_states(self):
         root = Path(__file__).resolve().parents[1]
         registry = json.loads((root / "development_control/agent_skill_registry.json").read_text())
