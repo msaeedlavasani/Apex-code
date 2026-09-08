@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "passport_id": "passport_AC-DEV-017_v1",
+  "development_task_id": "AC-DEV-017",
+  "revision": 1,
+  "goal": "Extend Task Passports with executor-neutral capability requirements and build deterministic ranked Candidate Execution Plans from Passport requirements and the Agent/Skill Registry without dispatching work.",
+  "scope": [
+    "required and optional capability requirements in Task Passports",
+    "deterministic registry matching and ranked compatible source candidates",
+    "fail-closed handling for required NOT_PROVEN, unsupported, unavailable, or ambiguous matches",
+    "machine-readable Candidate Execution Plan with evidence and claim states",
+    "regression coverage constrained by AC-DEV-011 through AC-DEV-016"
+  ],
+  "out_of_scope": [
+    "task dispatch or execution",
+    "permanent executor selection",
+    "ECC installation or adoption",
+    "moving scheduling, authority, verification, retry, or semantic-success ownership outside Apex",
+    "provider/model integration or runtime adapter changes"
+  ],
+  "dependencies": ["AC-DEV-011", "AC-DEV-012", "AC-DEV-013", "AC-DEV-014", "AC-DEV-015", "AC-DEV-016"],
+  "resource_claims": ["capability-matching", "agent-skill-registry", "control-plane-contract"],
+  "capability_requirements": {
+    "required": [
+      {"capability_id": "agent.definition_catalog", "minimum_claim_state": "PARTIAL"}
+    ],
+    "optional": [
+      {"capability_id": "agent.parallel_delegation", "minimum_claim_state": "PROVEN"},
+      {"capability_id": "skill.registry", "minimum_claim_state": "PARTIAL"}
+    ]
+  },
+  "architecture_constraints": [
+    "Apex Control Plane owns task semantics, scheduling, capability requirements, and candidate-plan policy",
+    "Apex Core owns runtime authority, verification, retry/rework policy, and semantic success",
+    "registry sources are ranked candidates only and never dispatch authority",
+    "REQUIRED and OPTIONAL requirements remain distinct",
+    "NOT_PROVEN, NOT_SUPPORTED, UNKNOWN, PARTIAL, and PROVEN remain distinct",
+    "no ECC installation and no permanent executor selection"
+  ],
+  "acceptance_criteria": [
+    "Task Passport capability requirements support REQUIRED and OPTIONAL entries with minimum claim state",
+    "matching produces a deterministic machine-readable Candidate Execution Plan",
+    "required NOT_PROVEN or unsupported capabilities fail closed",
+    "ambiguous equal-best candidates remain visible and fail closed for REQUIRED requirements",
+    "match results preserve observed claim states, source identity, evidence references, and notes",
+    "the plan explicitly forbids dispatch and preserves Apex ownership boundaries"
+  ],
+  "validation": [
+    "dependency and Passport review for AC-DEV-011 through AC-DEV-016",
+    "supported, partial, unsupported, ambiguous, and deterministic matcher tests",
+    "canonical Python tests and documentation validation",
+    "backlog, Passport, and registry JSON validation",
+    "git diff --check and protected PR CI gate"
+  ],
+  "risk": {"class": "MEDIUM", "reversibility": "HIGH"},
+  "executor_compatibility": {"executors": ["generic-executor"]},
+  "human_gates": [],
+  "evidence_refs": ["docs/evidence/TASK-CAPABILITY-MATCHING-0022.md"]
+}

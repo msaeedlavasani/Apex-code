@@ -139,6 +139,11 @@ no-op write preserves existing bytes, actual writes retain insertion order
 instead of sorted-key churn, and readiness refresh advances revision only when
 canonical state changes.
 
+Capability matching (`AC-DEV-017`) is a pure candidate-plan projection. It does
+not dispatch work or select an executor. Required unproven, unsupported, or
+ambiguous matches fail closed; optional gaps remain visible. Scheduling,
+authority, verification, retry/rework, and semantic success remain Apex-owned.
+
 No secrets may appear in backlog, Passports, incidents, attempts, events,
 evidence, or run summaries. Protected-main and CI governance remain mandatory
 for repository changes.

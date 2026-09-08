@@ -58,3 +58,6 @@ semantics, scheduling, authority, and verification. ECC remains uninstalled.
 `AC-DEV-016` makes canonical backlog persistence idempotent: no-op readiness
 refreshes preserve backlog bytes and revision, while semantic changes remain
 atomic and history-preserving.
+`AC-DEV-017` matches Passport `REQUIRED` and `OPTIONAL` capability requirements
+to ranked registry sources in a deterministic, non-dispatching Candidate
+Execution Plan; required unproven or ambiguous matches fail closed.
