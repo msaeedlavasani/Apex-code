@@ -1,0 +1,123 @@
+{
+  "ac_dev_018_effect": {
+    "dispatch_allowed": false,
+    "permanent_executor_selected": false,
+    "runtime_side_effects": false,
+    "source_id_asc_used": false,
+    "status": "BLOCKED_CAPABILITY"
+  },
+  "acceptance": {
+    "fail_closed_invocation": "PROVEN",
+    "identity_preservation": "PROVEN",
+    "projection_integrity": "PROVEN",
+    "result_transport": "PROVEN"
+  },
+  "contract": {
+    "definition_digest": "a235acad0061f02d5161761c1edf50f600a4183f48f5c963192d17d90b5d36ad",
+    "definition_id": "apex.definition.projection-proof",
+    "projection_fields": [
+      "definition_digest",
+      "definition_id",
+      "registry_revision",
+      "task_scoped_projection"
+    ],
+    "registry_revision": 2
+  },
+  "development_task_id": "AC-DEV-023",
+  "evidence_class": "OBSERVED_RUNTIME_EVIDENCE",
+  "harness": {
+    "credentials_supplied": false,
+    "disposable_root_prefix": "apex-ac-dev-023-",
+    "ecc_installed": false,
+    "executor_selected": false,
+    "repository_workspace_used": false,
+    "root_is_disposable": true,
+    "unrestricted_dispatch": false
+  },
+  "observed_at": "2026-09-08T01:46:38Z",
+  "operational_evidence": {
+    "fail_closed_rejections": [
+      {
+        "case": "tampered_payload",
+        "expected_reason": "DEFINITION_DIGEST_MISMATCH",
+        "reason": "DEFINITION_DIGEST_MISMATCH",
+        "rejected_before_invocation": true,
+        "status": "PASS",
+        "substrate_invocations_after": 1,
+        "substrate_invocations_before": 1
+      },
+      {
+        "case": "stale_registry_revision",
+        "expected_reason": "REGISTRY_REVISION_STALE_OR_MISMATCH",
+        "reason": "REGISTRY_REVISION_STALE_OR_MISMATCH",
+        "rejected_before_invocation": true,
+        "status": "PASS",
+        "substrate_invocations_after": 1,
+        "substrate_invocations_before": 1
+      },
+      {
+        "case": "mismatched_definition_id",
+        "expected_reason": "DEFINITION_ID_MISMATCH",
+        "reason": "DEFINITION_ID_MISMATCH",
+        "rejected_before_invocation": true,
+        "status": "PASS",
+        "substrate_invocations_after": 1,
+        "substrate_invocations_before": 1
+      },
+      {
+        "case": "malformed_task_projection",
+        "expected_reason": "TASK_PROJECTION_MALFORMED",
+        "reason": "TASK_PROJECTION_MALFORMED",
+        "rejected_before_invocation": true,
+        "status": "PASS",
+        "substrate_invocations_after": 1,
+        "substrate_invocations_before": 1
+      },
+      {
+        "case": "missing_digest",
+        "expected_reason": "PROJECTION_FIELDS_INVALID",
+        "reason": "PROJECTION_FIELDS_INVALID",
+        "rejected_before_invocation": true,
+        "status": "PASS",
+        "substrate_invocations_after": 1,
+        "substrate_invocations_before": 1
+      },
+      {
+        "case": "replayed_attempt",
+        "expected_reason": "ATTEMPT_REPLAY",
+        "reason": "ATTEMPT_REPLAY",
+        "rejected_before_invocation": true,
+        "status": "PASS",
+        "substrate_invocations_after": 1,
+        "substrate_invocations_before": 1
+      }
+    ],
+    "positive_invocation": {
+      "identity_preserved": true,
+      "invocation_count": 1,
+      "result": {
+        "attempt_id": "attempt-positive-001",
+        "authority_assigned_by_executor": false,
+        "definition_digest": "a235acad0061f02d5161761c1edf50f600a4183f48f5c963192d17d90b5d36ad",
+        "definition_id": "apex.definition.projection-proof",
+        "registry_revision": 2,
+        "semantic_success_assigned_by_executor": false,
+        "substrate_result": {
+          "acknowledged": true,
+          "result_transport": "bounded-local"
+        }
+      },
+      "status": "PASS"
+    },
+    "substrate_invocation_count": 1
+  },
+  "receipt_id": "receipt_AC-DEV-023_adapter_proof_0031",
+  "receipt_type": "DEFINITION_PROJECTION_ADAPTER_OPERATIONAL_PROOF",
+  "registry_reconciliation": {
+    "agent_definition_catalog_claim_state": "NOT_PROVEN",
+    "mapping_changes": {},
+    "native_executor_catalog_claim_state": "NOT_PROVEN",
+    "registry_revision": 2
+  },
+  "schema_version": 1
+}

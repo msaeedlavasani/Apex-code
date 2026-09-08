@@ -1,0 +1,72 @@
+{
+  "batches": [
+    {
+      "attempt_ids": [
+        "dev_attempt_f25dc5eeca034e15"
+      ],
+      "batch_id": "batch_8580ab1668f14f86",
+      "concurrency": 1,
+      "integration_verification": "PASS",
+      "outcome": "PASS",
+      "task_ids": [
+        "AC-DEV-023"
+      ]
+    }
+  ],
+  "development_task_id": "AC-DEV-023",
+  "ended_at": "2026-09-08T01:46:38Z",
+  "executor": "generic-executor",
+  "incidents": [],
+  "owner_decision_queue": [],
+  "proof_evidence_refs": [
+    "docs/evidence/AC-DEV-023-ADAPTER-PROOF-0031.json"
+  ],
+  "receipt_id": "receipt_ac_dev_023_autonomous_run_0032",
+  "receipt_type": "NIGHTLY_AUTONOMOUS_RUN",
+  "registry_and_admission": {
+    "ac_dev_018_status": "BLOCKED_CAPABILITY",
+    "agent_definition_catalog": {
+      "apex_owned_projection": "PROVEN_FOR_ADAPTER_CONTRACT_ONLY",
+      "freebuff_cli": "NOT_PROVEN",
+      "goose_cli": "NOT_PROVEN"
+    },
+    "dispatch_allowed": false,
+    "ecc_installed": false,
+    "permanent_executor_selected": false,
+    "registry_revision": 2
+  },
+  "rework": [],
+  "run_id": "run_7daa873d84b8410d",
+  "run_summary": {
+    "backlog_returns": 0,
+    "batches": 1,
+    "considered_tasks": 1,
+    "corrective_tasks": 0,
+    "critical_path_progress": {
+      "done": 18,
+      "ratio": 0.782608695652174,
+      "total": 23
+    },
+    "ended_at": "2026-09-08T01:46:38Z",
+    "executed_tasks": 1,
+    "human_gates": [],
+    "incidents": 0,
+    "recovered_tasks": 0,
+    "remaining_eligible": [],
+    "run_id": "run_7daa873d84b8410d",
+    "started_at": "2026-09-08T01:46:38Z",
+    "stop_reason": "NO_ELIGIBLE_WORK",
+    "verified_tasks": 1
+  },
+  "schema_version": 1,
+  "started_at": "2026-09-08T01:46:38Z",
+  "stop_reason": "NO_ELIGIBLE_WORK",
+  "tasks_completed": [
+    {
+      "evidence_status": "PROVEN",
+      "status": "DONE",
+      "task_id": "AC-DEV-023",
+      "verification_status": "VERIFIED"
+    }
+  ]
+}

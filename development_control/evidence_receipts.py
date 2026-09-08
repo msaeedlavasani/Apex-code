@@ -24,6 +24,7 @@ SUPPORTED_RECEIPT_TYPES = {
     "CONTROL_PLANE_PERSISTENCE_RECONCILIATION",
     "EVIDENCE_RECEIPT_VALIDATION_RUN",
     "ARCHITECTURE_STRATEGY_OWNER_DECISION",
+    "DEFINITION_PROJECTION_ADAPTER_OPERATIONAL_PROOF",
     "NIGHTLY_AUTONOMOUS_RUN",
 }
 FORBIDDEN_SECRET_KEYS = {
@@ -50,6 +51,8 @@ CLAIM_FIELD_NAMES = {
     "after",
     "goose_claim_state",
     "freebuff_claim_state",
+    "agent_definition_catalog_claim_state",
+    "native_executor_catalog_claim_state",
 }
 CLAIM_RANK = {
     "NOT_SUPPORTED": -1,
@@ -276,6 +279,47 @@ def _check_admission_policy(receipt: Mapping[str, Any], errors: list[dict[str, s
             _add_error(errors, "ADMISSION_BOUNDARY_VIOLATION", f"ac_dev_018_admission.{field}", f"{field} must remain false")
 
 
+def _check_definition_projection_proof(receipt: Mapping[str, Any], errors: list[dict[str, str]]) -> None:
+    if receipt.get("receipt_type") != "DEFINITION_PROJECTION_ADAPTER_OPERATIONAL_PROOF":
+        return
+    if receipt.get("evidence_class") != "OBSERVED_RUNTIME_EVIDENCE":
+        _add_error(errors, "PROOF_EVIDENCE_CLASS_INVALID", "evidence_class", "adapter proof requires observed runtime evidence")
+    harness = receipt.get("harness", {})
+    if not isinstance(harness, Mapping):
+        _add_error(errors, "PROOF_HARNESS_INVALID", "harness", "proof harness must be an object")
+    else:
+        for field in ("root_is_disposable", "repository_workspace_used", "credentials_supplied", "executor_selected", "ecc_installed", "unrestricted_dispatch"):
+            if not isinstance(harness.get(field), bool):
+                _add_error(errors, "PROOF_HARNESS_INVALID", f"harness.{field}", "proof harness control must be boolean")
+        for field in ("root_is_disposable",):
+            if harness.get(field) is not True:
+                _add_error(errors, "PROOF_BOUNDARY_VIOLATION", f"harness.{field}", "adapter proof must use a disposable harness")
+        for field in ("repository_workspace_used", "credentials_supplied", "executor_selected", "ecc_installed", "unrestricted_dispatch"):
+            if harness.get(field) is not False:
+                _add_error(errors, "PROOF_BOUNDARY_VIOLATION", f"harness.{field}", f"{field} must remain false")
+    acceptance = receipt.get("acceptance", {})
+    if not isinstance(acceptance, Mapping):
+        _add_error(errors, "PROOF_ACCEPTANCE_INVALID", "acceptance", "proof acceptance must be an object")
+    else:
+        for field in ("projection_integrity", "identity_preservation", "fail_closed_invocation", "result_transport"):
+            if acceptance.get(field) != "PROVEN":
+                _add_error(errors, "PROOF_ACCEPTANCE_NOT_PROVEN", f"acceptance.{field}", "adapter proof acceptance must be PROVEN")
+    reconciliation = receipt.get("registry_reconciliation", {})
+    if not isinstance(reconciliation, Mapping):
+        _add_error(errors, "PROOF_REGISTRY_RECONCILIATION_INVALID", "registry_reconciliation", "registry reconciliation must be an object")
+    else:
+        if reconciliation.get("mapping_changes") != {}:
+            _add_error(errors, "PROOF_REGISTRY_MUTATION_UNEXPECTED", "registry_reconciliation.mapping_changes", "adapter proof cannot mutate registry mappings")
+        for field in ("agent_definition_catalog_claim_state", "native_executor_catalog_claim_state"):
+            if reconciliation.get(field) != "NOT_PROVEN":
+                _add_error(errors, "PROOF_CLAIM_PROMOTION_UNSUPPORTED", f"registry_reconciliation.{field}", "adapter proof cannot promote native catalog claims")
+    effect = receipt.get("ac_dev_018_effect", {})
+    if not isinstance(effect, Mapping) or effect.get("status") != "BLOCKED_CAPABILITY":
+        _add_error(errors, "PROOF_ADMISSION_BOUNDARY_VIOLATION", "ac_dev_018_effect.status", "AC-DEV-018 must remain BLOCKED_CAPABILITY during adapter proof")
+    elif any(effect.get(field) is not False for field in ("dispatch_allowed", "permanent_executor_selected", "runtime_side_effects", "source_id_asc_used")):
+        _add_error(errors, "PROOF_ADMISSION_BOUNDARY_VIOLATION", "ac_dev_018_effect", "adapter proof cannot enable dispatch, selection, side effects, or tie-breaking")
+
+
 def validate_receipt(
     receipt: Mapping[str, Any],
     registry: Mapping[str, Any],
@@ -298,6 +342,7 @@ def validate_receipt(
         _check_registry_consistency(receipt, registry, errors)
     _check_no_unsupported_promotion(receipt, errors)
     _check_admission_policy(receipt, errors)
+    _check_definition_projection_proof(receipt, errors)
     return {
         "validator_schema_version": 1,
         "validator": "apex-control-plane-evidence-receipts-v1",

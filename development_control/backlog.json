@@ -409,9 +409,9 @@
     {
       "task_id": "AC-DEV-023",
       "title": "Apex-Owned Definition Projection Adapter Proof",
-      "status": "READY",
-      "verification_status": "NOT_RUN",
-      "evidence_status": "NOT_PROVEN",
+      "status": "DONE",
+      "verification_status": "VERIFIED",
+      "evidence_status": "PROVEN",
       "priority": "P1",
       "risk": "MEDIUM",
       "decision_class": "ROUTINE",
@@ -423,7 +423,12 @@
         "execution-admission",
         "verification-contract"
       ],
-      "evidence_refs": ["docs/evidence/AC-DEV-023-ADAPTER-PROOF-CONTRACT-0030.md"],
+      "evidence_refs": [
+        "docs/evidence/AC-DEV-023-ADAPTER-PROOF-CONTRACT-0030.md",
+        "docs/evidence/AC-DEV-023-ADAPTER-PROOF-0031.json",
+        "docs/evidence/AC-DEV-023-AUTONOMOUS-RUN-0032.md",
+        "docs/evidence/AC-DEV-023-RECONCILIATION-0033.json"
+      ],
       "critical_path_weight": 6,
       "downstream_unlock_value": 30,
       "aging_days": 0
