@@ -66,6 +66,14 @@ and task-scoped candidate selection. Equal-quality candidates remain blocked
 unless an explicit policy permits `SOURCE_ID_ASC` tie-breaking; no executor is
 permanently selected and ECC remains uninstalled.
 
+The Owner-approved AC-DEV-022 boundary allows Apex-owned AgentDefinition
+identity and capability metadata to be projected through a bounded adapter to a
+generic execution substrate. This does not prove generic injection or weaken
+admission: AC-DEV-023 must prove projection integrity, identity preservation,
+fail-closed invocation, and result transport before `agent.definition_catalog`
+can be reconciled for admission. Until then AC-DEV-018 remains
+`BLOCKED_CAPABILITY` and dispatch remains disabled.
+
 Canonical persistence excludes derived `readiness_reasons`, `batch_id`, and
 `last_attempt_id` task projections. Readiness is returned as an in-memory
 projection; batches, Attempts, incidents, and Owner Decision Queue entries

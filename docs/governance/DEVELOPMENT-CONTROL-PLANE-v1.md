@@ -161,6 +161,16 @@ candidates while keeping dispatch disabled and permanent executor selection
 false. No runtime side effects occur, and Apex Core retains authority,
 verification, retry/rework, and semantic-success ownership.
 
+The Owner approved the bounded `AC-DEV-022` Apex-owned definition projection
+boundary. Apex may own canonical `AgentDefinition` identity and capability
+metadata and pass an immutable task-scoped projection to a generic execution
+substrate without a native executor catalog. This approval does not prove
+generic injection, select an executor, install ECC, or authorize unrestricted
+dispatch. `agent.definition_catalog` remains `NOT_PROVEN` and AC-DEV-018
+remains `BLOCKED_CAPABILITY` until `AC-DEV-023` proves projection integrity,
+identity preservation, fail-closed invocation, and result transport and the
+matching/admission projections are explicitly reconciled.
+
 No secrets may appear in backlog, Passports, incidents, attempts, events,
 evidence, or run summaries. Protected-main and CI governance remain mandatory
 for repository changes.
