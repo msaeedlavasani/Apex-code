@@ -137,7 +137,14 @@ verification, and unsupported mappings remain `NOT_PROVEN`.
 Canonical backlog persistence (`AC-DEV-016`) is semantic and idempotent. A
 no-op write preserves existing bytes, actual writes retain insertion order
 instead of sorted-key churn, and readiness refresh advances revision only when
-canonical state changes.
+canonical state changes. AC-DEV-020 closes the follow-on boundary: derived
+`readiness_reasons`, `batch_id`, and `last_attempt_id` projections are removed
+at the canonical persistence boundary; readiness remains an in-memory
+projection, while batches, Attempts, and Owner Decision Queue records remain
+operational state. Repeated refresh/reconciliation is byte-idempotent after
+convergence, and task Human Gates are idempotently reconciled into the Owner
+Decision Queue. The autonomous stop vocabulary uses `OWNER_DECISIONS_ONLY`
+when no policy-permitted work remains outside that queue.
 
 Capability matching (`AC-DEV-017`) is a pure candidate-plan projection. It does
 not dispatch work or select an executor. Required unproven, unsupported, or

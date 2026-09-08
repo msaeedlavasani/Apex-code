@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "passport_id": "passport_AC-DEV-021_v1",
+  "development_task_id": "AC-DEV-021",
+  "revision": 1,
+  "goal": "Implement bounded pure validation for durable evidence and reconciliation receipts without promoting NOT_PROVEN or inferring unsupported claims.",
+  "scope": [
+    "secret-shaped field and obvious secret-pattern rejection",
+    "receipt schema and closed claim-state validation",
+    "evidence-reference and registry mapping consistency",
+    "AC-DEV-018 admission-policy compliance checks",
+    "CLI validation of selected durable receipts and machine-readable reports"
+  ],
+  "out_of_scope": [
+    "claim promotion, registry mutation, or automatic evidence rewriting",
+    "external network, provider, executor, or runtime probes",
+    "ECC installation or permanent executor selection",
+    "semantic verification of receipt claims beyond bounded consistency checks"
+  ],
+  "dependencies": ["AC-DEV-019"],
+  "resource_claims": ["evidence-validation", "agent-skill-registry"],
+  "architecture_constraints": [
+    "validation is pure and cannot mutate receipts or registry mappings",
+    "PROVEN, PARTIAL, NOT_PROVEN, NOT_SUPPORTED, and UNKNOWN remain distinct",
+    "NOT_PROVEN and UNKNOWN are never upgraded by validation",
+    "admission remains fail-closed and SOURCE_ID_ASC requires explicit policy",
+    "Apex Control Plane owns receipt interpretation; Apex Core ownership is unchanged"
+  ],
+  "acceptance_criteria": [
+    "valid AC-DEV-019 operational and reconciliation receipts validate against the current registry",
+    "secret-shaped keys and obvious secret patterns fail closed",
+    "unsupported schema versions, invalid claim states, missing registry sources, and mapping mismatches fail closed",
+    "unauthorized admission tie-breaking and boundary violations fail closed",
+    "claim promotion from NOT_PROVEN or UNKNOWN requires explicit demonstrated runtime evidence and is never performed by the validator",
+    "validation emits deterministic machine-readable results and preserves the input"
+  ],
+  "validation": [
+    "focused receipt validator unit tests",
+    "CLI validation of durable AC-DEV-019 receipts",
+    "full Python test suite and documentation validation",
+    "backlog/passport/registry JSON validation and git diff --check"
+  ],
+  "risk": {"class": "MEDIUM", "reversibility": "HIGH"},
+  "executor_compatibility": {"executors": ["generic-executor"]},
+  "human_gates": [],
+  "evidence_refs": ["docs/evidence/AC-DEV-021-EVIDENCE-RECEIPT-VALIDATOR-0026.md"]
+}

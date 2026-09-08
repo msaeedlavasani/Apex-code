@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "receipt_type": "CAPABILITY_MATCHING_AND_ADMISSION_RECONCILIATION",
+  "receipt_id": "receipt_AC-DEV-019_reconciliation_0024",
+  "development_task_id": "AC-DEV-019",
+  "registry": {
+    "registry_id": "apex-agent-skill-registry-v1",
+    "revision": 2,
+    "capability_id": "agent.definition_catalog",
+    "mapping_changes": {
+      "goose-cli": {"before": "PARTIAL", "after": "NOT_PROVEN"},
+      "freebuff-cli": {"before": "PARTIAL", "after": "NOT_PROVEN"}
+    },
+    "unchanged_controls": {
+      "ecc_installed": false,
+      "permanent_executor_selected": false
+    }
+  },
+  "ac_dev_017_matching": {
+    "passport_id": "passport_AC-DEV-018_v1",
+    "plan_status": "BLOCKED_REQUIRED_CAPABILITY",
+    "required_match_status": "UNAVAILABLE",
+    "observed_mappings": [
+      {"source_id": "goose-cli", "claim_state": "NOT_PROVEN", "compatible": false},
+      {"source_id": "freebuff-cli", "claim_state": "NOT_PROVEN", "compatible": false},
+      {"source_id": "ecc", "claim_state": "NOT_PROVEN", "compatible": false},
+      {"source_id": "future-system", "claim_state": "UNKNOWN", "compatible": false}
+    ],
+    "plan_input_digest": "6a307fc29c4dea9def46f435309a59657fb6ab32d4cc8e2057313b9d61dbebf4",
+    "repeated_output_equal": true,
+    "dispatch_allowed": false,
+    "permanent_executor_selected": false
+  },
+  "ac_dev_018_admission": {
+    "passport_id": "passport_AC-DEV-018_v1",
+    "status": "BLOCKED_CAPABILITY",
+    "blocked_reasons": ["REQUIRED_CAPABILITY_UNAVAILABLE:agent.definition_catalog"],
+    "selection": null,
+    "selection_rationale": null,
+    "policy": {
+      "allow_deterministic_tie_break": false,
+      "tie_break_strategy": null,
+      "source_id_asc_used": false
+    },
+    "decision_input_digest": "0651c3b1f1f2d45ee841a052f95c15bb3bc89623314c43ef613599b896476498",
+    "repeated_output_equal": true,
+    "runtime_side_effects": false,
+    "dispatch_allowed": false,
+    "permanent_executor_selected": false
+  },
+  "eligibility_and_run_loop": {
+    "task_id": "AC-DEV-019",
+    "pre_run_eligible": true,
+    "run_batches": 1,
+    "considered_tasks": 1,
+    "executed_tasks": 1,
+    "verified_tasks": 1,
+    "incidents": 0,
+    "remaining_eligible": [],
+    "stop_reason": "NO_ELIGIBLE_WORK",
+    "backlog_status": "DONE",
+    "verification_status": "VERIFIED",
+    "evidence_status": "PARTIAL",
+    "readiness_reasons": []
+  }
+}

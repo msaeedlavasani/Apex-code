@@ -65,3 +65,10 @@ Execution Plan; required unproven or ambiguous matches fail closed.
 and task-scoped candidate selection. Equal-quality candidates remain blocked
 unless an explicit policy permits `SOURCE_ID_ASC` tie-breaking; no executor is
 permanently selected and ECC remains uninstalled.
+
+Canonical persistence excludes derived `readiness_reasons`, `batch_id`, and
+`last_attempt_id` task projections. Readiness is returned as an in-memory
+projection; batches, Attempts, incidents, and Owner Decision Queue entries
+remain in caller-supplied operational state. Receipt validation is pure and
+fail-closed: it checks secret safety, schema/claim-state consistency, registry
+consistency, and admission-policy compliance without promoting claims.
