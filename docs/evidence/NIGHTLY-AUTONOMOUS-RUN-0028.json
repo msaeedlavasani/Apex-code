@@ -5,7 +5,7 @@
   "development_task_id": "NIGHTLY-AUTONOMOUS-RUN-0028",
   "run_id": "run_82138d51dc9f4ebd",
   "started_at": "2026-09-08T00:57:29Z",
-  "ended_at": "2026-09-08T00:57:29Z",
+  "ended_at": "2026-09-08T01:08:44Z",
   "executor": "generic-executor",
   "batches": [
     {
@@ -47,9 +47,30 @@
     "receipt_validation": "PASS",
     "json_validation": "PASS",
     "git_diff_check": "PASS",
-    "protected_ci": "NOT_RUN",
-    "pr": null,
-    "merge_commit": null
+    "protected_ci": "PASS: Apex Code CI Gate",
+    "pr": {
+      "number": 45,
+      "url": "https://github.com/msaeedlavasani/Apex-code/pull/45",
+      "head": "codex/nightly-reconciliation-020-021",
+      "base": "main",
+      "head_commit": "70b17d463605eff9f8ffd1fa29c95ea6453ce2b1",
+      "status": "MERGED",
+      "pull_request_workflow_run_id": 34175566312,
+      "pull_request_ci_result": "PASS"
+    },
+    "merge_commit": "36aa90747d3a3c5f182925b37a33216021f3db4a",
+    "post_merge_main_workflow_run_id": 34175617145,
+    "post_merge_main_ci_result": "PASS"
+  },
+  "delivery_reconciliation": {
+    "branch": "codex/nightly-reconciliation-020-021",
+    "pr_number": 45,
+    "merge_commit": "36aa90747d3a3c5f182925b37a33216021f3db4a",
+    "local_main_commit": "36aa90747d3a3c5f182925b37a33216021f3db4a",
+    "origin_main_commit": "36aa90747d3a3c5f182925b37a33216021f3db4a",
+    "post_merge_main_ci": "PASS",
+    "tracked_worktree": "CLEAN",
+    "freebuff": "PRESERVED_UNTOUCHED"
   },
   "remaining_backlog": {
     "task_id": "AC-DEV-022",
