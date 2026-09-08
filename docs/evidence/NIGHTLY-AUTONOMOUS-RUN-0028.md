@@ -43,10 +43,20 @@ ECC was not installed.
 
 ## PR / CI status
 
-No PR or merge commit was created in this local run. Local Python tests,
-documentation validation, JSON validation, receipt validation, and
-`git diff --check` passed. Protected PR/CI validation is `NOT_RUN`; changes
-remain uncommitted on `main` for the protected workflow.
+The validated package was delivered through the protected workflow on
+development branch `codex/nightly-reconciliation-020-021`:
+
+- PR [#45](https://github.com/msaeedlavasani/Apex-code/pull/45) merged into
+  `main` at `36aa90747d3a3c5f182925b37a33216021f3db4a`.
+- The PR workflow (`34175566312`) passed repository, core, renderer, desktop,
+  targeted integration, macOS, and the required `Apex Code CI Gate`.
+- The post-merge `main` workflow (`34175617145`) passed the same full set,
+  including `Apex Code CI Gate`.
+- Local `main` is synchronized with `origin/main` at the merge commit; no
+  unexplained tracked changes remain. `.freebuff/` remains untracked and
+  untouched.
+
+The durable machine-readable receipt records this delivery reconciliation.
 
 ## Remaining backlog and Owner Decision Queue
 
