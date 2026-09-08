@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "passport_id": "passport_AC-DEV-024_v1",
+  "development_task_id": "AC-DEV-024",
+  "revision": 1,
+  "goal": "Reconcile AC-DEV-017 matching and AC-DEV-018 admission with the Owner-approved Apex-owned definition projection boundary and the PROVEN AC-DEV-023 bounded proof.",
+  "scope": [
+    "projection-aware capability requirement reconciliation",
+    "minimum bounded invocation capability contract",
+    "deterministic AC-DEV-017 matching and AC-DEV-018 admission rerun",
+    "durable evidence and reconciliation receipts",
+    "regression coverage for native-catalog preservation and fail-closed admission"
+  ],
+  "out_of_scope": [
+    "promoting Goose or Freebuff agent.definition_catalog",
+    "permanent executor selection or runtime dispatch",
+    "ECC installation or adoption",
+    "changing AC-DEV-022 approval or architecture ownership",
+    "moving authority, verification, retry/recovery, or semantic-success ownership outside Apex"
+  ],
+  "dependencies": ["AC-DEV-018", "AC-DEV-022", "AC-DEV-023"],
+  "resource_claims": [
+    "execution-admission",
+    "capability-matching",
+    "agent-skill-registry",
+    "verification-contract"
+  ],
+  "architecture_constraints": [
+    "Apex owns canonical AgentDefinition identity and capability metadata",
+    "the approved Apex-owned projection path may satisfy bounded invocation requirements without executor-native catalog ownership",
+    "agent.definition_catalog remains optional/native and NOT_PROVEN for Goose and Freebuff",
+    "projection integrity, attempt identity binding, fail-closed invocation, and result transport must each be PROVEN",
+    "missing genuinely required bounded-invocation capability blocks admission",
+    "admission remains task-scoped, executor-neutral, fail-closed, and non-dispatching",
+    "Apex retains task semantics, scheduling, authority, verification, retry/recovery, and semantic-success ownership",
+    "no ECC installation, permanent executor selection, or unrestricted dispatch"
+  ],
+  "acceptance_criteria": [
+    "AC-DEV-018 no longer requires agent.definition_catalog on the approved Apex-owned projection path",
+    "agent.definition_catalog remains present as an optional/native capability without any claim promotion",
+    "the Passport requires PROVEN projection integrity, attempt identity binding, fail-closed invocation, and result transport",
+    "AC-DEV-017 matching and AC-DEV-018 admission are rerun against the reconciled registry and Passport",
+    "a safely admitted candidate, if produced, is recorded as task-scoped with dispatch and permanent selection false",
+    "native catalog NOT_PROVEN does not become PROVEN",
+    "the projection path does not require executor-native catalog ownership",
+    "missing genuine invocation capabilities block admission",
+    "identical evidence and policy produce deterministic matching and admission output"
+  ],
+  "validation": [
+    "focused capability matching and admission regression tests",
+    "durable receipt validator checks for schema, claims, registry consistency, secrets, and admission policy",
+    "canonical backlog, Passport, and registry validation",
+    "full Python test suite and documentation validation",
+    "git diff --check and protected PR CI gate"
+  ],
+  "risk": {"class": "MEDIUM", "reversibility": "HIGH"},
+  "executor_compatibility": {"executors": ["generic-executor"]},
+  "human_gates": [],
+  "evidence_refs": [
+    "docs/evidence/AC-DEV-023-ADAPTER-PROOF-0031.json",
+    "docs/evidence/AC-DEV-023-RECONCILIATION-0033.json",
+    "docs/evidence/AC-DEV-024-RECONCILIATION-0034.json",
+    "docs/evidence/AC-DEV-024-AUTONOMOUS-RUN-0035.json"
+  ]
+}

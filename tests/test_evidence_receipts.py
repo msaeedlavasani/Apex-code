@@ -56,6 +56,15 @@ class EvidenceReceiptValidationTests(unittest.TestCase):
         self.assertEqual(receipt["ac_dev_017_matching"]["required_match_status"], "UNAVAILABLE")
         self.assertEqual(receipt["ac_dev_018_admission"]["status"], "BLOCKED_CAPABILITY")
 
+    def test_ac_dev_024_reconciliation_validates_without_native_catalog_promotion(self):
+        receipt = load_json("docs/evidence/AC-DEV-024-RECONCILIATION-0034.json")
+        report = validate_receipt(receipt, self.registry, repository_root=ROOT)
+        self.assertTrue(report["valid"], report)
+        self.assertFalse(report["claim_promotion"])
+        self.assertEqual(receipt["ac_dev_018_admission"]["status"], "ADMITTED")
+        self.assertEqual(receipt["ac_dev_018_admission"]["selection"]["source_id"], "apex-owned-projection")
+        self.assertFalse(receipt["result"]["native_agent_definition_catalog_proven"])
+
     def test_secret_shaped_fields_fail_closed(self):
         receipt = load_json("docs/evidence/AC-DEV-019-OPERATIONAL-PROBE-0024.json")
         receipt["operational_evidence"]["goose"]["token"] = "redacted"

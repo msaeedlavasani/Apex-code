@@ -399,7 +399,10 @@ class DevelopmentControlPlaneTests(unittest.TestCase):
         self.assertFalse(registry["permanent_executor_selected"])
         self.assertFalse(registry["ecc_installed"])
         source_ids = {source["source_id"] for source in registry["sources"]}
-        self.assertEqual(source_ids, {"goose-cli", "freebuff-cli", "ecc", "future-system"})
+        self.assertEqual(source_ids, {"goose-cli", "freebuff-cli", "ecc", "future-system", "apex-owned-projection"})
+        apex_projection = next(source for source in registry["sources"] if source["source_id"] == "apex-owned-projection")
+        self.assertEqual(apex_projection["source_type"], "APEX_CONTROL_PLANE")
+        self.assertTrue(apex_projection["capability_source_only"])
         claim_states = set(registry["claim_states"])
         for capability in registry["capabilities"]:
             self.assertRegex(capability["capability_id"], r"^[a-z]+\.[a-z0-9_.]+$")

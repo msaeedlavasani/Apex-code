@@ -1,15 +1,27 @@
 {
   "schema_version": 1,
   "registry_id": "apex-agent-skill-registry-v1",
-  "revision": 2,
+  "revision": 3,
   "status": "PROPOSED",
   "owner": "apex-control-plane",
   "executor_neutral": true,
   "permanent_executor_selected": false,
   "ecc_installed": false,
   "claim_states": ["PROVEN", "PARTIAL", "NOT_PROVEN", "NOT_SUPPORTED", "UNKNOWN"],
-  "source_types": ["EXECUTOR", "CURATED_SOURCE", "FUTURE_SYSTEM"],
+  "source_types": ["EXECUTOR", "CURATED_SOURCE", "APEX_CONTROL_PLANE", "FUTURE_SYSTEM"],
   "sources": [
+    {
+      "source_id": "apex-owned-projection",
+      "source_type": "APEX_CONTROL_PLANE",
+      "display_name": "Apex-owned definition projection",
+      "status": "PROVEN",
+      "capability_source_only": true,
+      "permanent_selection": false,
+      "evidence_refs": [
+        "docs/evidence/AC-DEV-023-ADAPTER-PROOF-0031.json",
+        "docs/evidence/AC-DEV-023-RECONCILIATION-0033.json"
+      ]
+    },
     {
       "source_id": "goose-cli",
       "source_type": "EXECUTOR",
@@ -168,6 +180,38 @@
         {"source_id": "freebuff-cli", "claim_state": "NOT_PROVEN", "notes": "AC-DEV-019 isolated CLI/TUI probe exposed no catalog command or stable named native agent entry. Prior AgentDefinition and @agents observations remain source/advertised-surface evidence only."},
         {"source_id": "ecc", "claim_state": "NOT_PROVEN"},
         {"source_id": "future-system", "claim_state": "UNKNOWN"}
+      ]
+    },
+    {
+      "capability_id": "execution.definition_projection",
+      "kind": "execution",
+      "title": "Apex-owned immutable definition projection",
+      "source_mappings": [
+        {"source_id": "apex-owned-projection", "claim_state": "PROVEN", "notes": "AC-DEV-023 operational proof demonstrated tamper-evident projection bytes, registry revision, definition identity, and digest binding."}
+      ]
+    },
+    {
+      "capability_id": "execution.attempt_identity_binding",
+      "kind": "execution",
+      "title": "Attempt identity preservation across bounded invocation",
+      "source_mappings": [
+        {"source_id": "apex-owned-projection", "claim_state": "PROVEN", "notes": "AC-DEV-023 operational proof preserved attempt identity through invocation and result transport."}
+      ]
+    },
+    {
+      "capability_id": "execution.fail_closed_invocation",
+      "kind": "execution",
+      "title": "Fail-closed bounded invocation",
+      "source_mappings": [
+        {"source_id": "apex-owned-projection", "claim_state": "PROVEN", "notes": "AC-DEV-023 operational proof rejected missing, malformed, stale, mismatched, and replayed projections before invocation."}
+      ]
+    },
+    {
+      "capability_id": "execution.result_transport",
+      "kind": "execution",
+      "title": "Bounded result transport without semantic-success transfer",
+      "source_mappings": [
+        {"source_id": "apex-owned-projection", "claim_state": "PROVEN", "notes": "AC-DEV-023 operational proof transported bounded results while Apex retained verification and semantic-success ownership."}
       ]
     },
     {

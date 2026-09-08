@@ -1,0 +1,361 @@
+{
+  "ac_dev_017_matching": {
+    "dispatch_allowed": false,
+    "optional_match_statuses": {
+      "agent.definition_catalog": "UNAVAILABLE",
+      "agent.parallel_delegation": "MATCHED"
+    },
+    "passport_id": "passport_AC-DEV-018_v2",
+    "permanent_executor_selected": false,
+    "plan_input_digest": "9e647c7bc19267a7b0ae3ed906b33a3b855c910edabd6daa1ddd68cb11568f74",
+    "plan_status": "READY_FOR_FUTURE_ROUTING",
+    "repeated_output_equal": true,
+    "required_capabilities": [
+      {
+        "capability_id": "execution.attempt_identity_binding",
+        "compatible_candidates": [
+          {
+            "claim_rank": 2,
+            "claim_state": "PROVEN",
+            "compatible": true,
+            "display_name": "Apex-owned definition projection",
+            "evidence_refs": [
+              "docs/evidence/AC-DEV-023-ADAPTER-PROOF-0031.json",
+              "docs/evidence/AC-DEV-023-RECONCILIATION-0033.json"
+            ],
+            "minimum_claim_state": "PROVEN",
+            "notes": "AC-DEV-023 operational proof preserved attempt identity through invocation and result transport.",
+            "rank": 1,
+            "reason": "CLAIM_STATE_MEETS_MINIMUM",
+            "source_id": "apex-owned-projection",
+            "source_status": "PROVEN",
+            "source_type": "APEX_CONTROL_PLANE"
+          }
+        ],
+        "match_status": "MATCHED",
+        "minimum_claim_state": "PROVEN",
+        "observed_mappings": [
+          {
+            "claim_rank": 2,
+            "claim_state": "PROVEN",
+            "compatible": true,
+            "display_name": "Apex-owned definition projection",
+            "evidence_refs": [
+              "docs/evidence/AC-DEV-023-ADAPTER-PROOF-0031.json",
+              "docs/evidence/AC-DEV-023-RECONCILIATION-0033.json"
+            ],
+            "minimum_claim_state": "PROVEN",
+            "notes": "AC-DEV-023 operational proof preserved attempt identity through invocation and result transport.",
+            "rank": 1,
+            "reason": "CLAIM_STATE_MEETS_MINIMUM",
+            "source_id": "apex-owned-projection",
+            "source_status": "PROVEN",
+            "source_type": "APEX_CONTROL_PLANE"
+          }
+        ]
+      },
+      {
+        "capability_id": "execution.definition_projection",
+        "compatible_candidates": [
+          {
+            "claim_rank": 2,
+            "claim_state": "PROVEN",
+            "compatible": true,
+            "display_name": "Apex-owned definition projection",
+            "evidence_refs": [
+              "docs/evidence/AC-DEV-023-ADAPTER-PROOF-0031.json",
+              "docs/evidence/AC-DEV-023-RECONCILIATION-0033.json"
+            ],
+            "minimum_claim_state": "PROVEN",
+            "notes": "AC-DEV-023 operational proof demonstrated tamper-evident projection bytes, registry revision, definition identity, and digest binding.",
+            "rank": 1,
+            "reason": "CLAIM_STATE_MEETS_MINIMUM",
+            "source_id": "apex-owned-projection",
+            "source_status": "PROVEN",
+            "source_type": "APEX_CONTROL_PLANE"
+          }
+        ],
+        "match_status": "MATCHED",
+        "minimum_claim_state": "PROVEN",
+        "observed_mappings": [
+          {
+            "claim_rank": 2,
+            "claim_state": "PROVEN",
+            "compatible": true,
+            "display_name": "Apex-owned definition projection",
+            "evidence_refs": [
+              "docs/evidence/AC-DEV-023-ADAPTER-PROOF-0031.json",
+              "docs/evidence/AC-DEV-023-RECONCILIATION-0033.json"
+            ],
+            "minimum_claim_state": "PROVEN",
+            "notes": "AC-DEV-023 operational proof demonstrated tamper-evident projection bytes, registry revision, definition identity, and digest binding.",
+            "rank": 1,
+            "reason": "CLAIM_STATE_MEETS_MINIMUM",
+            "source_id": "apex-owned-projection",
+            "source_status": "PROVEN",
+            "source_type": "APEX_CONTROL_PLANE"
+          }
+        ]
+      },
+      {
+        "capability_id": "execution.fail_closed_invocation",
+        "compatible_candidates": [
+          {
+            "claim_rank": 2,
+            "claim_state": "PROVEN",
+            "compatible": true,
+            "display_name": "Apex-owned definition projection",
+            "evidence_refs": [
+              "docs/evidence/AC-DEV-023-ADAPTER-PROOF-0031.json",
+              "docs/evidence/AC-DEV-023-RECONCILIATION-0033.json"
+            ],
+            "minimum_claim_state": "PROVEN",
+            "notes": "AC-DEV-023 operational proof rejected missing, malformed, stale, mismatched, and replayed projections before invocation.",
+            "rank": 1,
+            "reason": "CLAIM_STATE_MEETS_MINIMUM",
+            "source_id": "apex-owned-projection",
+            "source_status": "PROVEN",
+            "source_type": "APEX_CONTROL_PLANE"
+          }
+        ],
+        "match_status": "MATCHED",
+        "minimum_claim_state": "PROVEN",
+        "observed_mappings": [
+          {
+            "claim_rank": 2,
+            "claim_state": "PROVEN",
+            "compatible": true,
+            "display_name": "Apex-owned definition projection",
+            "evidence_refs": [
+              "docs/evidence/AC-DEV-023-ADAPTER-PROOF-0031.json",
+              "docs/evidence/AC-DEV-023-RECONCILIATION-0033.json"
+            ],
+            "minimum_claim_state": "PROVEN",
+            "notes": "AC-DEV-023 operational proof rejected missing, malformed, stale, mismatched, and replayed projections before invocation.",
+            "rank": 1,
+            "reason": "CLAIM_STATE_MEETS_MINIMUM",
+            "source_id": "apex-owned-projection",
+            "source_status": "PROVEN",
+            "source_type": "APEX_CONTROL_PLANE"
+          }
+        ]
+      },
+      {
+        "capability_id": "execution.result_transport",
+        "compatible_candidates": [
+          {
+            "claim_rank": 2,
+            "claim_state": "PROVEN",
+            "compatible": true,
+            "display_name": "Apex-owned definition projection",
+            "evidence_refs": [
+              "docs/evidence/AC-DEV-023-ADAPTER-PROOF-0031.json",
+              "docs/evidence/AC-DEV-023-RECONCILIATION-0033.json"
+            ],
+            "minimum_claim_state": "PROVEN",
+            "notes": "AC-DEV-023 operational proof transported bounded results while Apex retained verification and semantic-success ownership.",
+            "rank": 1,
+            "reason": "CLAIM_STATE_MEETS_MINIMUM",
+            "source_id": "apex-owned-projection",
+            "source_status": "PROVEN",
+            "source_type": "APEX_CONTROL_PLANE"
+          }
+        ],
+        "match_status": "MATCHED",
+        "minimum_claim_state": "PROVEN",
+        "observed_mappings": [
+          {
+            "claim_rank": 2,
+            "claim_state": "PROVEN",
+            "compatible": true,
+            "display_name": "Apex-owned definition projection",
+            "evidence_refs": [
+              "docs/evidence/AC-DEV-023-ADAPTER-PROOF-0031.json",
+              "docs/evidence/AC-DEV-023-RECONCILIATION-0033.json"
+            ],
+            "minimum_claim_state": "PROVEN",
+            "notes": "AC-DEV-023 operational proof transported bounded results while Apex retained verification and semantic-success ownership.",
+            "rank": 1,
+            "reason": "CLAIM_STATE_MEETS_MINIMUM",
+            "source_id": "apex-owned-projection",
+            "source_status": "PROVEN",
+            "source_type": "APEX_CONTROL_PLANE"
+          }
+        ]
+      }
+    ],
+    "required_match_statuses": {
+      "execution.attempt_identity_binding": "MATCHED",
+      "execution.definition_projection": "MATCHED",
+      "execution.fail_closed_invocation": "MATCHED",
+      "execution.result_transport": "MATCHED"
+    }
+  },
+  "ac_dev_018_admission": {
+    "blocked_reasons": [],
+    "decision_input_digest": "d6d420787cfae207eaf0d328d65d238e3364baefbc813cd80e441a8903431e7f",
+    "dispatch_allowed": false,
+    "passport_id": "passport_AC-DEV-018_v2",
+    "permanent_executor_selected": false,
+    "policy": {
+      "allow_deterministic_tie_break": false,
+      "source_id_asc_used": false,
+      "tie_break_strategy": null
+    },
+    "repeated_output_equal": true,
+    "runtime_side_effects": false,
+    "selection": {
+      "binding_scope": "TASK_CANDIDATE_ONLY",
+      "permanent": false,
+      "quality": {
+        "minimum_claim_rank": 2,
+        "minimum_source_status_rank": 2,
+        "total_claim_rank": 8,
+        "total_source_status_rank": 8
+      },
+      "required_capabilities": [
+        {
+          "claim_rank": 2,
+          "claim_state": "PROVEN",
+          "compatible": true,
+          "display_name": "Apex-owned definition projection",
+          "evidence_refs": [
+            "docs/evidence/AC-DEV-023-ADAPTER-PROOF-0031.json",
+            "docs/evidence/AC-DEV-023-RECONCILIATION-0033.json"
+          ],
+          "minimum_claim_state": "PROVEN",
+          "notes": "AC-DEV-023 operational proof preserved attempt identity through invocation and result transport.",
+          "rank": 1,
+          "reason": "CLAIM_STATE_MEETS_MINIMUM",
+          "source_id": "apex-owned-projection",
+          "source_status": "PROVEN",
+          "source_type": "APEX_CONTROL_PLANE"
+        },
+        {
+          "claim_rank": 2,
+          "claim_state": "PROVEN",
+          "compatible": true,
+          "display_name": "Apex-owned definition projection",
+          "evidence_refs": [
+            "docs/evidence/AC-DEV-023-ADAPTER-PROOF-0031.json",
+            "docs/evidence/AC-DEV-023-RECONCILIATION-0033.json"
+          ],
+          "minimum_claim_state": "PROVEN",
+          "notes": "AC-DEV-023 operational proof demonstrated tamper-evident projection bytes, registry revision, definition identity, and digest binding.",
+          "rank": 1,
+          "reason": "CLAIM_STATE_MEETS_MINIMUM",
+          "source_id": "apex-owned-projection",
+          "source_status": "PROVEN",
+          "source_type": "APEX_CONTROL_PLANE"
+        },
+        {
+          "claim_rank": 2,
+          "claim_state": "PROVEN",
+          "compatible": true,
+          "display_name": "Apex-owned definition projection",
+          "evidence_refs": [
+            "docs/evidence/AC-DEV-023-ADAPTER-PROOF-0031.json",
+            "docs/evidence/AC-DEV-023-RECONCILIATION-0033.json"
+          ],
+          "minimum_claim_state": "PROVEN",
+          "notes": "AC-DEV-023 operational proof rejected missing, malformed, stale, mismatched, and replayed projections before invocation.",
+          "rank": 1,
+          "reason": "CLAIM_STATE_MEETS_MINIMUM",
+          "source_id": "apex-owned-projection",
+          "source_status": "PROVEN",
+          "source_type": "APEX_CONTROL_PLANE"
+        },
+        {
+          "claim_rank": 2,
+          "claim_state": "PROVEN",
+          "compatible": true,
+          "display_name": "Apex-owned definition projection",
+          "evidence_refs": [
+            "docs/evidence/AC-DEV-023-ADAPTER-PROOF-0031.json",
+            "docs/evidence/AC-DEV-023-RECONCILIATION-0033.json"
+          ],
+          "minimum_claim_state": "PROVEN",
+          "notes": "AC-DEV-023 operational proof transported bounded results while Apex retained verification and semantic-success ownership.",
+          "rank": 1,
+          "reason": "CLAIM_STATE_MEETS_MINIMUM",
+          "source_id": "apex-owned-projection",
+          "source_status": "PROVEN",
+          "source_type": "APEX_CONTROL_PLANE"
+        }
+      ],
+      "source_id": "apex-owned-projection"
+    },
+    "selection_rationale": "UNIQUE_HIGHEST_QUALITY_COMPATIBLE_SOURCE",
+    "status": "ADMITTED"
+  },
+  "development_task_id": "AC-DEV-024",
+  "evidence_refs": [
+    "docs/evidence/AC-DEV-023-ADAPTER-PROOF-0031.json"
+  ],
+  "native_catalog_claims": {
+    "ecc": "NOT_PROVEN",
+    "freebuff-cli": "NOT_PROVEN",
+    "future-system": "UNKNOWN",
+    "goose-cli": "NOT_PROVEN"
+  },
+  "observed_at": "2026-09-08T01:59:24Z",
+  "receipt_id": "receipt_AC-DEV-024_reconciliation_0034",
+  "receipt_type": "PROJECTION_AWARE_CAPABILITY_RECONCILIATION",
+  "reconciled_requirements": {
+    "optional": [
+      {
+        "capability_id": "agent.definition_catalog",
+        "minimum_claim_state": "PARTIAL"
+      },
+      {
+        "capability_id": "agent.parallel_delegation",
+        "minimum_claim_state": "PROVEN"
+      }
+    ],
+    "required": [
+      {
+        "capability_id": "execution.definition_projection",
+        "minimum_claim_state": "PROVEN"
+      },
+      {
+        "capability_id": "execution.attempt_identity_binding",
+        "minimum_claim_state": "PROVEN"
+      },
+      {
+        "capability_id": "execution.fail_closed_invocation",
+        "minimum_claim_state": "PROVEN"
+      },
+      {
+        "capability_id": "execution.result_transport",
+        "minimum_claim_state": "PROVEN"
+      }
+    ]
+  },
+  "registry": {
+    "added_capability_ids": [
+      "execution.definition_projection",
+      "execution.attempt_identity_binding",
+      "execution.fail_closed_invocation",
+      "execution.result_transport"
+    ],
+    "added_source_ids": [
+      "apex-owned-projection"
+    ],
+    "native_catalog_mapping_changes": {},
+    "registry_id": "apex-agent-skill-registry-v1",
+    "revision": 3,
+    "unchanged_controls": {
+      "ecc_installed": false,
+      "executor_neutral": true,
+      "permanent_executor_selected": false
+    }
+  },
+  "result": {
+    "admission_reconciled": true,
+    "dispatch_performed": false,
+    "native_agent_definition_catalog_proven": false,
+    "permanent_executor_selected": false,
+    "projection_path_satisfies_bounded_invocation": true
+  },
+  "schema_version": 1
+}
