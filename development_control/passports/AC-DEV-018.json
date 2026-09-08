@@ -1,12 +1,13 @@
 {
   "schema_version": 1,
-  "passport_id": "passport_AC-DEV-018_v1",
+  "passport_id": "passport_AC-DEV-018_v2",
   "development_task_id": "AC-DEV-018",
-  "revision": 1,
-  "goal": "Consume AC-DEV-017 Candidate Execution Plans and produce deterministic, machine-readable Execution Admission Decisions with task-scoped candidate selection and no runtime side effects.",
+  "revision": 2,
+  "goal": "Consume AC-DEV-017 Candidate Execution Plans and produce deterministic, machine-readable Execution Admission Decisions for the approved Apex-owned definition projection path with task-scoped candidate selection and no runtime side effects.",
   "scope": [
     "admission status evaluation for capability, ambiguity, policy, and human-gate outcomes",
     "deterministic single-source candidate selection over compatible required capabilities",
+    "projection-aware capability requirements for bounded invocation",
     "explicit-policy-only tie-breaking and rejected-candidate rationale",
     "evidence and claim-state preservation in admission decisions",
     "regression coverage constrained by AC-DEV-011 through AC-DEV-017"
@@ -18,13 +19,17 @@
     "moving scheduling, authority, verification, retry/rework, or semantic-success ownership outside Apex",
     "runtime side effects or runtime adapter changes"
   ],
-  "dependencies": ["AC-DEV-011", "AC-DEV-012", "AC-DEV-013", "AC-DEV-014", "AC-DEV-015", "AC-DEV-016", "AC-DEV-017"],
+  "dependencies": ["AC-DEV-011", "AC-DEV-012", "AC-DEV-013", "AC-DEV-014", "AC-DEV-015", "AC-DEV-016", "AC-DEV-017", "AC-DEV-022", "AC-DEV-023"],
   "resource_claims": ["execution-admission", "capability-matching", "control-plane-contract"],
   "capability_requirements": {
     "required": [
-      {"capability_id": "agent.definition_catalog", "minimum_claim_state": "PARTIAL"}
+      {"capability_id": "execution.definition_projection", "minimum_claim_state": "PROVEN"},
+      {"capability_id": "execution.attempt_identity_binding", "minimum_claim_state": "PROVEN"},
+      {"capability_id": "execution.fail_closed_invocation", "minimum_claim_state": "PROVEN"},
+      {"capability_id": "execution.result_transport", "minimum_claim_state": "PROVEN"}
     ],
     "optional": [
+      {"capability_id": "agent.definition_catalog", "minimum_claim_state": "PARTIAL"},
       {"capability_id": "agent.parallel_delegation", "minimum_claim_state": "PROVEN"}
     ]
   },
@@ -34,6 +39,8 @@
     "candidate selection is task-scoped and never permanent executor selection",
     "equal-quality candidates remain ambiguous unless the supplied policy explicitly permits SOURCE_ID_ASC tie-breaking",
     "NOT_PROVEN, NOT_SUPPORTED, UNKNOWN, PARTIAL, and PROVEN remain distinct",
+    "the native agent.definition_catalog capability is optional on the approved Apex-owned projection path and is never inferred from projection proof",
+    "bounded invocation requires proven projection integrity, attempt identity binding, fail-closed invocation, and result transport",
     "no ECC installation and no dispatch or runtime side effects"
   ],
   "acceptance_criteria": [
@@ -41,6 +48,7 @@
     "blocked or ambiguous required capabilities fail closed",
     "ADMITTED, BLOCKED_CAPABILITY, BLOCKED_AMBIGUITY, BLOCKED_POLICY, and HUMAN_GATE_REQUIRED are distinct",
     "selection rationale, rejected candidates, evidence references, and claim states are preserved",
+    "native catalog NOT_PROVEN does not block the approved Apex-owned projection path, while any missing bounded-invocation capability blocks admission",
     "identical Passport, Candidate Execution Plan, and policy inputs produce identical output",
     "selection never transfers scheduling, authority, verification, retry, or semantic-success ownership"
   ],
@@ -54,5 +62,8 @@
   "risk": {"class": "MEDIUM", "reversibility": "HIGH"},
   "executor_compatibility": {"executors": ["generic-executor"]},
   "human_gates": [],
-  "evidence_refs": ["docs/evidence/TASK-EXECUTION-ADMISSION-0023.md"]
+  "evidence_refs": [
+    "docs/evidence/TASK-EXECUTION-ADMISSION-0023.md",
+    "docs/evidence/AC-DEV-024-RECONCILIATION-0034.json"
+  ]
 }

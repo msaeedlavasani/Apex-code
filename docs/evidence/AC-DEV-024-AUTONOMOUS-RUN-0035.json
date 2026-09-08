@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "receipt_type": "NIGHTLY_AUTONOMOUS_RUN",
+  "receipt_id": "receipt_ac_dev_024_autonomous_run_0035",
+  "development_task_id": "AC-DEV-024",
+  "started_at": "2026-09-08T02:01:35Z",
+  "ended_at": "2026-09-08T02:01:35Z",
+  "run_id": "run_56f44ae911224218",
+  "executor": "generic-executor",
+  "loop": [
+    "reconcile state",
+    "prioritize and score READY work",
+    "calculate eligibility",
+    "build immutable conflict-safe batch",
+    "execute bounded control-plane attempt",
+    "verify",
+    "reconcile evidence and incidents",
+    "release verified dependencies",
+    "re-prioritize"
+  ],
+  "batches": [
+    {
+      "batch_id": "batch_ce31dc7db80b434c",
+      "task_ids": ["AC-DEV-024"],
+      "concurrency": 2,
+      "attempt_ids": ["dev_attempt_c6f0f9e5eca246e4"],
+      "score": 900.0,
+      "integration_verification": "PASS",
+      "outcome": "PASS"
+    }
+  ],
+  "run_summary": {
+    "batches": 1,
+    "considered_tasks": 1,
+    "executed_tasks": 1,
+    "verified_tasks": 1,
+    "recovered_tasks": 0,
+    "incidents": 0,
+    "corrective_tasks": 0,
+    "backlog_returns": 0,
+    "human_gates": [],
+    "remaining_eligible": [],
+    "stop_reason": "NO_ELIGIBLE_WORK",
+    "critical_path_progress": {"done": 19, "total": 24, "ratio": 0.7916666666666666}
+  },
+  "task_outcome": {
+    "task_id": "AC-DEV-024",
+    "status": "DONE",
+    "verification_status": "VERIFIED",
+    "evidence_status": "PROVEN",
+    "dispatch_allowed": false,
+    "permanent_executor_selected": false,
+    "runtime_side_effects": false
+  },
+  "evidence_refs": [
+    "docs/evidence/AC-DEV-024-RECONCILIATION-0034.json",
+    "docs/evidence/AC-DEV-024-CAPABILITY-RECONCILIATION-0034.md"
+  ],
+  "registry_and_admission": {
+    "registry_revision": 3,
+    "ac_dev_017_status": "READY_FOR_FUTURE_ROUTING",
+    "ac_dev_018_status": "ADMITTED",
+    "selection_scope": "TASK_CANDIDATE_ONLY",
+    "native_agent_definition_catalog": "NOT_PROVEN",
+    "dispatch_allowed": false,
+    "ecc_installed": false,
+    "permanent_executor_selected": false
+  },
+  "owner_decision_queue": [],
+  "incidents": [],
+  "rework": [],
+  "stop_reason": "NO_ELIGIBLE_WORK"
+}

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "revision": 14,
+  "revision": 15,
   "source": "accepted Apex Code repository evidence",
   "tasks": [
     {
@@ -428,6 +428,29 @@
         "docs/evidence/AC-DEV-023-ADAPTER-PROOF-0031.json",
         "docs/evidence/AC-DEV-023-AUTONOMOUS-RUN-0032.md",
         "docs/evidence/AC-DEV-023-RECONCILIATION-0033.json"
+      ],
+      "critical_path_weight": 6,
+      "downstream_unlock_value": 30,
+      "aging_days": 0
+    },
+    {
+      "task_id": "AC-DEV-024",
+      "title": "Projection-Aware Capability Requirement Reconciliation",
+      "status": "DONE",
+      "verification_status": "VERIFIED",
+      "evidence_status": "PROVEN",
+      "priority": "P1",
+      "risk": "MEDIUM",
+      "decision_class": "ROUTINE",
+      "autonomous_allowed": true,
+      "executor_compatibility": {"executors": ["generic-executor"]},
+      "dependencies": ["AC-DEV-018", "AC-DEV-022", "AC-DEV-023"],
+      "resource_claims": ["execution-admission", "capability-matching", "agent-skill-registry", "verification-contract"],
+      "evidence_refs": [
+        "docs/evidence/AC-DEV-023-ADAPTER-PROOF-0031.json",
+        "docs/evidence/AC-DEV-023-RECONCILIATION-0033.json",
+        "docs/evidence/AC-DEV-024-CAPABILITY-RECONCILIATION-0034.md",
+        "docs/evidence/AC-DEV-024-AUTONOMOUS-RUN-0035.json"
       ],
       "critical_path_weight": 6,
       "downstream_unlock_value": 30,

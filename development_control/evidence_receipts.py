@@ -25,6 +25,7 @@ SUPPORTED_RECEIPT_TYPES = {
     "EVIDENCE_RECEIPT_VALIDATION_RUN",
     "ARCHITECTURE_STRATEGY_OWNER_DECISION",
     "DEFINITION_PROJECTION_ADAPTER_OPERATIONAL_PROOF",
+    "PROJECTION_AWARE_CAPABILITY_RECONCILIATION",
     "NIGHTLY_AUTONOMOUS_RUN",
 }
 FORBIDDEN_SECRET_KEYS = {
@@ -215,8 +216,8 @@ def _check_registry_consistency(
             return
         if registry_section.get("registry_id") != registry.get("registry_id"):
             _add_error(errors, "REGISTRY_ID_MISMATCH", "registry.registry_id", "receipt registry id differs from current registry")
-        if registry_section.get("revision") != registry.get("revision"):
-            _add_error(errors, "REGISTRY_REVISION_MISMATCH", "registry.revision", "receipt registry revision differs from current registry")
+        if not isinstance(registry_section.get("revision"), int) or registry_section.get("revision") > registry.get("revision"):
+            _add_error(errors, "REGISTRY_REVISION_MISMATCH", "registry.revision", "receipt cannot claim a future registry revision")
         capability_id = registry_section.get("capability_id")
         if capability_id not in capability_ids:
             _add_error(errors, "REGISTRY_CAPABILITY_MISSING", "registry.capability_id", "capability is absent from the registry")
@@ -232,6 +233,70 @@ def _check_registry_consistency(
                 continue
             if not isinstance(change, Mapping) or change.get("after") != mappings[source_id]:
                 _add_error(errors, "REGISTRY_CLAIM_MISMATCH", f"registry.mapping_changes.{source_id}.after", "receipt mapping does not match current registry")
+
+    elif receipt_type == "PROJECTION_AWARE_CAPABILITY_RECONCILIATION":
+        registry_section = receipt.get("registry")
+        if not isinstance(registry_section, Mapping):
+            _add_error(errors, "REGISTRY_SECTION_REQUIRED", "registry", "projection reconciliation receipts require a registry section")
+        else:
+            if registry_section.get("registry_id") != registry.get("registry_id"):
+                _add_error(errors, "REGISTRY_ID_MISMATCH", "registry.registry_id", "receipt registry id differs from current registry")
+            if not isinstance(registry_section.get("revision"), int) or registry_section.get("revision") > registry.get("revision"):
+                _add_error(errors, "REGISTRY_REVISION_MISMATCH", "registry.revision", "receipt cannot claim a future registry revision")
+            mapping_changes = registry_section.get("native_catalog_mapping_changes", {})
+            if mapping_changes != {}:
+                _add_error(errors, "NATIVE_CATALOG_MAPPING_MUTATION", "registry.native_catalog_mapping_changes", "native catalog mappings must remain unchanged")
+            added_capabilities = registry_section.get("added_capability_ids", [])
+            if not isinstance(added_capabilities, list):
+                _add_error(errors, "REGISTRY_CAPABILITY_LIST_INVALID", "registry.added_capability_ids", "added capability ids must be a list")
+            else:
+                for capability_id in added_capabilities:
+                    capability = capability_ids.get(capability_id)
+                    if capability is None:
+                        _add_error(errors, "REGISTRY_CAPABILITY_MISSING", f"registry.added_capability_ids.{capability_id}", "added capability is absent from the registry")
+                        continue
+                    mappings = _mapping_index(registry, str(capability_id))
+                    if mappings.get("apex-owned-projection") != "PROVEN":
+                        _add_error(errors, "REGISTRY_CLAIM_MISMATCH", f"registry.added_capability_ids.{capability_id}", "projection capability must be PROVEN for the Apex-owned source")
+
+        native_claims = receipt.get("native_catalog_claims")
+        current_native = _mapping_index(registry, "agent.definition_catalog")
+        if not isinstance(native_claims, Mapping):
+            _add_error(errors, "NATIVE_CATALOG_CLAIMS_REQUIRED", "native_catalog_claims", "native catalog claims are required")
+        else:
+            for source_id, claim_state in native_claims.items():
+                if current_native.get(str(source_id)) != claim_state:
+                    _add_error(errors, "REGISTRY_CLAIM_MISMATCH", f"native_catalog_claims.{source_id}", "native catalog claim differs from current registry mapping")
+            for source_id in ("goose-cli", "freebuff-cli"):
+                if native_claims.get(source_id) != "NOT_PROVEN":
+                    _add_error(errors, "UNSUPPORTED_CLAIM_PROMOTION", f"native_catalog_claims.{source_id}", "native executor catalog claims must remain NOT_PROVEN")
+
+        requirements = receipt.get("reconciled_requirements")
+        if not isinstance(requirements, Mapping):
+            _add_error(errors, "REQUIREMENTS_SECTION_REQUIRED", "reconciled_requirements", "reconciled requirements are required")
+        else:
+            required = requirements.get("required", [])
+            optional = requirements.get("optional", [])
+            if not isinstance(required, list) or not isinstance(optional, list):
+                _add_error(errors, "REQUIREMENTS_SECTION_INVALID", "reconciled_requirements", "required and optional requirements must be lists")
+            else:
+                required_ids = {item.get("capability_id") for item in required if isinstance(item, Mapping)}
+                if "agent.definition_catalog" in required_ids:
+                    _add_error(errors, "NATIVE_CATALOG_REQUIRED_UNEXPECTED", "reconciled_requirements.required", "native catalog cannot remain required on the approved projection path")
+                if not any(isinstance(item, Mapping) and item.get("capability_id") == "agent.definition_catalog" for item in optional):
+                    _add_error(errors, "NATIVE_CATALOG_OPTIONAL_MISSING", "reconciled_requirements.optional", "native catalog must remain explicitly optional")
+                for item in required:
+                    if not isinstance(item, Mapping) or item.get("minimum_claim_state") != "PROVEN":
+                        _add_error(errors, "REQUIRED_CAPABILITY_NOT_PROVEN", "reconciled_requirements.required", "all bounded invocation requirements must require PROVEN evidence")
+
+        matching = receipt.get("ac_dev_017_matching")
+        if not isinstance(matching, Mapping) or matching.get("repeated_output_equal") is not True:
+            _add_error(errors, "MATCHING_NOT_DETERMINISTIC", "ac_dev_017_matching.repeated_output_equal", "matching must be deterministic for identical inputs")
+        admission = receipt.get("ac_dev_018_admission")
+        if isinstance(admission, Mapping) and admission.get("status") == "ADMITTED":
+            selection = admission.get("selection")
+            if not isinstance(selection, Mapping) or selection.get("source_id") != "apex-owned-projection":
+                _add_error(errors, "PROJECTION_SELECTION_INVALID", "ac_dev_018_admission.selection", "admitted projection path must select the Apex-owned capability source")
 
 
 def _check_no_unsupported_promotion(receipt: Mapping[str, Any], errors: list[dict[str, str]]) -> None:
