@@ -30,6 +30,16 @@ class EvidenceReceiptValidationTests(unittest.TestCase):
             self.assertEqual(receipt, original)
             self.assertFalse(report["claim_promotion"])
 
+    def test_approved_ac_dev_022_receipt_preserves_blocked_admission(self):
+        receipt = load_json("docs/evidence/AC-DEV-022-OWNER-DECISION-0029.json")
+        report = validate_receipt(receipt, self.registry, repository_root=ROOT)
+        self.assertTrue(report["valid"], report)
+        self.assertFalse(report["claim_promotion"])
+        self.assertEqual(receipt["decision"]["status"], "APPROVED")
+        self.assertEqual(receipt["preserved_controls"]["ac_dev_018_admission"], "BLOCKED_CAPABILITY")
+        self.assertFalse(receipt["preserved_controls"]["dispatch_allowed"])
+        self.assertEqual(receipt["evidence_state"]["generic_executor_injection"], "NOT_PROVEN")
+
     def test_secret_shaped_fields_fail_closed(self):
         receipt = load_json("docs/evidence/AC-DEV-019-OPERATIONAL-PROBE-0024.json")
         receipt["operational_evidence"]["goose"]["token"] = "redacted"

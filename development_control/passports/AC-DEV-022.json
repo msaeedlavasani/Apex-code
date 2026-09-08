@@ -2,7 +2,7 @@
   "schema_version": 1,
   "passport_id": "passport_AC-DEV-022_v1",
   "development_task_id": "AC-DEV-022",
-  "revision": 1,
+  "revision": 2,
   "goal": "Define the exact boundary between Apex-owned agent definitions and executor-native catalogs, then present an evidence-bounded strategy for whether agent.definition_catalog must remain REQUIRED.",
   "scope": [
     "re-evaluation of agent.definition_catalog as a REQUIRED capability",
@@ -22,8 +22,9 @@
   "architecture_constraints": [
     "Apex owns the canonical Agent/Skill Registry, task semantics, scheduling, authority, verification, and semantic success",
     "an executor receives only a task-scoped immutable projection and cannot define or elevate Apex claims",
-    "agent.definition_catalog remains REQUIRED until an approved replacement contract and operational adapter evidence exist",
+    "agent.definition_catalog remains REQUIRED until the approved Apex-owned projection contract has operational adapter evidence",
     "architecture or authority boundary changes require Owner approval and must enter the Owner Decision Queue",
+    "Owner approval authorizes the bounded projection boundary but does not prove generic executor injection",
     "NOT_PROVEN remains visible and no runtime work is dispatched while admission is blocked"
   ],
   "acceptance_criteria": [
@@ -31,7 +32,7 @@
     "the analysis identifies which identity, authority, scheduling, verification, and reconciliation facts remain Apex-owned",
     "the strategy states whether generic executor invocation is safe only as a future adapter target or is operationally proven",
     "current AC-DEV-017/018 REQUIRED semantics remain unchanged pending Owner decision",
-    "a material Owner Decision Queue item records the proposed boundary decision, affected contracts, evidence, and rollback posture"
+    "a material Owner Decision Queue item records the approved boundary decision, affected contracts, evidence, and rollback posture"
   ],
   "validation": [
     "canonical architecture and governance review",
@@ -41,6 +42,9 @@
   ],
   "risk": {"class": "HIGH", "reversibility": "MEDIUM"},
   "executor_compatibility": {"executors": ["generic-executor"]},
-  "human_gates": ["OWNER_APPROVAL:AC-DEV-022-APEX-OWNED-DEFINITION-PROJECTION"],
-  "evidence_refs": ["docs/evidence/AC-DEV-022-NATIVE-AGENT-CATALOG-STRATEGY-0027.md"]
+  "human_gates": [],
+  "evidence_refs": [
+    "docs/evidence/AC-DEV-022-NATIVE-AGENT-CATALOG-STRATEGY-0027.md",
+    "docs/evidence/AC-DEV-022-OWNER-DECISION-0029.md"
+  ]
 }

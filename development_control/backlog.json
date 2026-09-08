@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "revision": 13,
+  "revision": 14,
   "source": "accepted Apex Code repository evidence",
   "tasks": [
     {
@@ -387,9 +387,9 @@
     {
       "task_id": "AC-DEV-022",
       "title": "Native Agent Catalog Capability Strategy",
-      "status": "HUMAN_GATE",
-      "verification_status": "NOT_RUN",
-      "evidence_status": "NOT_PROVEN",
+      "status": "DONE",
+      "verification_status": "VERIFIED",
+      "evidence_status": "PARTIAL",
       "priority": "P1",
       "risk": "HIGH",
       "decision_class": "MATERIAL",
@@ -397,8 +397,33 @@
       "executor_compatibility": {"executors": ["generic-executor"]},
       "dependencies": ["AC-DEV-018", "AC-DEV-019", "AC-DEV-021"],
       "resource_claims": ["architecture-decision", "capability-contract", "agent-skill-registry"],
-      "human_gates": ["OWNER_APPROVAL:AC-DEV-022-APEX-OWNED-DEFINITION-PROJECTION"],
-      "evidence_refs": ["docs/evidence/AC-DEV-022-NATIVE-AGENT-CATALOG-STRATEGY-0027.md"],
+      "human_gates": [],
+      "evidence_refs": [
+        "docs/evidence/AC-DEV-022-NATIVE-AGENT-CATALOG-STRATEGY-0027.md",
+        "docs/evidence/AC-DEV-022-OWNER-DECISION-0029.md"
+      ],
+      "critical_path_weight": 6,
+      "downstream_unlock_value": 30,
+      "aging_days": 0
+    },
+    {
+      "task_id": "AC-DEV-023",
+      "title": "Apex-Owned Definition Projection Adapter Proof",
+      "status": "READY",
+      "verification_status": "NOT_RUN",
+      "evidence_status": "NOT_PROVEN",
+      "priority": "P1",
+      "risk": "MEDIUM",
+      "decision_class": "ROUTINE",
+      "autonomous_allowed": true,
+      "executor_compatibility": {"executors": ["generic-executor"]},
+      "dependencies": ["AC-DEV-022"],
+      "resource_claims": [
+        "definition-projection-adapter",
+        "execution-admission",
+        "verification-contract"
+      ],
+      "evidence_refs": ["docs/evidence/AC-DEV-023-ADAPTER-PROOF-CONTRACT-0030.md"],
       "critical_path_weight": 6,
       "downstream_unlock_value": 30,
       "aging_days": 0

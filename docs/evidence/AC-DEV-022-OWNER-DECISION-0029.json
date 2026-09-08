@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "receipt_type": "ARCHITECTURE_STRATEGY_OWNER_DECISION",
+  "receipt_id": "receipt_AC-DEV-022_owner_decision_0029",
+  "development_task_id": "AC-DEV-022",
+  "owner_gate": "OWNER_APPROVAL:AC-DEV-022-APEX-OWNED-DEFINITION-PROJECTION",
+  "prior_state": {
+    "task_status": "HUMAN_GATE",
+    "verification_status": "NOT_RUN",
+    "evidence_status": "NOT_PROVEN",
+    "required_capability": "agent.definition_catalog",
+    "admission_status": "BLOCKED_CAPABILITY",
+    "dispatch_allowed": false
+  },
+  "decision": {
+    "status": "APPROVED",
+    "approved_boundary": "Apex may own canonical AgentDefinition identity and capability metadata and project a bounded executor-specific invocation payload to a generic execution substrate without a native agent catalog.",
+    "approved_by": "OWNER",
+    "architecture_change_approved": true,
+    "architecture_change_assumed": false,
+    "follow_on_task_id": "AC-DEV-023"
+  },
+  "resulting_contract": {
+    "apex_owns": [
+      "task_semantics",
+      "agent_definition_identity",
+      "capability_requirements",
+      "scheduling",
+      "authority",
+      "verification",
+      "retry_recovery",
+      "semantic_success",
+      "reconciliation"
+    ],
+    "executor_role": "execution_substrate_only",
+    "projection_fields": [
+      "definition_id",
+      "registry_revision",
+      "definition_digest",
+      "task_scoped_projection"
+    ],
+    "proof_required_before_admission": true
+  },
+  "preserved_controls": {
+    "agent_definition_catalog_claim_state": "NOT_PROVEN",
+    "native_executor_catalog_claim_state": "NOT_PROVEN",
+    "ac_dev_018_admission": "BLOCKED_CAPABILITY",
+    "dispatch_allowed": false,
+    "permanent_executor_selected": false,
+    "ecc_installed": false,
+    "registry_changed": false
+  },
+  "evidence_state": {
+    "owner_decision": "PROVEN",
+    "generic_executor_injection": "NOT_PROVEN",
+    "adapter_proof": "NOT_PROVEN"
+  },
+  "rollback_posture": "Reject or withdraw the projection contract and retain the native catalog requirement if AC-DEV-023 fails or is not accepted."
+}

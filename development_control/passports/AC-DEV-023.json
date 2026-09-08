@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "passport_id": "passport_AC-DEV-023_v1",
+  "development_task_id": "AC-DEV-023",
+  "revision": 1,
+  "goal": "Prove a bounded Apex-owned AgentDefinition projection adapter without granting executor ownership of Apex semantics or authority.",
+  "scope": [
+    "immutable task-scoped definition projection",
+    "definition identity, registry revision, and digest binding",
+    "fail-closed adapter rejection and bounded invocation",
+    "attempt identity and result transport preservation",
+    "AC-DEV-017 matching and AC-DEV-018 admission reconciliation after proof"
+  ],
+  "out_of_scope": [
+    "native Goose or Freebuff catalog claims",
+    "permanent executor selection or executor-native catalog ownership",
+    "unrestricted runtime dispatch",
+    "executor authority over task semantics, scheduling, verification, retry/recovery, or semantic success",
+    "ECC installation, credential handling, or production execution"
+  ],
+  "dependencies": ["AC-DEV-022"],
+  "resource_claims": [
+    "definition-projection-adapter",
+    "execution-admission",
+    "verification-contract"
+  ],
+  "architecture_constraints": [
+    "Apex owns canonical AgentDefinition identity and capability metadata",
+    "the adapter receives only an immutable task-scoped projection containing definition_id, registry_revision, definition_digest, and bounded payload",
+    "projection integrity and identity binding are checked before invocation",
+    "missing, malformed, stale, mismatched, or replayed identity material fails closed without invocation",
+    "the executor remains an execution substrate and cannot define Apex claims, elevate authority, or assign semantic success",
+    "Apex retains task semantics, scheduling, authority, verification, retry/recovery, and reconciliation",
+    "AC-DEV-018 remains BLOCKED_CAPABILITY until accepted operational proof and admission reconciliation"
+  ],
+  "acceptance_criteria": [
+    "projection bytes, registry revision, definition_id, and definition_digest remain bound and tamper-evident across the adapter boundary",
+    "attempt identity is preserved from Apex projection through bounded invocation and result transport",
+    "missing, malformed, stale, mismatched, or replayed projections are rejected fail-closed before invocation",
+    "accepted invocation cannot elevate authority or assign Apex semantic success",
+    "the proof uses a disposable/local bounded harness with no permanent executor selection, ECC installation, or unrestricted dispatch",
+    "durable evidence distinguishes adapter operational proof from source/documentation evidence",
+    "AC-DEV-017 matching and AC-DEV-018 admission are rerun and only reconciled if the accepted contract is actually demonstrated"
+  ],
+  "validation": [
+    "focused adapter contract and fail-closed tests",
+    "disposable/local bounded operational probe",
+    "durable proof and reconciliation receipts",
+    "registry, backlog, Passport, and admission-policy validation",
+    "full Python test suite, documentation validation, git diff --check, and protected CI gate"
+  ],
+  "risk": {"class": "MEDIUM", "reversibility": "HIGH"},
+  "executor_compatibility": {"executors": ["generic-executor"]},
+  "human_gates": [],
+  "evidence_refs": ["docs/evidence/AC-DEV-023-ADAPTER-PROOF-CONTRACT-0030.md"]
+}
