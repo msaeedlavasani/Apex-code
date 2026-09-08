@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "receipt_type": "EXECUTOR_CAPABILITY_OPERATIONAL_PROBE",
+  "receipt_id": "receipt_AC-DEV-019_operational_probe_0024",
+  "development_task_id": "AC-DEV-019",
+  "observed_at": "2026-09-08T00:31:49.215210+00:00",
+  "safety": {
+    "disposable_root": true,
+    "repository_workspace_used": false,
+    "credentials_supplied": false,
+    "ecc_installed": false,
+    "permanent_executor_selected": false,
+    "raw_runtime_output_persisted": false
+  },
+  "canonical_capability": {
+    "capability_id": "agent.definition_catalog",
+    "definition": "Discoverable native agent definitions with stable runtime identity.",
+    "acceptance_requires": [
+      "runtime enumeration or a stable named native definition entry",
+      "direct operational observation from the executor",
+      "no substitution of UI labels, source symbols, documentation, or unrelated skill catalogs"
+    ]
+  },
+  "source_evidence": {
+    "goose": [
+      "docs/evidence/GOOSE-CLI-DELEGATION-0016.md",
+      "docs/evidence/AGENTIC-DEVELOPMENT-SYSTEMS-COMPARATIVE-HARVEST.md"
+    ],
+    "freebuff": [
+      "docs/evidence/FREEBUFF-CLI-DELEGATION-0017.md",
+      "docs/evidence/FREEBUFF-EXTENSION-SURFACE-AUDIT-0019.md",
+      "docs/evidence/AGENTIC-DEVELOPMENT-SYSTEMS-COMPARATIVE-HARVEST.md"
+    ],
+    "classification": "SOURCE_EVIDENCE_ONLY; not sufficient for capability acceptance"
+  },
+  "operational_evidence": {
+    "goose": {
+      "binary": "/Users/msl/.local/bin/goose",
+      "version": "1.49.0",
+      "commands": [
+        {"command": "goose recipe list", "returncode": 0, "empty_catalog_observed": true, "entries": []},
+        {"command": "goose skills list", "returncode": 0, "entries": ["goose-doc-guide", "web-search"], "is_agent_definition_evidence": false}
+      ],
+      "claim_state": "NOT_PROVEN",
+      "reason": "The isolated runtime exposed no recipes. The separate skills catalog is not an agent-definition catalog.",
+      "version_stdout_sha256": "54778265813671498322cad0cf750f75fbe3b678b7fa703e74e5fe11e1c66d03"
+    },
+    "freebuff": {
+      "binary": "/Users/msl/.config/manicode/freebuff",
+      "version": "0.0.170",
+      "commands": [
+        {"command": "freebuff --help", "returncode": 0, "catalog_command_observed": false},
+        {"command": "freebuff --cwd <disposable-root> plus bounded @agents input", "parent_surface_observed": true, "stable_named_catalog_entry_observed": false, "harness_termination_returncode": -9}
+      ],
+      "claim_state": "NOT_PROVEN",
+      "reason": "The isolated CLI exposed no catalog/list command, and the bounded parent session emitted no stable named native agent entry.",
+      "version_stdout_sha256": "2dce86d5de312cf77c2bdda848f9499b07b97789aadbb4d8658529b7695904ea",
+      "help_stdout_sha256": "2b751e5b04548ac28b741b068574a52472003aaa0d1167e4bd8b9df0ba3d0933",
+      "bounded_session_output_sha256": "ad8e48b713e7b9112d8f6d0e497fa9913a4c57863c494d4ba200189d4a0a1c9e"
+    }
+  },
+  "result": {
+    "goose_claim_state": "NOT_PROVEN",
+    "freebuff_claim_state": "NOT_PROVEN",
+    "ambiguity_resolved": true,
+    "resolution": "No compatible source is proven for the REQUIRED PARTIAL claim; this is a capability block, not a policy tie-break.",
+    "admission_effect": "BLOCKED_CAPABILITY"
+  }
+}

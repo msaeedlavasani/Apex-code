@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "registry_id": "apex-agent-skill-registry-v1",
-  "revision": 1,
+  "revision": 2,
   "status": "PROPOSED",
   "owner": "apex-control-plane",
   "executor_neutral": true,
@@ -19,7 +19,8 @@
       "permanent_selection": false,
       "evidence_refs": [
         "docs/evidence/GOOSE-UI-DELEGATION-0015.md",
-        "docs/evidence/GOOSE-CLI-DELEGATION-0016.md"
+        "docs/evidence/GOOSE-CLI-DELEGATION-0016.md",
+        "docs/evidence/AC-DEV-019-EXECUTOR-CAPABILITY-DISAMBIGUATION-0024.md"
       ]
     },
     {
@@ -31,7 +32,8 @@
       "permanent_selection": false,
       "evidence_refs": [
         "docs/evidence/FREEBUFF-CLI-DELEGATION-0017.md",
-        "docs/evidence/FREEBUFF-EXTENSION-SURFACE-AUDIT-0019.md"
+        "docs/evidence/FREEBUFF-EXTENSION-SURFACE-AUDIT-0019.md",
+        "docs/evidence/AC-DEV-019-EXECUTOR-CAPABILITY-DISAMBIGUATION-0024.md"
       ]
     },
     {
@@ -162,8 +164,8 @@
       "kind": "agent",
       "title": "Discoverable native agent definitions",
       "source_mappings": [
-        {"source_id": "goose-cli", "claim_state": "PARTIAL", "notes": "Extension/summon patterns observed; Apex agent contract not proven."},
-        {"source_id": "freebuff-cli", "claim_state": "PARTIAL", "notes": "AgentDefinition and @agents surfaces observed; exact catalog not proven."},
+        {"source_id": "goose-cli", "claim_state": "NOT_PROVEN", "notes": "AC-DEV-019 isolated recipe catalog returned no entries; skills catalog is not an agent-definition catalog. Source summon patterns remain source evidence only."},
+        {"source_id": "freebuff-cli", "claim_state": "NOT_PROVEN", "notes": "AC-DEV-019 isolated CLI/TUI probe exposed no catalog command or stable named native agent entry. Prior AgentDefinition and @agents observations remain source/advertised-surface evidence only."},
         {"source_id": "ecc", "claim_state": "NOT_PROVEN"},
         {"source_id": "future-system", "claim_state": "UNKNOWN"}
       ]

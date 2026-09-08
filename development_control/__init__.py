@@ -13,6 +13,7 @@ from .control_plane import (
 )
 from .capability_matching import CapabilityMatchError, build_candidate_execution_plan
 from .execution_admission import ExecutionAdmissionError, build_execution_admission_decision
+from .evidence_receipts import validate_receipt, validate_receipt_file
 
 __all__ = [
     "ControlPlaneStore",
@@ -24,4 +25,6 @@ __all__ = [
     "build_candidate_execution_plan",
     "ExecutionAdmissionError",
     "build_execution_admission_decision",
+    "validate_receipt",
+    "validate_receipt_file",
 ]

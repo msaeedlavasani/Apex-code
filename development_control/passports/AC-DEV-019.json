@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "passport_id": "passport_AC-DEV-019_v1",
+  "development_task_id": "AC-DEV-019",
+  "revision": 1,
+  "goal": "Resolve the AC-DEV-018 candidate ambiguity for agent.definition_catalog through independent bounded operational evidence from Goose and Freebuff, without policy tie-breaking or permanent executor selection.",
+  "scope": [
+    "canonical operational definition and acceptance criteria for agent.definition_catalog",
+    "disposable local probes of Goose and Freebuff runtime catalog surfaces",
+    "separate source evidence from operational evidence",
+    "registry mapping reconciliation and durable operational receipts",
+    "rerun of AC-DEV-017 matching and AC-DEV-018 admission",
+    "bounded control-plane eligibility refresh and autonomous run-loop continuation"
+  ],
+  "out_of_scope": [
+    "ECC installation, source import, dependency addition, or adoption",
+    "permanent Goose or Freebuff selection",
+    "SOURCE_ID_ASC tie-breaking to force admission",
+    "executor-specific integration or Apex Core redesign",
+    "credential inspection, secret persistence, or production execution",
+    "treating UI labels, source symbols, documentation, or self-report as operational proof"
+  ],
+  "dependencies": ["AC-DEV-011", "AC-DEV-012", "AC-DEV-013", "AC-DEV-014", "AC-DEV-015", "AC-DEV-016", "AC-DEV-017", "AC-DEV-018"],
+  "resource_claims": ["execution-admission", "capability-matching", "goose-cli", "freebuff-cli"],
+  "capability_requirements": {
+    "required": [
+      {"capability_id": "agent.definition_catalog", "minimum_claim_state": "PARTIAL"}
+    ],
+    "optional": []
+  },
+  "architecture_constraints": [
+    "agent.definition_catalog means discoverable native agent definitions with stable runtime identity",
+    "a catalog claim requires an operational runtime enumeration or stable named entry, not a UI label, source symbol, or documentation statement",
+    "source evidence and operational evidence remain separately classified",
+    "AC-DEV-018 admission remains fail-closed and its default no-tie-break policy is unchanged",
+    "Apex Control Plane retains admission, candidate selection, scheduling, and reconciliation ownership",
+    "Apex Core retains authority, verification, retry/rework, and semantic-success ownership",
+    "no ECC installation and no permanent executor selection"
+  ],
+  "acceptance_criteria": [
+    "Goose is independently probed in a disposable isolated profile; an operationally discoverable native agent-definition catalog with stable entries is required for PARTIAL or PROVEN",
+    "Freebuff is independently probed in a disposable isolated workspace; an operationally discoverable native agent-definition catalog with stable entries is required for PARTIAL or PROVEN",
+    "unrelated skills catalogs, parent model pickers, @agents labels, source symbols, and documentation are explicitly excluded from acceptance",
+    "each executor claim is classified PROVEN, PARTIAL, or NOT_PROVEN with direct operational evidence and source evidence kept separate",
+    "registry mappings change only where the new operational evidence justifies the claim",
+    "AC-DEV-017 matching and AC-DEV-018 admission are rerun with the reconciled registry and preserve BLOCKED_CAPABILITY or BLOCKED_AMBIGUITY as applicable",
+    "the admission decision records no dispatch, no runtime side effects, no permanent executor selection, and no SOURCE_ID_ASC tie-break unless independently justified by policy",
+    "eligibility is reconciled and the autonomous run loop continues within the bounded control-plane scope"
+  ],
+  "validation": [
+    "disposable Goose and Freebuff operational probe",
+    "machine-readable probe and reconciliation receipts",
+    "registry JSON, backlog JSON, and Passport validation",
+    "AC-DEV-017 candidate plan and AC-DEV-018 admission determinism checks",
+    "focused Python tests, documentation validation, git diff --check, and protected CI gate"
+  ],
+  "risk": {"class": "MEDIUM", "reversibility": "HIGH"},
+  "executor_compatibility": {"executors": ["generic-executor"]},
+  "human_gates": [],
+  "evidence_refs": [
+    "experiments/runtime-proof/executor_capability_disambiguation_probe.py",
+    "docs/evidence/AC-DEV-019-OPERATIONAL-PROBE-0024.json",
+    "docs/evidence/AC-DEV-019-EXECUTOR-CAPABILITY-DISAMBIGUATION-0024.md"
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "receipt_type": "CONTROL_PLANE_PERSISTENCE_RECONCILIATION",
+  "receipt_id": "receipt_AC-DEV-020_persistence_reconciliation_0025",
+  "development_task_id": "AC-DEV-020",
+  "canonical_boundary": {
+    "transient_task_fields_removed": ["readiness_reasons", "batch_id", "last_attempt_id"],
+    "workflow_status_preserved": true,
+    "evidence_state_preserved": true,
+    "operational_state_owner": "caller-supplied control-plane state"
+  },
+  "mutating_paths_audited": [
+    "ControlPlaneStore.save_backlog",
+    "DevelopmentControlPlane.refresh_readiness",
+    "DevelopmentControlPlane.select_batch",
+    "DevelopmentControlPlane.fail_task",
+    "DevelopmentControlPlane.complete_task",
+    "DevelopmentControlPlane.recover_task",
+    "DevelopmentControlPlane.reconcile_owner_decisions"
+  ],
+  "regressions": {
+    "stale_transient_projection_cleanup": "PASS",
+    "refresh_byte_idempotence_after_convergence": "PASS",
+    "batch_id_not_persisted": "PASS",
+    "last_attempt_id_not_persisted": "PASS",
+    "ac_dev_019_run_pattern_projection_free": "PASS",
+    "owner_decision_reconciliation_idempotence": "PASS"
+  },
+  "result": {
+    "claim_state": "PROVEN",
+    "canonical_backlog_pollution": false,
+    "reconciliation_receipt_emitted": true
+  }
+}

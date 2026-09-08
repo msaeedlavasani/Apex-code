@@ -100,6 +100,67 @@ class DevelopmentControlPlaneTests(unittest.TestCase):
         self.assertEqual(self.backlog_path.read_bytes(), first_bytes)
         self.assertEqual(self.store.load_backlog()["revision"], first_revision)
 
+    def test_reconciliation_drops_transient_projections_and_preserves_canonical_bytes(self):
+        prerequisite = task("AC-DEV-A", status="DONE")
+        prerequisite["verification_status"] = "VERIFIED"
+        dependent = task("AC-DEV-B", dependencies=["AC-DEV-A"])
+        for item in (prerequisite, dependent):
+            self.store.save_passport(item["task_id"], passport(item["task_id"], item.get("dependencies"), item.get("resource_claims"), item.get("human_gates")))
+        self.backlog_path.write_text(
+            json.dumps(
+                {
+                    "schema_version": 1,
+                    "revision": 4,
+                    "tasks": [
+                        prerequisite,
+                        {
+                            **dependent,
+                            "readiness_reasons": ["STALE_PROJECTION"],
+                            "batch_id": "stale-batch",
+                            "last_attempt_id": "stale-attempt",
+                        },
+                    ],
+                },
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        first_bytes = self.backlog_path.read_bytes()
+        self.assertIn(b"readiness_reasons", first_bytes)
+        plane = DevelopmentControlPlane(self.store)
+
+        eligible = plane.refresh_readiness()
+        reconciled_bytes = self.backlog_path.read_bytes()
+        self.assertEqual([item["task_id"] for item in eligible], ["AC-DEV-B"])
+        self.assertNotIn(b"readiness_reasons", reconciled_bytes)
+        self.assertNotIn(b"batch_id", reconciled_bytes)
+        self.assertNotIn(b"last_attempt_id", reconciled_bytes)
+        self.assertEqual(reconciled_bytes, self.backlog_path.read_bytes())
+        self.assertEqual(plane.refresh_readiness()[0]["readiness_reasons"], [])
+        self.assertEqual(reconciled_bytes, self.backlog_path.read_bytes())
+
+    def test_batch_and_attempt_reconciliation_do_not_persist_operational_ids(self):
+        plane = self.make_plane([task("AC-DEV-A")])
+        snapshot = plane.select_batch()
+        persisted = self.store.load_backlog()["tasks"][0]
+        self.assertNotIn("batch_id", persisted)
+        plane.complete_task("AC-DEV-A", snapshot.batch_id, {"evidence_status": "PROVEN"})
+        persisted = self.store.load_backlog()["tasks"][0]
+        self.assertNotIn("last_attempt_id", persisted)
+        self.assertEqual(persisted["status"], TaskStatus.DONE.value)
+
+    def test_ac_dev_019_run_pattern_leaves_canonical_backlog_projection_free(self):
+        plane = self.make_plane([task("AC-DEV-A")])
+        summary = plane.run(lambda _item, _passport: {"status": "PASS", "evidence_status": "PROVEN"})
+        self.assertEqual(summary.verified_tasks, 1)
+        first_bytes = self.backlog_path.read_bytes()
+        self.assertNotIn(b"readiness_reasons", first_bytes)
+        self.assertNotIn(b"batch_id", first_bytes)
+        self.assertNotIn(b"last_attempt_id", first_bytes)
+        self.assertEqual(plane.refresh_readiness(), [])
+        self.assertEqual(self.backlog_path.read_bytes(), first_bytes)
+
     def test_batch_is_conflict_safe_and_eligibility_waits_for_next_batch(self):
         first = task("AC-DEV-A", claims=["workspace"])
         second = task("AC-DEV-B", claims=["workspace"])
@@ -190,10 +251,19 @@ class DevelopmentControlPlaneTests(unittest.TestCase):
         gated = task("AC-DEV-GATE", human_gates=["owner-review"])
         free = task("AC-DEV-FREE")
         plane = self.make_plane([gated, free])
-        plane.queue_owner_decision("AC-DEV-GATE", "owner-review", ["evidence/ref.md"])
         snapshot = plane.select_batch()
         self.assertEqual(snapshot.task_ids, ("AC-DEV-FREE",))
         self.assertEqual([item["task_id"] for item in plane.open_human_gates()], ["AC-DEV-GATE"])
+
+    def test_task_human_gate_reconciliation_is_idempotent_and_has_owner_stop_reason(self):
+        plane = self.make_plane([task("AC-DEV-GATE", human_gates=["owner-review"])])
+        first = plane.reconcile_owner_decisions()
+        second = plane.reconcile_owner_decisions()
+        self.assertEqual(len(first), 1)
+        self.assertEqual(second, [])
+        summary = plane.run(lambda _item, _passport: {"status": "PASS"})
+        self.assertEqual(summary.stop_reason, "OWNER_DECISIONS_ONLY")
+        self.assertEqual(len(plane.open_human_gates()), 1)
 
     def test_owner_authorized_material_task_is_admissible_without_changing_risk_class(self):
         authorized = task("AC-DEV-A")
@@ -297,6 +367,22 @@ class DevelopmentControlPlaneTests(unittest.TestCase):
             admission_task["dependencies"],
             ["AC-DEV-011", "AC-DEV-012", "AC-DEV-013", "AC-DEV-014", "AC-DEV-015", "AC-DEV-016", "AC-DEV-017"],
         )
+
+        persistence_closure = next(item for item in backlog["tasks"] if item["task_id"] == "AC-DEV-020")
+        self.assertEqual(persistence_closure["status"], "DONE")
+        self.assertEqual(persistence_closure["verification_status"], "VERIFIED")
+        self.assertEqual(persistence_closure["evidence_status"], "PROVEN")
+
+        receipt_validator = next(item for item in backlog["tasks"] if item["task_id"] == "AC-DEV-021")
+        self.assertEqual(receipt_validator["status"], "DONE")
+        self.assertEqual(receipt_validator["verification_status"], "VERIFIED")
+        self.assertEqual(receipt_validator["evidence_status"], "PROVEN")
+
+        strategy = next(item for item in backlog["tasks"] if item["task_id"] == "AC-DEV-022")
+        self.assertEqual(strategy["status"], "HUMAN_GATE")
+        self.assertEqual(strategy["verification_status"], "NOT_RUN")
+        self.assertEqual(strategy["evidence_status"], "NOT_PROVEN")
+        self.assertIn("OWNER_APPROVAL:AC-DEV-022-APEX-OWNED-DEFINITION-PROJECTION", strategy["human_gates"])
 
     def test_agent_skill_registry_is_executor_neutral_and_preserves_claim_states(self):
         root = Path(__file__).resolve().parents[1]

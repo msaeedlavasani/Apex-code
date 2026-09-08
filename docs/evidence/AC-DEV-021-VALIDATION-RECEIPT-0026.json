@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "receipt_type": "EVIDENCE_RECEIPT_VALIDATION_RUN",
+  "receipt_id": "receipt_AC-DEV-021_validation_run_0026",
+  "development_task_id": "AC-DEV-021",
+  "validator": "apex-control-plane-evidence-receipts-v1",
+  "registry_id": "apex-agent-skill-registry-v1",
+  "registry_revision": 2,
+  "inputs": [
+    {
+      "receipt": "docs/evidence/AC-DEV-019-OPERATIONAL-PROBE-0024.json",
+      "receipt_type": "EXECUTOR_CAPABILITY_OPERATIONAL_PROBE",
+      "input_digest": "ff84bbbe70ef223cb3259baf19b8e974e11a9df0dc0422541e4d1d901239d2c1",
+      "valid": true,
+      "mutated_input": false
+    },
+    {
+      "receipt": "docs/evidence/AC-DEV-019-RECONCILIATION-0024.json",
+      "receipt_type": "CAPABILITY_MATCHING_AND_ADMISSION_RECONCILIATION",
+      "input_digest": "b5ed07a44a9927959aecab02d7abe9cdecbd6f7debea8fe065b81be3671c439e",
+      "valid": true,
+      "mutated_input": false
+    }
+  ],
+  "negative_cases": {
+    "secret_shaped_field": "REJECTED",
+    "invalid_claim_state": "REJECTED",
+    "registry_mapping_mismatch": "REJECTED",
+    "unauthorized_source_id_asc": "REJECTED",
+    "unsupported_not_proven_promotion": "REJECTED"
+  },
+  "result": {
+    "claim_state": "PROVEN",
+    "valid_receipts": 2,
+    "claims_promoted": false,
+    "registry_mutated": false,
+    "admission_policy_weakened": false
+  }
+}

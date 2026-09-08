@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "passport_id": "passport_AC-DEV-020_v1",
+  "development_task_id": "AC-DEV-020",
+  "revision": 1,
+  "goal": "Close canonical-backlog churn by making refresh and reconciliation paths semantically and byte-idempotent while excluding transient operational projections from canonical task state.",
+  "scope": [
+    "control-plane backlog persistence and refresh/reconciliation mutation paths",
+    "transient readiness, batch, and attempt projection boundaries",
+    "exact AC-DEV-019 regression coverage",
+    "durable evidence and reconciliation receipt"
+  ],
+  "out_of_scope": [
+    "changing task dependency, admission, authority, or verification policy",
+    "removing canonical workflow status or evidence state",
+    "runtime execution or executor integration",
+    "discarding unrelated local artifacts"
+  ],
+  "dependencies": ["AC-DEV-019"],
+  "resource_claims": ["repository-control-plane", "canonical-backlog-persistence"],
+  "architecture_constraints": [
+    "canonical backlog owns durable task intent and workflow/evidence state",
+    "readiness reasons, batch IDs, and last-attempt IDs are operational projections and must not persist in canonical task records",
+    "operational state remains caller-supplied and separate from canonical backlog truth",
+    "semantic writes remain atomic and secret-safe",
+    "repeated refresh and reconciliation after convergence must preserve bytes and revision"
+  ],
+  "acceptance_criteria": [
+    "all mutating refresh/reconciliation paths are audited for transient task projections",
+    "canonical persistence strips stale readiness_reasons, batch_id, and last_attempt_id projections",
+    "refresh_readiness returns readiness projections without persisting them",
+    "batch and attempt lifecycle state remains in operational state while canonical status/evidence state remains durable",
+    "the exact AC-DEV-019 run pattern has regression coverage for transient-field absence and repeated byte identity",
+    "canonical backlog semantics and unrelated task bytes are preserved within the accepted persistence contract"
+  ],
+  "validation": [
+    "focused persistence and control-plane regression tests",
+    "full Python test suite and documentation validation",
+    "backlog/passport JSON validation and git diff --check",
+    "durable reconciliation receipt"
+  ],
+  "risk": {"class": "MEDIUM", "reversibility": "HIGH"},
+  "executor_compatibility": {"executors": ["generic-executor"]},
+  "human_gates": [],
+  "evidence_refs": ["docs/evidence/AC-DEV-020-PERSISTENCE-RECONCILIATION-0025.md"]
+}

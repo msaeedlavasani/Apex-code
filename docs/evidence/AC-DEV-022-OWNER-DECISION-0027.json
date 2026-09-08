@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "receipt_type": "ARCHITECTURE_STRATEGY_OWNER_DECISION",
+  "receipt_id": "receipt_AC-DEV-022_owner_decision_0027",
+  "development_task_id": "AC-DEV-022",
+  "owner_gate": "OWNER_APPROVAL:AC-DEV-022-APEX-OWNED-DEFINITION-PROJECTION",
+  "current_contract": {
+    "required_capability": "agent.definition_catalog",
+    "minimum_claim_state": "PARTIAL",
+    "admission_status": "BLOCKED_CAPABILITY",
+    "dispatch_allowed": false
+  },
+  "apex_owned_definition_projection": {
+    "required_fields": ["definition_id", "registry_revision", "definition_digest", "task_scoped_projection"],
+    "executor_receives": "immutable task-scoped definition projection through an adapter",
+    "apex_retains": ["task_identity", "scheduling", "resource_claims", "authority", "verification", "semantic_success", "reconciliation"],
+    "executor_must_not": ["define Apex claims", "elevate authority", "assign semantic success", "persist unapproved credentials"]
+  },
+  "evidence_state": {
+    "generic_executor_injection": "NOT_PROVEN",
+    "native_executor_catalog": "NOT_PROVEN",
+    "strategy": "PRESERVE_REQUIRED_CAPABILITY_PENDING_OWNER_DECISION"
+  },
+  "decision": {
+    "status": "OWNER_APPROVAL_REQUIRED",
+    "architecture_change_assumed": false,
+    "registry_changed": false,
+    "admission_policy_weakened": false,
+    "permanent_executor_selected": false,
+    "ecc_installed": false
+  }
+}

@@ -80,6 +80,7 @@ FORBIDDEN_SECRET_KEYS = {
     "cookie",
     "access_key",
 }
+TRANSIENT_BACKLOG_TASK_FIELDS = frozenset({"readiness_reasons", "batch_id", "last_attempt_id"})
 
 
 def _now() -> str:
@@ -134,6 +135,18 @@ def _assert_no_secret_material(value: Any, path: str = "root") -> None:
     elif isinstance(value, (list, tuple)):
         for index, nested in enumerate(value):
             _assert_no_secret_material(nested, f"{path}[{index}]")
+
+
+def _canonicalize_backlog(document: Mapping[str, Any]) -> dict[str, Any]:
+    """Remove derived operational task projections before canonical persistence."""
+    canonical = deepcopy(dict(document))
+    tasks = canonical.get("tasks", [])
+    if isinstance(tasks, list):
+        for task in tasks:
+            if isinstance(task, dict):
+                for field in TRANSIENT_BACKLOG_TASK_FIELDS:
+                    task.pop(field, None)
+    return canonical
 
 
 def _claims(task: Mapping[str, Any]) -> set[str]:
@@ -211,7 +224,7 @@ class ControlPlaneStore:
         return document
 
     def save_backlog(self, document: Mapping[str, Any]) -> None:
-        _write_json(self.backlog_path, dict(document))
+        _write_json(self.backlog_path, _canonicalize_backlog(document))
 
     def load_state(self) -> dict[str, Any]:
         return _read_json(
@@ -315,8 +328,10 @@ class DevelopmentControlPlane:
         }
 
     def refresh_readiness(self) -> list[dict[str, Any]]:
-        backlog = self.store.load_backlog()
-        original_backlog = deepcopy(backlog)
+        self.reconcile_owner_decisions()
+        loaded_backlog = self.store.load_backlog()
+        original_backlog = deepcopy(loaded_backlog)
+        backlog = _canonicalize_backlog(loaded_backlog)
         tasks = self._task_map(backlog)
         eligible: list[dict[str, Any]] = []
         for task in backlog["tasks"]:
@@ -331,10 +346,11 @@ class DevelopmentControlPlane:
             }:
                 continue
             result = self.readiness(task_id)
-            task["readiness_reasons"] = result["reasons"]
             if result["ready"]:
                 task["status"] = TaskStatus.ELIGIBLE.value
-                eligible.append(task)
+                projection = deepcopy(task)
+                projection["readiness_reasons"] = list(result["reasons"])
+                eligible.append(projection)
             elif "HUMAN_GATE_OPEN" in result["reasons"]:
                 task["status"] = TaskStatus.HUMAN_GATE.value
             elif any(reason.startswith("DEPENDENCY_") for reason in result["reasons"]) or "EXTERNAL_BLOCKER" in result["reasons"]:
@@ -382,7 +398,6 @@ class DevelopmentControlPlane:
         )
         for task in selected:
             task["status"] = TaskStatus.BATCHED.value
-            task["batch_id"] = snapshot.batch_id
         backlog["revision"] = int(backlog.get("revision", 0)) + 1
         state.setdefault("batches", []).append(
             {
@@ -468,7 +483,6 @@ class DevelopmentControlPlane:
         incident = self._incident(task_id, failure_class, signature, evidence)
         task["rework_count"] = int(task.get("rework_count", 0)) + 1
         task["last_failure_class"] = failure_class.value
-        task["last_attempt_id"] = attempt_id
         task["incident_id"] = incident["incident_id"]
         if task["rework_count"] > max_rework or incident.get("systemic"):
             task["status"] = TaskStatus.QUARANTINED.value
@@ -489,7 +503,6 @@ class DevelopmentControlPlane:
         attempt_id = self.record_attempt(task_id, batch_id, {"status": "PASS", **dict(outcome)})
         task["status"] = TaskStatus.DONE.value
         task["verification_status"] = "VERIFIED"
-        task["last_attempt_id"] = attempt_id
         task["evidence_status"] = str(outcome.get("evidence_status", "PROVEN"))
         self.store.save_backlog(backlog)
         self._record_batch_outcome(batch_id, task_id, {"status": "PASS", **dict(outcome)})
@@ -497,6 +510,16 @@ class DevelopmentControlPlane:
 
     def queue_owner_decision(self, task_id: str, gate: str, evidence_refs: Iterable[str]) -> str:
         _, state = self._documents()
+        existing = next(
+            (
+                item
+                for item in state.get("owner_decisions", [])
+                if item.get("task_id") == task_id and item.get("gate") == gate and item.get("status") == "OPEN"
+            ),
+            None,
+        )
+        if existing is not None:
+            return str(existing["decision_id"])
         decision_id = _id("decision")
         state.setdefault("owner_decisions", []).append(
             {
@@ -510,6 +533,38 @@ class DevelopmentControlPlane:
         )
         self.store.save_state(state)
         return decision_id
+
+    def reconcile_owner_decisions(self) -> list[str]:
+        """Idempotently project canonical task Human Gates into operational queue state."""
+        backlog, state = self._documents()
+        existing = {
+            (str(item.get("task_id")), str(item.get("gate")))
+            for item in state.get("owner_decisions", [])
+            if item.get("status") == "OPEN"
+        }
+        added: list[str] = []
+        for task in backlog.get("tasks", []):
+            task_id = str(task.get("task_id"))
+            for gate in task.get("human_gates", []) or []:
+                key = (task_id, str(gate))
+                if key in existing:
+                    continue
+                decision_id = _id("decision")
+                state.setdefault("owner_decisions", []).append(
+                    {
+                        "decision_id": decision_id,
+                        "task_id": task_id,
+                        "gate": str(gate),
+                        "evidence_refs": list(task.get("evidence_refs", [])),
+                        "status": "OPEN",
+                        "created_at": _now(),
+                    }
+                )
+                existing.add(key)
+                added.append(decision_id)
+        if added:
+            self.store.save_state(state)
+        return added
 
     def open_human_gates(self) -> list[dict[str, Any]]:
         _, state = self._documents()
@@ -560,7 +615,6 @@ class DevelopmentControlPlane:
         attempt_id = self.record_attempt(task_id, batch_id, {"status": "RECOVERED", **dict(evidence)})
         task["status"] = TaskStatus.BACKLOG.value
         task["recovery_count"] = int(task.get("recovery_count", 0)) + 1
-        task["last_attempt_id"] = attempt_id
         self.store.save_backlog(backlog)
         return attempt_id
 
@@ -659,7 +713,7 @@ class DevelopmentControlPlane:
         elif remaining:
             stop_reason = "AUTONOMOUS_WORK_REMAINS" if max_batches is not None and batches >= max_batches else "NO_SAFE_BATCH"
         elif open_gates:
-            stop_reason = "HUMAN_GATES_ONLY"
+            stop_reason = "OWNER_DECISIONS_ONLY"
         else:
             stop_reason = "NO_ELIGIBLE_WORK"
         summary = RunSummary(

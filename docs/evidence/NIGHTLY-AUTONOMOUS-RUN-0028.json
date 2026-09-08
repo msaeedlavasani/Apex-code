@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "receipt_type": "NIGHTLY_AUTONOMOUS_RUN",
+  "receipt_id": "receipt_nightly_autonomous_run_0028",
+  "development_task_id": "NIGHTLY-AUTONOMOUS-RUN-0028",
+  "run_id": "run_82138d51dc9f4ebd",
+  "started_at": "2026-09-08T00:57:29Z",
+  "ended_at": "2026-09-08T00:57:29Z",
+  "executor": "generic-executor",
+  "batches": [
+    {
+      "batch_id": "batch_e11bf869459c4e6b",
+      "task_ids": ["AC-DEV-020", "AC-DEV-021"],
+      "concurrency": 2,
+      "parallelism": "2 independent resource-disjoint tasks",
+      "outcome": "PASS",
+      "integration_verification": "PASS",
+      "attempt_ids": ["dev_attempt_58dd6581490c41b3", "dev_attempt_e788b5cc68114b57"]
+    }
+  ],
+  "tasks_completed": [
+    {"task_id": "AC-DEV-020", "status": "DONE", "verification_status": "VERIFIED", "evidence_status": "PROVEN"},
+    {"task_id": "AC-DEV-021", "status": "DONE", "verification_status": "VERIFIED", "evidence_status": "PROVEN"}
+  ],
+  "owner_decision_queue": [
+    {
+      "decision_id": "decision_eb69920825ea4856",
+      "task_id": "AC-DEV-022",
+      "gate": "OWNER_APPROVAL:AC-DEV-022-APEX-OWNED-DEFINITION-PROJECTION",
+      "status": "OPEN",
+      "evidence_refs": ["docs/evidence/AC-DEV-022-NATIVE-AGENT-CATALOG-STRATEGY-0027.md"]
+    }
+  ],
+  "incidents": [],
+  "rework": [],
+  "registry_and_admission": {
+    "registry_revision": 2,
+    "agent_definition_catalog": {"goose_cli": "NOT_PROVEN", "freebuff_cli": "NOT_PROVEN"},
+    "ac_dev_018_status": "BLOCKED_CAPABILITY",
+    "dispatch_allowed": false,
+    "permanent_executor_selected": false,
+    "ecc_installed": false
+  },
+  "validation": {
+    "python_tests": "PASS",
+    "documentation_validation": "PASS",
+    "receipt_validation": "PASS",
+    "json_validation": "PASS",
+    "git_diff_check": "PASS",
+    "protected_ci": "NOT_RUN",
+    "pr": null,
+    "merge_commit": null
+  },
+  "remaining_backlog": {
+    "task_id": "AC-DEV-022",
+    "status": "HUMAN_GATE",
+    "evidence_status": "NOT_PROVEN",
+    "blocker": "OWNER_APPROVAL_REQUIRED"
+  },
+  "stop_reason": "OWNER_DECISIONS_ONLY"
+}
