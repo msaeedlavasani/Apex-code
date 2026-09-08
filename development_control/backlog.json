@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "revision": 8,
+  "revision": 9,
   "source": "accepted Apex Code repository evidence",
   "tasks": [
     {
@@ -308,6 +308,24 @@
       "dependencies": ["AC-DEV-011", "AC-DEV-012", "AC-DEV-013", "AC-DEV-014", "AC-DEV-015", "AC-DEV-016"],
       "resource_claims": ["capability-matching", "agent-skill-registry", "control-plane-contract"],
       "evidence_refs": ["docs/evidence/TASK-CAPABILITY-MATCHING-0022.md"],
+      "critical_path_weight": 5,
+      "downstream_unlock_value": 20,
+      "aging_days": 0
+    },
+    {
+      "task_id": "AC-DEV-018",
+      "title": "Execution Admission & Candidate Selection v1",
+      "status": "DONE",
+      "verification_status": "VERIFIED",
+      "evidence_status": "PROVEN",
+      "priority": "P1",
+      "risk": "MEDIUM",
+      "decision_class": "ROUTINE",
+      "autonomous_allowed": true,
+      "executor_compatibility": {"executors": ["generic-executor"]},
+      "dependencies": ["AC-DEV-011", "AC-DEV-012", "AC-DEV-013", "AC-DEV-014", "AC-DEV-015", "AC-DEV-016", "AC-DEV-017"],
+      "resource_claims": ["execution-admission", "capability-matching", "control-plane-contract"],
+      "evidence_refs": ["docs/evidence/TASK-EXECUTION-ADMISSION-0023.md"],
       "critical_path_weight": 5,
       "downstream_unlock_value": 20,
       "aging_days": 0

@@ -92,6 +92,14 @@ deterministic registry matching. Its Candidate Execution Plan preserves source
 claim/evidence state, fails closed for required gaps or ambiguity, and never
 dispatches or selects an executor.
 
+AC-DEV-018 consumes the Candidate Execution Plan for a pure Execution Admission
+Decision. It distinguishes capability, ambiguity, policy, and Human Gate
+blocks from admission, preserves claim/evidence state and rejected-candidate
+rationale, and selects only a task-scoped source. Equal-quality tie-breaking is
+disabled by default and requires explicit `SOURCE_ID_ASC` policy. Dispatch,
+runtime side effects, permanent executor selection, ECC installation, and Apex
+Core ownership changes remain out of scope.
+
 ## Boundary checks
 
 The implementation is separate from `apex_code/` and does not import Core
