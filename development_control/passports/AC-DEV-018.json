@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "passport_id": "passport_AC-DEV-018_v1",
+  "development_task_id": "AC-DEV-018",
+  "revision": 1,
+  "goal": "Consume AC-DEV-017 Candidate Execution Plans and produce deterministic, machine-readable Execution Admission Decisions with task-scoped candidate selection and no runtime side effects.",
+  "scope": [
+    "admission status evaluation for capability, ambiguity, policy, and human-gate outcomes",
+    "deterministic single-source candidate selection over compatible required capabilities",
+    "explicit-policy-only tie-breaking and rejected-candidate rationale",
+    "evidence and claim-state preservation in admission decisions",
+    "regression coverage constrained by AC-DEV-011 through AC-DEV-017"
+  ],
+  "out_of_scope": [
+    "task dispatch or execution",
+    "ECC installation or adoption",
+    "permanent Goose, Freebuff, or other executor binding",
+    "moving scheduling, authority, verification, retry/rework, or semantic-success ownership outside Apex",
+    "runtime side effects or runtime adapter changes"
+  ],
+  "dependencies": ["AC-DEV-011", "AC-DEV-012", "AC-DEV-013", "AC-DEV-014", "AC-DEV-015", "AC-DEV-016", "AC-DEV-017"],
+  "resource_claims": ["execution-admission", "capability-matching", "control-plane-contract"],
+  "capability_requirements": {
+    "required": [
+      {"capability_id": "agent.definition_catalog", "minimum_claim_state": "PARTIAL"}
+    ],
+    "optional": [
+      {"capability_id": "agent.parallel_delegation", "minimum_claim_state": "PROVEN"}
+    ]
+  },
+  "architecture_constraints": [
+    "Apex Control Plane owns admission policy, capability requirements, candidate selection, and decision projection",
+    "Apex Core owns runtime authority, verification, retry/rework policy, and semantic success",
+    "candidate selection is task-scoped and never permanent executor selection",
+    "equal-quality candidates remain ambiguous unless the supplied policy explicitly permits SOURCE_ID_ASC tie-breaking",
+    "NOT_PROVEN, NOT_SUPPORTED, UNKNOWN, PARTIAL, and PROVEN remain distinct",
+    "no ECC installation and no dispatch or runtime side effects"
+  ],
+  "acceptance_criteria": [
+    "admission consumes a Candidate Execution Plan and emits a machine-readable Execution Admission Decision",
+    "blocked or ambiguous required capabilities fail closed",
+    "ADMITTED, BLOCKED_CAPABILITY, BLOCKED_AMBIGUITY, BLOCKED_POLICY, and HUMAN_GATE_REQUIRED are distinct",
+    "selection rationale, rejected candidates, evidence references, and claim states are preserved",
+    "identical Passport, Candidate Execution Plan, and policy inputs produce identical output",
+    "selection never transfers scheduling, authority, verification, retry, or semantic-success ownership"
+  ],
+  "validation": [
+    "admitted, capability-blocked, ambiguity-blocked, policy-denied, and human-gate tests",
+    "explicit tie-break policy and deterministic output tests",
+    "canonical Python tests and documentation validation",
+    "backlog, Passport, and JSON validation",
+    "git diff --check and protected PR CI gate"
+  ],
+  "risk": {"class": "MEDIUM", "reversibility": "HIGH"},
+  "executor_compatibility": {"executors": ["generic-executor"]},
+  "human_gates": [],
+  "evidence_refs": ["docs/evidence/TASK-EXECUTION-ADMISSION-0023.md"]
+}

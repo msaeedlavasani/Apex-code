@@ -61,3 +61,7 @@ atomic and history-preserving.
 `AC-DEV-017` matches Passport `REQUIRED` and `OPTIONAL` capability requirements
 to ranked registry sources in a deterministic, non-dispatching Candidate
 Execution Plan; required unproven or ambiguous matches fail closed.
+`AC-DEV-018` consumes that plan for deterministic, non-dispatching admission
+and task-scoped candidate selection. Equal-quality candidates remain blocked
+unless an explicit policy permits `SOURCE_ID_ASC` tie-breaking; no executor is
+permanently selected and ECC remains uninstalled.

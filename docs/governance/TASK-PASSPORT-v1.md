@@ -57,6 +57,23 @@ Candidate Execution Plan without making the plan dispatchable. Matching does
 not dispatch work, select a permanent executor, or transfer scheduling,
 authority, verification, retry, or semantic-success ownership.
 
+## Execution admission
+
+AC-DEV-018 may consume a Candidate Execution Plan and emit an
+`EXECUTION_ADMISSION_DECISION`. The decision is a control-plane projection,
+not a Core `ExecutionManifest` or dispatch request. Its status is one of
+`ADMITTED`, `BLOCKED_CAPABILITY`, `BLOCKED_AMBIGUITY`, `BLOCKED_POLICY`, or
+`HUMAN_GATE_REQUIRED`.
+
+An `ADMITTED` decision selects one compatible source for the task only. It does
+not permanently select an executor and it records `dispatch_allowed: false`.
+Equal-quality candidates remain blocked as ambiguous unless the supplied
+admission policy explicitly permits `SOURCE_ID_ASC` deterministic
+tie-breaking. Decisions preserve the Candidate Execution Plan, claim states,
+evidence references, selection rationale, and rejected candidates. Scheduling,
+authority, verification, retry/rework, and semantic-success ownership remain
+with Apex.
+
 ## Passport rules
 
 - Every revision records why an authority-relevant field changed.

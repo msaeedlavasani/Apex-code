@@ -12,6 +12,7 @@ from .control_plane import (
     TaskStatus,
 )
 from .capability_matching import CapabilityMatchError, build_candidate_execution_plan
+from .execution_admission import ExecutionAdmissionError, build_execution_admission_decision
 
 __all__ = [
     "ControlPlaneStore",
@@ -21,4 +22,6 @@ __all__ = [
     "TaskStatus",
     "CapabilityMatchError",
     "build_candidate_execution_plan",
+    "ExecutionAdmissionError",
+    "build_execution_admission_decision",
 ]

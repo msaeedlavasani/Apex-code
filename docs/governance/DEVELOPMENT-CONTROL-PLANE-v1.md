@@ -144,6 +144,16 @@ not dispatch work or select an executor. Required unproven, unsupported, or
 ambiguous matches fail closed; optional gaps remain visible. Scheduling,
 authority, verification, retry/rework, and semantic success remain Apex-owned.
 
+Execution admission (`AC-DEV-018`) consumes that Candidate Execution Plan as a
+pure decision projection. It distinguishes capability blocks, unresolved
+ambiguity, policy denial, and Human Gates from `ADMITTED`. A unique compatible
+source may be selected for the task only; equal-quality sources require an
+explicit policy before deterministic `SOURCE_ID_ASC` tie-breaking is allowed.
+The decision preserves claim/evidence records, rationale, and rejected
+candidates while keeping dispatch disabled and permanent executor selection
+false. No runtime side effects occur, and Apex Core retains authority,
+verification, retry/rework, and semantic-success ownership.
+
 No secrets may appear in backlog, Passports, incidents, attempts, events,
 evidence, or run summaries. Protected-main and CI governance remain mandatory
 for repository changes.
